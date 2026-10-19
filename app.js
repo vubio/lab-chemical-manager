@@ -54,7 +54,7 @@ function fmtMassMG(mg){if(mg>=1000)return `${fmt(mg/1000)} g`;if(mg>=1)return `$
 function getChem(id){return db.chemicals.find(x=>x.id===id)}
 function autoHistory(rec){const entry={id:uid(),timestamp:isoNow(),...rec};db.history.unshift(entry);store();return entry}
 function updateCounts(){byId('stat-chem').textContent=db.chemicals.length;byId('stat-history').textContent=db.history.length;byId('stat-templates').textContent=db.templates.length}
-function showPage(page){currentPage=page;document.querySelectorAll('.page').forEach(el=>el.classList.toggle('active',el.id==='page-'+page));document.querySelectorAll('.nav-link').forEach(el=>el.classList.toggle('active',el.dataset.page===page));const names={home:'Overview',calculator:'Preparation calculator',dosing:'Dosing planner',library:'Chemical library',history:'Calculation history',templates:'Saved templates'};byId('page-label').textContent=names[page]||page;if(page==='library')renderLibrary();if(page==='history')renderHistory();if(page==='templates')renderTemplates();window.scrollTo({top:0,behavior:'instant'})}
+function showPage(page){currentPage=page;document.querySelectorAll('.page').forEach(el=>el.classList.toggle('active',el.id==='page-'+page));document.querySelectorAll('.nav-link').forEach(el=>el.classList.toggle('active',el.dataset.page===page));const names={home:'Overview',calculator:'Preparation calculator',dosing:'Dosing planner',plate:'Plate layout',library:'Chemical library',history:'Calculation history',templates:'Saved templates'};byId('page-label').textContent=names[page]||page;if(page==='library')renderLibrary();if(page==='history')renderHistory();if(page==='templates')renderTemplates();window.scrollTo({top:0,behavior:'instant'})}
 function renderChemicalOptions(){const rows=db.chemicals.slice().sort((a,b)=>a.name.localeCompare(b.name));const o=rows.map(r=>`<option value="${escapeHTML(r.id)}">${escapeHTML(r.name)}${r.lot?' · lot '+escapeHTML(r.lot):''}${r.stock?' · '+fmt(r.stock)+' '+escapeHTML(r.stockUnit):''}</option>`).join('');['calc-chemical','dose-chemical'].forEach(id=>{const el=byId(id),keep=el.value;el.innerHTML=`<option value="">${id==='calc-chemical'?'Enter new chemical details':'Manual stock entry'}</option>${o}`;el.value=rows.some(r=>r.id===keep)?keep:''})}
 
 /* ---- Preparation calculator ---- */
@@ -118,149 +118,7 @@ function stockFromPrep(){if(!latestPrep)return;const r=latestPrep.result;if(!r.s
  const entry={id:uid(),createdAt:isoNow(),updatedAt:isoNow(),name:latestPrep.name,maker:chem?.maker||'',catalog:latestPrep.catalog,lot:latestPrep.lot,cas:chem?.cas||'',mw:latestPrep.input['f-mw']||chem?.mw||'',stock:r.stockValue,stockUnit:r.stockUnit,solvent:r.solvent,storage:chem?.storage||'',prepdate:today(),expiry:'',notes:`Prepared: ${r.preparedVolume}. History record: ${latestPrep.id}`};db.chemicals.unshift(entry);store();renderChemicalOptions();toast('Prepared stock saved to Chemical library.')}
 
 /* ---- multi-condition dosing planner ---- */
-const DOSE_FIELDS=['dose-title','dose-chemical','dose-name','dose-stock','dose-stock-unit','dose-mw','dose-solvent','dose-targets','dose-target-unit','dose-wells','dose-well-volume','dose-volume-mode','dose-add','dose-minpip','dose-prep-volume','dose-overage','dose-max-prep','dose-strategy','dose-notes','dose-plate-format','dose-density-values','dose-density-unit','dose-factor3-name','dose-factor3-values','dose-factor4-name','dose-factor4-values','dose-label-priority1','dose-label-priority2','dose-label-priority3','dose-label-priority4'];
-/* ---- Interactive plate geometry, factor design, and well assignment ---- */
-const PLATE_FORMATS={6:[2,3],12:[3,4],24:[4,6],48:[6,8],96:[8,12],384:[16,24]};
-const FACTOR_IDS=['dose','density','extra1','extra2'];
-let plateSelection=new Set(),plateDrag=null,plateLastPreview=null;
-let platePriorities=FACTOR_IDS.slice();
-function plateGeometry(format){const key=String(format||24);if(!Object.prototype.hasOwnProperty.call(PLATE_FORMATS,key))throw Error('Unsupported plate format.');const [rows,cols]=PLATE_FORMATS[key];return {format:Number(key),rows,cols,ids:Array.from({length:rows},(_,r)=>Array.from({length:cols},(_,c)=>String.fromCharCode(65+r)+(c+1)))};}
-function plateSelectedFromInput(input,geometry){let stored=input['dose-plate-selected']||'[]';if(typeof stored==='string'){try{stored=JSON.parse(stored)}catch(e){throw Error('Plate selection could not be loaded.')}}if(!Array.isArray(stored))throw Error('Invalid plate selection.');const allowed=new Set(geometry.ids.flat());return [...new Set(stored)].filter(id=>allowed.has(id));}
-function factorEntries(raw){return String(raw||'').split(/[\n,;]+/).map(s=>s.trim()).filter(Boolean);}
-function factorSpec(input){
- const doseString=String(input['dose-targets']||'').trim();
- const doseRaw=doseString.split(/[\s,;]+/).filter(Boolean);
- if(!doseRaw.length)throw Error('Add at least one target dose to preview the plate.');
- if(doseRaw.length>32)throw Error('Only 32 doses per plan are supported.');
- const doses=doseRaw.map((s,i)=>numeric(s,`Target concentration ${i+1}`,true));
- if(new Set(doses).size!==doses.length)throw Error('Duplicate doses are not supported.');
- const density=factorEntries(input['dose-density-values']);
- const extra1=factorEntries(input['dose-factor3-values']);
- const extra2=factorEntries(input['dose-factor4-values']);
- for(const [name,values] of [['Cell density',density],['Third factor',extra1],['Fourth factor',extra2]]){
-  if(values.length>24)throw Error(name+' supports up to 24 values.');
-  if(new Set(values).size!==values.length)throw Error(name+' contains duplicate values.');
- }
- if(extra1.length&&!clean(input['dose-factor3-name']))throw Error('Enter a name for the third factor.');
- if(extra2.length&&!clean(input['dose-factor4-name']))throw Error('Enter a name for the fourth factor.');
- const unit=input['dose-target-unit']||'µM';
- const factors=[{id:'dose',name:'Dose',values:doses.map(d=>({key:String(d),label:`${fmt(d)} ${unit}`,value:d}))}];
- if(density.length)factors.push({id:'density',name:'Cell density',values:density.map(x=>({key:x,label:`${x} ${input['dose-density-unit']||'cells/well'}`,value:x}))});
- if(extra1.length)factors.push({id:'extra1',name:clean(input['dose-factor3-name']),values:extra1.map(x=>({key:x,label:x,value:x}))});
- if(extra2.length)factors.push({id:'extra2',name:clean(input['dose-factor4-name']),values:extra2.map(x=>({key:x,label:x,value:x}))});
- const selectedPriority=FACTOR_IDS.map((id,i)=>input['dose-label-priority'+(i+1)]||id);
- const order=[...new Set([...selectedPriority,...FACTOR_IDS])];
- if(order.length!==4||!FACTOR_IDS.every(id=>order.includes(id)))throw Error('Invalid factor priority.');
- const factorOrder=order.filter(id=>factors.some(x=>x.id===id));
- const multiplier=factors.filter(f=>f.id!=='dose').reduce((n,f)=>n*f.values.length,1);
- if(doses.length*multiplier>384)throw Error('Too many unique factor combinations for a single plate.');
- return {factors,factorOrder,doses,multiplier};
-}
-function plateGroups(input){
- const spec=factorSpec(input),factorById=Object.fromEntries(spec.factors.map(f=>[f.id,f]));
- const rawCounts=input['dose-wells-map'];let counts={};
- if(rawCounts){try{counts=typeof rawCounts==='string'?JSON.parse(rawCounts):rawCounts}catch(e){throw Error('Invalid well counts.')}}
- const fromDose=d=>Object.prototype.hasOwnProperty.call(counts,String(d))?counts[String(d)]:(input['dose-wells']||1);
- const ordered=spec.factorOrder.map(key=>factorById[key]);let groups=[{values:{}}];
- for(const factor of ordered){groups=groups.flatMap(g=>factor.values.map(x=>({values:{...g.values,[factor.id]:x}})));}
- return {spec,groups:groups.map((g,i)=>{
-  const dose=g.values.dose.value,wellCount=numeric(fromDose(dose),`Wells for ${fmt(dose)} ${input['dose-target-unit']}`);
-  if(!Number.isSafeInteger(wellCount))throw Error('Well counts must be positive integers.');
-  return {key:spec.factorOrder.map(k=>g.values[k].key).join(' | '),dose,wellsNeeded:wellCount,values:g.values,order:spec.factorOrder,groupIndex:i};
- })};
-}
-// Greedy grouping into contiguous horizontal segments. A group of 10 wells will
-// occupy A1–A10, then B1–B10, rather than filling stray A11/A12 first.
-function allocatePlateWells(input){
- const geo=plateGeometry(input['dose-plate-format']),mask=plateSelectedFromInput(input,geo);
- const available=mask.length?mask:geo.ids.flat(),pool=new Set(available),{spec,groups}=plateGroups(input);
- const total=groups.reduce((n,g)=>n+g.wellsNeeded,0);
- if(total>available.length)throw Error(`Plate needs ${total} wells, but ${available.length} ${mask.length?'selected':'available'} wells exist in the ${geo.format}-well plate. Select more wells, reduce replicates, or use a larger plate.`);
- const assignments={},completed=[];
- for(const g of groups){
-  const cells=[],labels=g.order.map((id,i)=>({priority:i,id,name:spec.factors.find(f=>f.id===id).name,text:g.values[id].label}));
-  let left=g.wellsNeeded;
-  while(left>0){
-   let best=null;
-   for(let row=0;row<geo.rows;row++){
-    for(let col=0;col<geo.cols;){
-     if(!pool.has(geo.ids[row][col])){col++;continue;}
-     const start=col;while(col<geo.cols&&pool.has(geo.ids[row][col]))col++;
-     const run=col-start,take=Math.min(run,left);
-     // Exact-fitting row runs before split runs. When no full row is possible,
-     // use the longest available segment to minimize fragmentation.
-     const score=(run>=left?100000:0)+take*1000-row*10-start;
-     if(!best||score>best.score)best={row,start,take,score};
-    }
-   }
-   if(!best)throw Error('Not enough selectable plate wells.');
-   for(let col=best.start;col<best.start+best.take;col++){
-    const id=geo.ids[best.row][col];pool.delete(id);cells.push(id);
-    assignments[id]={dose:g.dose,groupIndex:g.groupIndex,labels,groupKey:g.key};
-   }
-   left-=best.take;
-  }
-  completed.push({...g,wells:cells,labels});
- }
- return {format:geo.format,rows:geo.rows,cols:geo.cols,selectedWells:mask,capacity:available.length,totalWells:total,unusedWells:available.length-total,assignments,groups:completed,factorOrder:spec.factorOrder,multiplier:spec.multiplier};
-}
-function plateInputPreview(){return dosingInputs();}
-function plateArea(a,b,geo){
- const decode=id=>{const m=/^([A-P])(\d+)$/.exec(id||'');return m?{r:m[1].charCodeAt(0)-65,c:Number(m[2])-1}:null;};
- const aa=decode(a),bb=decode(b);if(!aa||!bb)return [];
- const ids=[];for(let r=Math.min(aa.r,bb.r);r<=Math.max(aa.r,bb.r);r++)for(let c=Math.min(aa.c,bb.c);c<=Math.max(aa.c,bb.c);c++)if(r<geo.rows&&c<geo.cols)ids.push(geo.ids[r][c]);
- return ids;
-}
-function renderPlateGrid(){
- const geo=plateGeometry(val('dose-plate-format'));
- let plan=null,error='';try{plan=allocatePlateWells(plateInputPreview());plateLastPreview=plan;}catch(e){error=e.message;plateLastPreview=null;}
- const selectedCount=plateSelection.size,selected=plateSelection;
- const cells=geo.ids.flat(),availableCount=selectedCount||cells.length;
- byId('plate-selection-info').textContent=selectedCount?`${selectedCount} wells selected · Ctrl/⌘-drag to add another region · ${geo.format}-well plate`:`All ${geo.format} wells available (no selection mask)`;
- const status=byId('plate-planning-status');status.textContent=error?'Preview: '+error:`${plan.totalWells} assigned / ${availableCount} available · ${plan.groups.length} groups · ${plan.unusedWells} unassigned`;status.classList.toggle('plate-error',!!error);
- const output=byId('plate-grid');output.className='plate-grid '+(geo.cols>=24?'plate-tiny':geo.cols>=12?'plate-compact':'plate-normal');output.style.setProperty('--plate-columns',geo.cols);
- const top=`<span class="plate-corner"></span>${Array.from({length:geo.cols},(_,c)=>`<span class="plate-column">${c+1}</span>`).join('')}`;
- const body=geo.ids.map((row,r)=>`<span class="plate-row-label">${String.fromCharCode(65+r)}</span>`+row.map(id=>{
-  const assigned=plan?.assignments[id],isSelected=selected.has(id),isExcluded=selectedCount>0&&!isSelected;
-  let lines='';let title=`Well ${id}`;
-  if(assigned){title+=` | ${assigned.labels.map(l=>`${l.name}: ${l.text}`).join(' | ')}`;
-   lines=assigned.labels.map((l,i)=>`<span class="well-factor well-factor-${Math.min(i+1,4)}">${escapeHTML(l.text)}</span>`).join('');}
-  return `<button type="button" class="plate-well ${assigned?`plate-assigned plate-hue-${assigned.groupIndex%8}`:''} ${isSelected?'plate-picked':''} ${isExcluded?'plate-excluded':''}" data-plate-well="${id}" role="gridcell" aria-label="${escapeHTML(title)}" aria-selected="${isSelected}" title="${escapeHTML(title)}"><span class="plate-well-code">${id}</span>${lines}</button>`;
- }).join('')).join('');output.innerHTML=top+body;
-}
-function beginPlateDrag(event){const target=event.target.closest('[data-plate-well]');if(!target||event.button!==0)return;
- event.preventDefault();const geo=plateGeometry(val('dose-plate-format')),origin=target.dataset.plateWell;
- plateDrag={origin,current:origin,geo,additive:event.ctrlKey||event.metaKey,original:new Set(plateSelection),moved:false};
- updatePlateDrag(origin);
-}
-function updatePlateDrag(id){if(!plateDrag)return;if(id!==plateDrag.origin)plateDrag.moved=true;plateDrag.current=id;
- const area=plateArea(plateDrag.origin,id,plateDrag.geo);
- plateSelection=plateDrag.additive?new Set([...plateDrag.original,...area]):new Set(area);
- renderPlateGrid();
-}
-function movePlateDrag(event){if(!plateDrag)return;const element=document.elementFromPoint(event.clientX,event.clientY),cell=element?.closest?.('[data-plate-well]');if(cell&&cell.dataset.plateWell!==plateDrag.current)updatePlateDrag(cell.dataset.plateWell);}
-function endPlateDrag(){if(!plateDrag)return;
- if(plateDrag.additive&&!plateDrag.moved&&plateDrag.original.has(plateDrag.origin))plateSelection.delete(plateDrag.origin);
- plateDrag=null;renderPlateGrid();
-}
-function resetPlateSelection(){plateSelection.clear();renderPlateGrid();}
-function updateFactorPriorities(changed){const previous=platePriorities.slice(),position=Number(changed.id.slice(-1))-1,requested=changed.value;
- const current=previous[position];if(current!==requested){const old=previous.indexOf(requested);if(old>=0)previous[old]=current;previous[position]=requested;}
- platePriorities=previous;platePriorities.forEach((id,i)=>setVal('dose-label-priority'+(i+1),id));renderPlateGrid();
-}
-function plateMapToNote(layout){
- if(!layout)return '';
- let text=`\nPLATE MAP (${layout.format}-well; ${layout.totalWells} assigned; ${layout.unusedWells} unused)\n`;
- text+=`Selected mask: ${layout.selectedWells.length?layout.selectedWells.join(', '):'none; all wells eligible'}\n`;
- text+=`Label priority: ${layout.factorOrder.join(' > ')}\n`;
- for(const g of layout.groups)text+=`${g.labels.map(l=>l.name+'='+l.text).join(' | ')} | ${g.wells.length} wells: ${g.wells.join(', ')}\n`;
- return text;
-}
-function plateResultHTML(layout){
- if(!layout)return '';
- return `<div class="result-section-title">Plate assignment · ${layout.format}-well plate</div><p class="tiny muted">${layout.totalWells} assigned wells across ${layout.groups.length} treatment groups; ${layout.unusedWells} unused eligible wells. Primary labels appear most prominently in the plate map above. These placements are stored with this calculation.</p><div class="table-scroll"><table class="data-table"><thead><tr><th>Group</th><th>Experimental factors (priority order)</th><th>Wells</th><th>Positions</th></tr></thead><tbody>${layout.groups.map((g,i)=>`<tr><td>${i+1}</td><td>${g.labels.map((l,j)=>`${j===0?'<strong>':''}${escapeHTML(l.name)}: ${escapeHTML(l.text)}${j===0?'</strong>':''}`).join('<br>')}</td><td>${g.wells.length}</td><td>${g.wells.map(escapeHTML).join(', ')}</td></tr>`).join('')}</tbody></table></div>`;
-}
-
+const DOSE_FIELDS=['dose-title','dose-chemical','dose-name','dose-stock','dose-stock-unit','dose-mw','dose-solvent','dose-targets','dose-target-unit','dose-wells','dose-well-volume','dose-volume-mode','dose-add','dose-minpip','dose-prep-volume','dose-overage','dose-max-prep','dose-strategy','dose-notes'];
 // Per-target replicate counts remain stable when the user edits or reorders doses.
 let doseWellCounts=Object.create(null);
 function targetValues(raw){return String(raw||'').split(/[\s,;]+/).filter(Boolean).map(Number).filter(n=>Number.isFinite(n)&&n>=0)}
@@ -277,17 +135,13 @@ function dosingInputs(){
  const values=Object.fromEntries(DOSE_FIELDS.map(k=>[k,val(k)]));
  const counts={...doseWellCounts};byId('dose-wells-list').querySelectorAll('[data-dose-well]').forEach(el=>counts[el.dataset.doseWell]=el.value);
  values['dose-wells-map']=JSON.stringify(counts);
- values['dose-plate-selected']=JSON.stringify([...plateSelection]);
  return values;
 }
 function applyDosingInputs(input){
  for(const k of DOSE_FIELDS)if(input[k]!==undefined)setVal(k,input[k]);
  doseWellCounts=Object.create(null);
  if(input['dose-wells-map'])try{const parsed=typeof input['dose-wells-map']==='string'?JSON.parse(input['dose-wells-map']):input['dose-wells-map'];if(parsed&&typeof parsed==='object'&&!Array.isArray(parsed))Object.assign(doseWellCounts,parsed)}catch(e){console.warn('Could not load per-condition wells',e)}
- plateSelection=new Set(plateSelectedFromInput(input,plateGeometry(val('dose-plate-format'))));
- platePriorities=FACTOR_IDS.map((id,i)=>val('dose-label-priority'+(i+1))||id);
- if(new Set(platePriorities).size!==4){platePriorities=FACTOR_IDS.slice();platePriorities.forEach((id,i)=>setVal('dose-label-priority'+(i+1),id));}
- renderDoseWellInputs();renderPlateGrid();
+ renderDoseWellInputs();
 }
 
 function applyDoseChemical(){const x=getChem(val('dose-chemical'));if(!x)return;setVal('dose-name',x.name);setVal('dose-stock',x.stock||'');if(x.stockUnit)setVal('dose-stock-unit',x.stockUnit);setVal('dose-solvent',x.solvent||'');setVal('dose-mw',x.mw||'')}
@@ -357,23 +211,22 @@ function calculateDosing(input){
  const stockInTargetUnit=convertConc(stock,stockUnit,targetUnit,mw),solvent=input['dose-solvent']||'stock solvent';
  // Each concentration can have different replicates. Prepare enough for all wells,
  // one extra handling well, and the separately configured percentage overage.
- const plateLayout=allocatePlateWells(input);
- const requirements=new Map(values.map(v=>[v,{wells:wellsFor(v)*plateLayout.multiplier,extraWells:plateLayout.multiplier}]));
+ const requirements=new Map(values.map(v=>[v,{wells:wellsFor(v),extraWells:1}]));
  for(const v of values){
   const req=requirements.get(v);
   req.requiredVolume=dose*(req.wells+req.extraWells)*(1+over/100);
   req.basePrep=Math.max(minPrep,req.requiredVolume);
-  if(v!==0&&req.basePrep>maxPrep+1e-9)throw Error(`${fmt(v)} ${targetUnit}: maximum intermediate prep must be at least ${fmt(req.basePrep)} µL to cover ${req.wells} wells + ${req.extraWells} extra well(s) and ${fmt(over)}% overage. Increase the maximum prep limit.`);
+  if(v!==0&&req.basePrep>maxPrep+1e-9)throw Error(`${fmt(v)} ${targetUnit}: maximum intermediate prep must be at least ${fmt(req.basePrep)} µL to cover ${req.wells} wells + 1 extra well and ${fmt(over)}% overage. Increase the maximum prep limit.`);
  }
  if(minPrep<minPip*1.00001)throw Error('Minimum intermediate preparation volume must be at least as large as the minimum pipetting volume.');
  const basePrep=minPrep;
  const active=[],conditions=[];
  for(const v of values){
-  if(v===0){const req=requirements.get(v);conditions.push({target:0,intermediate:0,steps:[],vehicle:true,prepVolume:req.requiredVolume,requiredVolume:req.requiredVolume,wells:req.wells,extraWells:req.extraWells});continue}
+  if(v===0){const req=requirements.get(v);conditions.push({target:0,intermediate:0,steps:[],vehicle:true,prepVolume:req.requiredVolume,requiredVolume:req.requiredVolume,wells:req.wells,extraWells:1});continue}
   const ci=v*totalVol/dose;
   if(ci>stockInTargetUnit*(1+1e-9))throw Error(`${fmt(v)} ${targetUnit} needs an intermediate at ${fmt(ci)} ${targetUnit}, greater than the available stock (${fmt(stockInTargetUnit)} ${targetUnit}). Increase dose volume or use a more concentrated stock.`);
   const req=requirements.get(v),direct=buildDirectIntermediate(ci,req.basePrep,stockInTargetUnit,minPip,maxPrep,strategy==='smallest');
-  const c={target:v,intermediate:ci,steps:direct.steps,vehicle:false,prepVolume:direct.prepVolume,requiredVolume:req.requiredVolume,wells:req.wells,extraWells:req.extraWells,basePrep:req.basePrep,parentTarget:null};
+  const c={target:v,intermediate:ci,steps:direct.steps,vehicle:false,prepVolume:direct.prepVolume,requiredVolume:req.requiredVolume,wells:req.wells,extraWells:1,basePrep:req.basePrep,parentTarget:null};
   active.push(c);conditions.push(c);
  }
  if(strategy==='shared'){
@@ -431,7 +284,7 @@ function calculateDosing(input){
  if(conditions.some(c=>!c.vehicle&&c.prepVolume>c.basePrep+1e-9))warns.push('Some preparations use more than the minimum volume to meet pipetting requirements or supply downstream dilutions.');
  if(conditions.some(c=>!c.vehicle&&c.steps.some(s=>s.transfer<=minPip*(1+1e-8))))warns.push(`One or more transfers are at the configured minimum (${fmt(minPip)} µL); consider a higher threshold for improved accuracy.`);
  const operations=active.reduce((a,c)=>a+c.steps.length,0);
- return {stockInTargetUnit,stockValue:stock,totalVol,mediumBefore:input['dose-volume-mode']==='final'?mediumVol-dose:mediumVol,vehiclePercent,solvent,conditions,prepVol:basePrep,maxPrep,strategy,wells:conditions.every(c=>c.wells===conditions[0].wells)?conditions[0].wells:null,over,warnings:warns,minPip,targetUnit,stockUnit,operations,sharedCount:active.filter(c=>c.parentTarget!==null).length,plate:plateLayout};
+ return {stockInTargetUnit,stockValue:stock,totalVol,mediumBefore:input['dose-volume-mode']==='final'?mediumVol-dose:mediumVol,vehiclePercent,solvent,conditions,prepVol:basePrep,maxPrep,strategy,wells:conditions.every(c=>c.wells===conditions[0].wells)?conditions[0].wells:null,over,warnings:warns,minPip,targetUnit,stockUnit,operations,sharedCount:active.filter(c=>c.parentTarget!==null).length};
 }
 function dosingSourceName(step,r){
  if(step.sourceType==='shared')return `${fmt(step.from)} ${r.targetUnit} intermediate`;
@@ -441,18 +294,17 @@ function dosingSourceName(step,r){
 function treatmentNote(rec){
  const inp=rec.input,r=rec.result;
  const strat={shared:'Shared intermediates',fewest:'Independent preparations (fewest steps)',smallest:'Independent preparations (smallest volume)'};
- let t=`[LAB EXPERIMENTAL DOSING PLAN]\nCalculated: ${dt(rec.timestamp)}\nExperiment: ${rec.name}\nChemical: ${rec.chemicalName}\n${rec.catalog?'Catalog: '+rec.catalog+'\n':''}${rec.lot?'Lot: '+rec.lot+'\n':''}Starting stock: ${inp['dose-stock']} ${inp['dose-stock-unit']} in ${r.solvent}\nPreparation method: ${strat[r.strategy]||'Previously saved plan'}\nFinal targets (high to low): ${r.conditions.map(c=>fmt(c.target)).join(', ')} ${r.targetUnit}\nWells by target: ${r.conditions.map(c=>`${fmt(c.target)} ${r.targetUnit} = ${c.wells??r.wells??1}`).join('; ')}\nPreparation includes 1 extra well per factor combination (${r.plate?.multiplier||1} per dose) plus ${fmt(r.over)}% optional intermediate overage.\nMedium before dosing: ${fmt(r.mediumBefore)} µL per well\nAdd per well: ${fmt(Number(inp['dose-add']))} µL of intermediate or vehicle\nFinal volume: ${fmt(r.totalVol)} µL per well\nCalculated vehicle: ${fmt(r.vehiclePercent)}% v/v if all solutions are in ${r.solvent}\nMinimum prep: ${fmt(r.prepVol)} µL; maximum prep: ${fmt(r.maxPrep)} µL\nOverage: ${fmt(r.over)}%; pipetting minimum: ${fmt(r.minPip)} µL\n\nTREATMENT CONDITIONS / ORDER OF PREPARATION\n`;
+ let t=`[LAB EXPERIMENTAL DOSING PLAN]\nCalculated: ${dt(rec.timestamp)}\nExperiment: ${rec.name}\nChemical: ${rec.chemicalName}\n${rec.catalog?'Catalog: '+rec.catalog+'\n':''}${rec.lot?'Lot: '+rec.lot+'\n':''}Starting stock: ${inp['dose-stock']} ${inp['dose-stock-unit']} in ${r.solvent}\nPreparation method: ${strat[r.strategy]||'Previously saved plan'}\nFinal targets (high to low): ${r.conditions.map(c=>fmt(c.target)).join(', ')} ${r.targetUnit}\nWells by target: ${r.conditions.map(c=>`${fmt(c.target)} ${r.targetUnit} = ${c.wells??r.wells??1}`).join('; ')}\nPreparation includes 1 extra well per condition plus ${fmt(r.over)}% optional intermediate overage.\nMedium before dosing: ${fmt(r.mediumBefore)} µL per well\nAdd per well: ${fmt(Number(inp['dose-add']))} µL of intermediate or vehicle\nFinal volume: ${fmt(r.totalVol)} µL per well\nCalculated vehicle: ${fmt(r.vehiclePercent)}% v/v if all solutions are in ${r.solvent}\nMinimum prep: ${fmt(r.prepVol)} µL; maximum prep: ${fmt(r.maxPrep)} µL\nOverage: ${fmt(r.over)}%; pipetting minimum: ${fmt(r.minPip)} µL\n\nTREATMENT CONDITIONS / ORDER OF PREPARATION\n`;
  for(const c of r.conditions){
   t+=`\n${fmt(c.target)} ${r.targetUnit}: `;
-  const actual=c.wells??r.wells??1,extra=actual+(c.extraWells||1),amount=Number(inp['dose-add']);
+  const actual=c.wells??r.wells??1,extra=actual+1,amount=Number(inp['dose-add']);
   t+=`${actual} wells: ${fmt(actual*amount)} µL ${c.vehicle?'vehicle':'treatment'} + ${fmt(actual*r.mediumBefore)} µL medium (${fmt(actual*r.totalVol)} µL final).\n`;
-  t+=`  With ${c.extraWells||1} extra well(s) (${extra} wells): ${fmt(extra*amount)} µL ${c.vehicle?'vehicle':'treatment'} + ${fmt(extra*r.mediumBefore)} µL medium (${fmt(extra*r.totalVol)} µL final).\n`;
+  t+=`  With 1 extra well (${extra} wells): ${fmt(extra*amount)} µL ${c.vehicle?'vehicle':'treatment'} + ${fmt(extra*r.mediumBefore)} µL medium (${fmt(extra*r.totalVol)} µL final).\n`;
   if(c.vehicle){t+=`  vehicle control — use pure ${r.solvent}; ${fmt(amount)} µL/well.\n`;continue}
   t+=`  prepare ${fmt(c.prepVolume??r.prepVol)} µL of ${fmt(c.intermediate)} ${r.targetUnit}; add ${fmt(amount)} µL/well. Intermediate preparation includes handling reserve and ${fmt(r.over)}% overage.\n`;
   if(!c.steps.length)t+=`  Use starting stock directly (no dilution).\n`;
   else for(const s of c.steps)t+=`  ${c.steps.length===1?'Dilute':`Stage ${s.stage}`}: ${fmt(s.transfer)} µL ${dosingSourceName(s,r)} + ${fmt(s.solvent)} µL ${r.solvent} → ${fmt(s.volume)} µL at ${fmt(s.to)} ${r.targetUnit} (${dilutionLabel(s.from,s.to)}).\n`;
  }
- t+=plateMapToNote(r.plate);
  if(inp['dose-notes'])t+=`\nExperiment notes: ${inp['dose-notes']}\n`;
  if(r.warnings.length)t+='\nCHECKS / WARNINGS\n'+r.warnings.map(s=>'- '+s).join('\n')+'\n';
  t+='\nVerify compound solubility and stability, downstream material availability, and pipette suitability.\n';return t;
@@ -463,24 +315,24 @@ function renderDosingResult(rec){
  const choices=[['shared','Shared intermediates'],['fewest','Independent / fewest steps'],['smallest','Independent / smallest volume']];
  const switcher=`<div class="strategy-switch"><div class="result-section-title">Preparation strategy</div><div class="strategy-buttons" role="group" aria-label="Intermediate preparation strategy">${choices.map(([value,label])=>`<button type="button" class="btn small ${r.strategy===value?'selected':''}" data-dose-plan="${value}" aria-pressed="${r.strategy===value}">${label}</button>`).join('')}</div><div class="tiny muted">Choose another strategy to recalculate and save a separate dated plan. Shared mode uses prepared higher-concentration intermediates when advantageous.</div></div>`;
  const rows=r.conditions.map(c=>{
-  const nw=c.wells??r.wells??1,extra=c.extraWells||1;
+  const nw=c.wells??r.wells??1;
   const formatMix=count=>`${fmt(count*Number(rec.input['dose-add']))} µL <span class="muted">${c.vehicle?'vehicle':'treatment'} +</span> ${fmt(count*r.mediumBefore)} µL <span class="muted">medium</span><div class="tiny muted">${fmt(count*r.totalVol)} µL final</div>`;
   let source='—',fold='—',recipe='—';
   if(c.vehicle){source=`${solvent} only`;recipe=`${dose} µL vehicle/well`;}
   else if(!c.steps.length){source='Starting stock';fold='No dilution';recipe='Use stock directly';}
   else if(c.steps.length>1){source='Multi-stage';fold=`${c.steps.length} stages`;recipe='See recipes below ↓';}
   else{const st=c.steps[0];source=st.sourceType==='shared'?`${fmt(st.from)} ${unit} intermediate`:`Stock (${fmt(r.stockValue??rec.input['dose-stock'])} ${escapeHTML(r.stockUnit)})`;fold=dilutionLabel(st.from,st.to);recipe=`<strong>${fmt(st.transfer)} µL</strong> + ${fmt(st.solvent)} µL ${solvent}`;}
-  return `<tr><td><strong>${fmt(c.target)} ${unit}</strong></td><td>${c.vehicle?'Vehicle only':fmt(c.intermediate)+' '+unit}</td><td>${source}</td><td>${fold}</td><td>${recipe}</td><td>${c.vehicle?'—':fmt(c.prepVolume??r.prepVol)+' µL'}</td><td>${dose} µL</td><td><strong>${nw}</strong></td><td class="mix-cell">${formatMix(nw)}</td><td class="mix-cell">${formatMix(nw+extra)}</td></tr>`;
+  return `<tr><td><strong>${fmt(c.target)} ${unit}</strong></td><td>${c.vehicle?'Vehicle only':fmt(c.intermediate)+' '+unit}</td><td>${source}</td><td>${fold}</td><td>${recipe}</td><td>${c.vehicle?'—':fmt(c.prepVolume??r.prepVol)+' µL'}</td><td>${dose} µL</td><td><strong>${nw}</strong></td><td class="mix-cell">${formatMix(nw)}</td><td class="mix-cell">${formatMix(nw+1)}</td></tr>`;
  }).join('');
  const details=r.conditions.map(c=>{
   const label=`<div class="result-section-title">${fmt(c.target)} ${unit}${c.vehicle?' · vehicle control':''}</div>`;
-  if(c.vehicle)return label+`<p class="tiny">${c.wells??r.wells??1} treatment wells + ${c.extraWells||1} handling well(s). Add ${dose} µL pure ${solvent} per well. Prepare enough for replicate pipetting.</p>`;
+  if(c.vehicle)return label+`<p class="tiny">${c.wells??r.wells??1} treatment wells + 1 handling well. Add ${dose} µL pure ${solvent} per well. Prepare enough for replicate pipetting.</p>`;
   if(!c.steps.length)return label+`<p class="tiny">Use starting stock without predilution. Add ${dose} µL per well.</p>`;
-  return label+`<p class="tiny">${c.wells??r.wells??1} treatment wells + ${c.extraWells||1} handling well(s). Prepare ${fmt(c.prepVolume??r.prepVol)} µL of ${fmt(c.intermediate)} ${unit}${c.parentTarget!==null&&c.parentTarget!==undefined?` from the previously prepared ${fmt(c.steps[0].from)} ${unit} intermediate`:''}.</p><ol class="steps">${c.steps.map(st=>`<li><strong>${c.steps.length===1?'Dilute':`Stage ${st.stage}`} (${dilutionLabel(st.from,st.to)}):</strong> ${fmt(st.transfer)} µL ${escapeHTML(dosingSourceName(st,r))} + ${fmt(st.solvent)} µL ${solvent} → ${fmt(st.volume)} µL of ${fmt(st.to)} ${unit}.</li>`).join('')}</ol>`;
+  return label+`<p class="tiny">${c.wells??r.wells??1} treatment wells + 1 handling well. Prepare ${fmt(c.prepVolume??r.prepVol)} µL of ${fmt(c.intermediate)} ${unit}${c.parentTarget!==null&&c.parentTarget!==undefined?` from the previously prepared ${fmt(c.steps[0].from)} ${unit} intermediate`:''}.</p><ol class="steps">${c.steps.map(st=>`<li><strong>${c.steps.length===1?'Dilute':`Stage ${st.stage}`} (${dilutionLabel(st.from,st.to)}):</strong> ${fmt(st.transfer)} µL ${escapeHTML(dosingSourceName(st,r))} + ${fmt(st.solvent)} µL ${solvent} → ${fmt(st.volume)} µL of ${fmt(st.to)} ${unit}.</li>`).join('')}</ol>`;
  }).join('');
  const numberOfOps=r.operations??r.conditions.reduce((a,c)=>a+c.steps.length,0),numberOfShared=r.sharedCount??r.conditions.filter(c=>c.parentTarget!==null&&c.parentTarget!==undefined).length;
  byId('dose-result').className='';
- byId('dose-result').innerHTML=`<div class="result-highlight"><label>FIXED DOSE / VEHICLE PLAN</label><strong>${dose} µL per well</strong><div class="result-sub">${fmt(r.mediumBefore)} µL medium + ${dose} µL treatment = ${fmt(r.totalVol)} µL final. Vehicle: ${fmt(r.vehiclePercent)}% v/v (if homogeneous solvent).</div></div>${switcher}<div class="result-section-title">Condition summary · highest dose first</div><div class="table-scroll"><table class="data-table dose-summary"><thead><tr><th>Final target</th><th>Intermediate</th><th>Prepare from</th><th>Dilution</th><th>Recipe (source + diluent)</th><th>Prep</th><th>Add/well</th><th># wells</th><th>For actual wells</th><th>Including +1 / combination</th></tr></thead><tbody>${rows}</tbody></table></div><div class="small-note">${r.conditions.filter(c=>!c.vehicle).length} working concentrations · ${numberOfOps} preparation operation${numberOfOps===1?'':'s'} · ${numberOfShared} reused intermediate${numberOfShared===1?'':'s'}. Minimum ${fmt(r.prepVol)} µL/preparation; downstream withdrawals are included where intermediates are shared. One extra well per factor combination is included when estimating intermediate requirements, followed by ${fmt(r.over)}% optional overage. Solutions and vehicle should use the same solvent.</div>${r.warnings.map(w=>`<div class="small-note warning">${escapeHTML(w)}</div>`).join('')}<div class="result-section-title">Intermediate preparation recipes · highest first</div>${details}${plateResultHTML(r.plate)}<div class="result-section-title">Copy-ready note</div><div class="doc-preview">${escapeHTML(treatmentNote(rec))}</div>`;
+ byId('dose-result').innerHTML=`<div class="result-highlight"><label>FIXED DOSE / VEHICLE PLAN</label><strong>${dose} µL per well</strong><div class="result-sub">${fmt(r.mediumBefore)} µL medium + ${dose} µL treatment = ${fmt(r.totalVol)} µL final. Vehicle: ${fmt(r.vehiclePercent)}% v/v (if homogeneous solvent).</div></div>${switcher}<div class="result-section-title">Condition summary · highest dose first</div><div class="table-scroll"><table class="data-table dose-summary"><thead><tr><th>Final target</th><th>Intermediate</th><th>Prepare from</th><th>Dilution</th><th>Recipe (source + diluent)</th><th>Prep</th><th>Add/well</th><th># wells</th><th>For actual wells</th><th>Including +1 well</th></tr></thead><tbody>${rows}</tbody></table></div><div class="small-note">${r.conditions.filter(c=>!c.vehicle).length} working concentrations · ${numberOfOps} preparation operation${numberOfOps===1?'':'s'} · ${numberOfShared} reused intermediate${numberOfShared===1?'':'s'}. Minimum ${fmt(r.prepVol)} µL/preparation; downstream withdrawals are included where intermediates are shared. One additional well per condition is included when estimating intermediate requirements, followed by ${fmt(r.over)}% optional overage. Solutions and vehicle should use the same solvent.</div>${r.warnings.map(w=>`<div class="small-note warning">${escapeHTML(w)}</div>`).join('')}<div class="result-section-title">Intermediate preparation recipes · highest first</div>${details}<div class="result-section-title">Copy-ready note</div><div class="doc-preview">${escapeHTML(treatmentNote(rec))}</div>`;
  byId('dose-actions').classList.remove('hidden');byId('dose-status').className='tag success';byId('dose-status').textContent='SAVED';
 }
 function saveTemplate(){if(!latestDose)return;const label=prompt('Name this reusable dosing template:',latestDose.name);if(label===null)return;if(!clean(label))return toast('Template name cannot be empty.',true);db.templates.unshift({id:uid(),name:clean(label),createdAt:isoNow(),inputs:{...latestDose.input}});store();toast('Dosing template saved. Open Templates to reuse it.')}
@@ -523,21 +375,10 @@ function init(){
  byId('save-prep-stock').addEventListener('click',stockFromPrep);
  byId('download-prep').addEventListener('click',()=>latestPrep&&downloadRecord(latestPrep));
  byId('dose-chemical').addEventListener('change',applyDoseChemical);
- byId('dose-targets').addEventListener('input',()=>{renderDoseWellInputs();renderPlateGrid()});
- byId('dose-target-unit').addEventListener('change',()=>{renderDoseWellInputs();renderPlateGrid()});
- byId('dose-wells-list').addEventListener('input',e=>{if(e.target.matches('[data-dose-well]'))doseWellCounts[e.target.dataset.doseWell]=e.target.value;renderPlateGrid();});
+ byId('dose-targets').addEventListener('input',renderDoseWellInputs);
+ byId('dose-target-unit').addEventListener('change',renderDoseWellInputs);
+ byId('dose-wells-list').addEventListener('input',e=>{if(e.target.matches('[data-dose-well]'))doseWellCounts[e.target.dataset.doseWell]=e.target.value;});
  renderDoseWellInputs();
- byId('dose-plate-format').addEventListener('change',()=>{plateSelection.clear();renderPlateGrid();});
- byId('plate-select-all').addEventListener('click',()=>{plateSelection=new Set(plateGeometry(val('dose-plate-format')).ids.flat());renderPlateGrid();});
- byId('plate-clear-selection').addEventListener('click',resetPlateSelection);
- byId('plate-grid').addEventListener('pointerdown',beginPlateDrag);
- window.addEventListener('pointermove',movePlateDrag);
- window.addEventListener('pointerup',endPlateDrag);
- window.addEventListener('pointercancel',endPlateDrag);
- byId('plate-grid').addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-plate-well]')){e.preventDefault();const id=e.target.dataset.plateWell;if(e.ctrlKey||e.metaKey){plateSelection.has(id)?plateSelection.delete(id):plateSelection.add(id);}else plateSelection=new Set([id]);renderPlateGrid();}});
- for(const id of ['dose-density-values','dose-density-unit','dose-factor3-name','dose-factor3-values','dose-factor4-name','dose-factor4-values'])byId(id).addEventListener('input',renderPlateGrid);
- for(let i=1;i<=4;i++)byId('dose-label-priority'+i).addEventListener('change',e=>updateFactorPriorities(e.target));
- renderPlateGrid();
  byId('calculate-dose').addEventListener('click',calculateDose);
  byId('dose-result').addEventListener('click',e=>{const btn=e.target.closest('[data-dose-plan]');if(!btn)return;if(btn.dataset.dosePlan===val('dose-strategy'))return;setVal('dose-strategy',btn.dataset.dosePlan);calculateDose();});
  byId('copy-dose').addEventListener('click',()=>latestDose&&copyText(treatmentNote(latestDose)));
@@ -550,5 +391,5 @@ function init(){
  byId('template-list').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.templateload)loadTemplate(b.dataset.templateload);if(b.dataset.templatedelete&&confirm('Delete this template?')){db.templates=db.templates.filter(x=>x.id!==b.dataset.templatedelete);store();renderTemplates()}});
  byId('export-backup-top').addEventListener('click',exportBackup);byId('backup-export').addEventListener('click',exportBackup);byId('backup-import').addEventListener('change',e=>importBackup(e.target.files[0]));
 }
-window.LabChemMath={computePrep,calculateDosing,convertConc,massMg,toML,fmt,allocatePlateWells,plateGeometry,factorSpec};
+window.LabChemMath={computePrep,calculateDosing,convertConc,massMg,toML,fmt};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
