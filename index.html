@@ -5,10 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="Local-first laboratory chemical preparation, dosing calculator and digital lab note records." />
   <title>Lab Chemical Manager</title>
-  <link rel="stylesheet" href="styles.css?v=plate-grid-20261019-2" />
+  <link rel="stylesheet" href="styles.css?v=plate-batch-20261019" />
   <script src="app.js" defer></script>
-  <script src="plate.js?v=plate-grid-20261019-2" defer></script>
-
+  <script src="plate.js?v=plate-batch-20261019" defer></script>
 </head>
 <body>
   <div class="app-shell">
@@ -49,8 +48,8 @@
             </div>
             <p class="tiny muted plate-instructions"><strong>Select mode:</strong> drag to select a rectangle; Ctrl/⌘ + drag to add areas; Alt + drag to subtract. <strong>Move labels:</strong> switch modes and drag a label to move or swap it. Shift + drag a label also moves it in Select mode. Double-click a well to edit its text.</p>
             <div id="pl-selection-count" class="plate-counter" aria-live="polite">All wells available</div>
-            <div class="plate-grid-scroll"><div id="pl-grid" class="simple-plate-grid" role="grid" aria-label="Well plate layout"></div></div>
-            <div class="plate-legend-plain">White = available · Gray-blue = selected · Light blue = assigned · Labels remain editable</div>
+            <div class="action-row plate-grid-actions"><button class="btn" id="pl-copy-table">Copy plate table</button><span class="tiny muted">Formatted table for OneNote, including row and column notes</span></div><div class="plate-grid-scroll"><div id="pl-grid" class="simple-plate-grid" role="grid" aria-label="Well plate layout"></div></div>
+            <div class="plate-legend-plain">Empty = available · Gray = manually selected · Labeled = assigned · The plate stays editable after generating</div>
           </div>
           <div class="plate-panels">
             <div class="panel">
@@ -60,7 +59,8 @@
               <div class="action-row"><button class="btn small" id="pl-preview">Update condition counts</button></div>
             </div>
             <div class="panel">
-              <h3>Conditions and replicates</h3><p class="tiny muted">Each row is a combination of factor values. Replicates default to 1 and can be edited separately. Conditions are grouped into consecutive wells when possible.</p>
+              <div class="plate-heading-plain"><h3>Conditions and replicates</h3><button class="btn small" id="pl-copy-conditions">Copy condition table</button></div><p class="tiny muted">Set replicates in batches, or select particular rows and change them together. Individual counts remain editable.</p>
+              <div class="plate-batch"><label class="field"><span>Replicates</span><input id="pl-batch-count" type="number" min="1" max="384" step="1" value="3" /></label><label class="field"><span>Apply to</span><select id="pl-batch-scope"><option value="all">All conditions</option><option value="checked">Checked rows</option><option value="factor">Matching factor value</option></select></label><label class="field hidden" id="pl-batch-factor-wrap"><span>Factor value</span><select id="pl-batch-factor"></select></label><button class="btn btn-primary" id="pl-batch-apply">Apply</button></div>
               <div id="pl-combos" class="plate-combos"></div>
               <button class="btn btn-primary" id="pl-generate">Generate / replace well labels</button>
               <p class="tiny muted" id="pl-layout-status" aria-live="polite"></p>
@@ -87,6 +87,5 @@
       <div id="toast" class="toast" role="status" aria-live="polite"></div>
     </main>
   </div>
-
 </body>
 </html>
