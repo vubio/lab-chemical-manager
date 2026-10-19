@@ -81,3 +81,11 @@ A label grid is **not randomization**. Review biological replicates, plate-edge 
 - **Transpose current map:** swaps the axes of assigned wells and explicitly selected wells if the transposed bounding area fits the current plate. The action leaves the map unchanged if it would overflow. Axis notes stay attached to the physical row and column labels.
 - **Copy plate table / Copy plate note:** HTML clipboard table with bold larger primary-factor values, subdued smaller secondary text, and finer tertiary labels. Falls back to plain text when the rich clipboard is unavailable.
 - Row and column notes remain editable and persistent in saved layouts, backups, and TSV exports.
+
+## Plate-reader matching and analysis export
+
+On **Plate Layout**, click **Match reader values** after labeling the experimental wells. Copy the raw reader grid from Excel, a CSV file, or your reader software and paste the complete grid in the dialog. For a standard 96-well plate, this is 8 rows × 12 columns (A–H, 1–12). A full-length single row or column can also be matched; optional row/column headers are recognized. Use the alternate orientation selector when the source grid is 12 × 8 instead.
+
+**Match values** pairs each numeric reading with the label currently assigned to that **physical well** (including manually moved labels) and assigns replicate numbers within each factor combination in plate order. Measurements in unlabeled wells are excluded from the statistical table but retained in a raw-grid export. Missing readings and unmapped wells are reported before export.
+
+Available output formats are **Long (jamovi/Python)**, **Long + Well**, **Prism grouped** (for two factors), **Wide (conditions as columns)**, and **Plate matrix (raw readings)**. You can copy the matched table or download **CSV** and **XLSX**. Excel export includes the selected format, a long-data sheet, a plate-readings sheet, and metadata where applicable. The exporter works entirely in your browser—there is no server upload. Verify orientation and the matched-well summary before using results for analysis.
