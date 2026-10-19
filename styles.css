@@ -107,3 +107,15 @@
 .plate-placement-controls select,.plate-placement-controls .btn{border-radius:0}
 .plate-placement-controls .tiny{max-width:330px;line-height:1.4}
 @media(max-width:540px){.simple-plate-grid{grid-template-columns:86px repeat(var(--plate-cols),90px)}.pl-axis-header{padding:5px}}
+
+/* Factor label colors — readable on white paper, no colored cell backgrounds. */
+.pl-well .pl-primary{color:#A41E22;font-weight:700}
+.pl-well .pl-secondary{color:#1E5196;font-weight:600}
+.pl-well .pl-tertiary{color:#216A45;font-weight:400;font-style:italic}
+.pl-well .pl-quaternary{display:block;max-width:100%;overflow-wrap:anywhere;word-break:break-word;color:#68428B;font-size:10px;line-height:1.2;font-weight:400;font-style:italic}
+.pl-factor-legend{font:11px/1.5 Arial,Helvetica,sans-serif;margin:8px 0 11px;padding:0;background:#fff;color:#374151}
+.pl-factor-legend>div{font-size:12px!important}
+.plate-factor-row:nth-child(1) .pl-number{color:#A41E22}
+.plate-factor-row:nth-child(2) .pl-number{color:#1E5196}
+.plate-factor-row:nth-child(3) .pl-number{color:#216A45}
+.plate-factor-row:nth-child(4) .pl-number{color:#68428B}
