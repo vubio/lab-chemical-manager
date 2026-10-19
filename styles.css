@@ -120,32 +120,17 @@
 .plate-factor-row:nth-child(3) .pl-number{color:#216A45}
 .plate-factor-row:nth-child(4) .pl-number{color:#68428B}
 
-/* Plate viewport fit: full-width 96-well map, scroll on narrow displays */
-@media (min-width: 1000px) {
-  .content:has(#page-plate.active) {
-    width: 100%;
-    max-width: none;
-    padding-left: clamp(16px, 2vw, 34px);
-    padding-right: clamp(16px, 2vw, 34px);
-  }
-}
-#page-plate .plate-grid-scroll {
-  width: 100%;
-  min-width: 0;
-  overflow-x: auto;
-}
-#page-plate .simple-plate-grid {
-  width: 100%;
-  min-width: 0;
-  grid-template-columns: minmax(80px, 96px) repeat(var(--plate-cols), minmax(65px, 1fr));
-  gap: 5px;
-}
-#page-plate .pl-well,
-#page-plate .pl-axis-header {
-  min-width: 0;
-}
-@media (max-width: 999px) {
-  #page-plate .simple-plate-grid {
-    grid-template-columns: 82px repeat(var(--plate-cols), minmax(82px, 1fr));
-  }
-}
+/* Live move preview: high-contrast but restrained lab plate interaction. */
+#page-plate .pl-well.pl-selected{border:2px solid #156a5e;outline:2px solid #156a5e;outline-offset:-3px;background:#d0ede7;position:relative;z-index:1}
+#page-plate .pl-well.pl-assigned.pl-selected{background:#d0ede7}
+#page-plate .pl-well.pl-move-origin:not(.pl-drop-target){outline:2px dashed #99702b;outline-offset:-3px;background:#fff8e8}
+#page-plate .pl-well.pl-drop-target{border:2px solid #13705e!important;outline:3px solid #13705e!important;outline-offset:-4px;background:#d0f0e6!important;z-index:2}
+#page-plate .pl-well.pl-ripple:not(.pl-drop-target){background:#fff2d8!important;border-color:#ac7727!important}
+#page-plate .pl-well.pl-drop-invalid{border:2px solid #b73538!important;outline:2px solid #b73538!important;background:#fde9e9!important}
+#page-plate .pl-selection-active{background:#d8eee8;color:#114e45;border-left:4px solid #156a5e;padding:7px 10px}
+.pl-drag-preview{padding:10px 12px;margin:8px 0;background:#e7f4ef;border:1px solid #278171;color:#114e45;font-size:12px;font-weight:700}
+.pl-drag-preview.pl-preview-error{background:#fceaea;border-color:#ca6262;color:#9d2626}
+.pl-drag-preview[hidden]{display:none!important}
+/* Keep preview space stable during pointer drag; avoid moving the grid under cursor. */
+#page-plate .pl-drag-preview{height:44px;min-height:44px;box-sizing:border-box;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+#page-plate .pl-drag-preview[hidden]{display:block!important;visibility:hidden;pointer-events:none}
