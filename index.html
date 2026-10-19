@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="Local-first laboratory chemical preparation, dosing calculator and digital lab note records." />
   <title>Lab Chemical Manager</title>
-  <link rel="stylesheet" href="styles.css?v=plate-batch-20261019" />
+  <link rel="stylesheet" href="styles.css?v=plate-v4-20261019" />
   <script src="app.js" defer></script>
-  <script src="plate.js?v=plate-batch-20261019" defer></script>
+  <script src="plate.js?v=plate-v4-20261019" defer></script>
 </head>
 <body>
   <div class="app-shell">
@@ -48,7 +48,7 @@
             </div>
             <p class="tiny muted plate-instructions"><strong>Select mode:</strong> drag to select a rectangle; Ctrl/⌘ + drag to add areas; Alt + drag to subtract. <strong>Move labels:</strong> switch modes and drag a label to move or swap it. Shift + drag a label also moves it in Select mode. Double-click a well to edit its text.</p>
             <div id="pl-selection-count" class="plate-counter" aria-live="polite">All wells available</div>
-            <div class="action-row plate-grid-actions"><button class="btn" id="pl-copy-table">Copy plate table</button><span class="tiny muted">Formatted table for OneNote, including row and column notes</span></div><div class="plate-grid-scroll"><div id="pl-grid" class="simple-plate-grid" role="grid" aria-label="Well plate layout"></div></div>
+            <div class="plate-placement-controls"><label class="field"><span>Auto-fill direction</span><select id="pl-fill-order"><option value="rows">Rows first (left → right, then down)</option><option value="columns">Columns first (top → bottom, then right)</option></select></label><button class="btn" id="pl-transpose" type="button" title="Swap the rows and columns of the current well map if the transposed pattern fits">Transpose current map</button><span class="tiny muted">Direction applies on Generate. Transpose rotates the existing assignment axes only if they fit the plate.</span></div><div class="action-row plate-grid-actions"><button class="btn" id="pl-copy-table">Copy plate table</button><span class="tiny muted">Formatted table for OneNote, including row and column notes</span></div><div class="plate-grid-scroll"><div id="pl-grid" class="simple-plate-grid" role="grid" aria-label="Well plate layout"></div></div>
             <div class="plate-legend-plain">Empty = available · Gray = manually selected · Labeled = assigned · The plate stays editable after generating</div>
           </div>
           <div class="plate-panels">
