@@ -45,3 +45,10 @@ Values are arithmetic assistance, **not a validated laboratory electronic notebo
 ## License
 
 MIT. No external runtime dependencies.
+
+## Per-condition wells and one extra well (October 2026)
+
+- The **Wells per condition** editor follows the entered target concentrations; every new target defaults to 1 well, but each can be independently changed. Edits survive concentration reordering and are included in saved templates and calculation history. Older templates with a single well count remain usable.
+- The dosing table now shows the actual well count, treatment/vehicle volume plus medium volume for those wells, and the equivalent recipe for **one extra well** (handling reserve). Medium totals honor the existing **Final volume** versus **Existing medium volume** selector.
+- Intermediate sufficiency is calculated separately per target from `(wells + 1) × dose per well × (1 + percent overage/100)` before accounting for withdrawals into shared downstream solutions. The +1-well reserve does not change the concentration of any solution.
+- Example with **500 µL final per well** and **1 µL dosing per well**: 3 wells require **3 µL treatment + 1497 µL medium = 1500 µL final**, and 3+1 wells require **4 µL treatment + 1996 µL medium = 2000 µL final**. In **Existing medium** mode, the corresponding recipes are **3 µL + 1500 µL medium** and **4 µL + 2000 µL medium**, yielding final volumes of 1503 and 2004 µL, respectively.
