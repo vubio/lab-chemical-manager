@@ -25,7 +25,7 @@ Open `index.html` in Chrome/Edge/Firefox, or upload **all three** files (`index.
 - By default, **volume per well is the final volume**, including the treatment addition. E.g., 500 µL per well with 1 µL of dosing solution means 499 µL medium + 1 µL treatment.
 - If **existing medium volume** is selected, e.g., existing 500 µL medium + 1 µL treatment, the calculated final total is 501 µL.
 - The method prepares each dose intermediate in the **same solvent as the stock**, with a fixed volume added per well, including the zero-dose vehicle-only control. Matching vehicle composition requires all intermediates to use only the same vehicle at identical composition; check precipitation and solution stability.
-- Each dilution step prefers transfers of at least 2 µL (or the configured minimum, if greater). This is not a guarantee of practical pipette precision or chemical solubility.
+- By default, the dosing planner prefers the fewest dilution steps and enlarges intermediate preparation volumes (up to the configured maximum, initially 500 µL) so each stock transfer meets the chosen minimum pipetting volume. Alternatively, choose **Smallest volume** to limit reagent use and permit more stages. For example, a 10 mM stock to 25 µM intermediate is a 1:400 dilution; at the default 0.5 µL pipetting minimum, it requires 200 µL total (0.5 µL stock + 199.5 µL solvent), not two serial steps. This is not a guarantee of practical pipette precision or chemical solubility.
 - The dosing planner models one chemical per plan. For multiple drugs or mixed vehicles, make separate plans and account for combined vehicles manually.
 
 ## Data/storage and responsible use
