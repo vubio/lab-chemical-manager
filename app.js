@@ -118,12 +118,19 @@ function stockFromPrep(){if(!latestPrep)return;const r=latestPrep.result;if(!r.s
  const entry={id:uid(),createdAt:isoNow(),updatedAt:isoNow(),name:latestPrep.name,maker:chem?.maker||'',catalog:latestPrep.catalog,lot:latestPrep.lot,cas:chem?.cas||'',mw:latestPrep.input['f-mw']||chem?.mw||'',stock:r.stockValue,stockUnit:r.stockUnit,solvent:r.solvent,storage:chem?.storage||'',prepdate:today(),expiry:'',notes:`Prepared: ${r.preparedVolume}. History record: ${latestPrep.id}`};db.chemicals.unshift(entry);store();renderChemicalOptions();toast('Prepared stock saved to Chemical library.')}
 
 /* ---- multi-condition dosing planner ---- */
-const DOSE_FIELDS=['dose-title','dose-chemical','dose-name','dose-stock','dose-stock-unit','dose-mw','dose-solvent','dose-targets','dose-target-unit','dose-wells','dose-well-volume','dose-volume-mode','dose-add','dose-minpip','dose-prep-volume','dose-overage','dose-notes'];
+const DOSE_FIELDS=['dose-title','dose-chemical','dose-name','dose-stock','dose-stock-unit','dose-mw','dose-solvent','dose-targets','dose-target-unit','dose-wells','dose-well-volume','dose-volume-mode','dose-add','dose-minpip','dose-prep-volume','dose-overage','dose-max-prep','dose-strategy','dose-notes'];
 function dosingInputs(){return Object.fromEntries(DOSE_FIELDS.map(k=>[k,val(k)]))}
 function applyDosingInputs(input){for(const k of DOSE_FIELDS)if(input[k]!==undefined)setVal(k,input[k]);}
 function applyDoseChemical(){const x=getChem(val('dose-chemical'));if(!x)return;setVal('dose-name',x.name);setVal('dose-stock',x.stock||'');if(x.stockUnit)setVal('dose-stock-unit',x.stockUnit);setVal('dose-solvent',x.solvent||'');setVal('dose-mw',x.mw||'')}
+function roundPrepVolume(v){
+ const quantum=v<=10?0.1:v<=100?1:10;
+ return Math.ceil((v-1e-10)/quantum)*quantum;
+}
 function calculateDosing(input){
  const n=k=>numeric(input[k],k),stock=n('dose-stock'),stockUnit=input['dose-stock-unit'],targetUnit=input['dose-target-unit'],mw=input['dose-mw']?n('dose-mw'):0,wells=n('dose-wells'),mediumVol=n('dose-well-volume'),dose=n('dose-add'),minPip=n('dose-minpip'),minPrep=n('dose-prep-volume'),over=numeric(input['dose-overage'],'Overage',true);
+ const strategy=input['dose-strategy']||'fewest';
+ const maxPrep=n(input['dose-max-prep']?'dose-max-prep':'dose-prep-volume');
+ if(!['fewest','smallest'].includes(strategy))throw Error('Unknown dilution strategy.');
  if(!Number.isInteger(wells))throw Error('Wells per condition must be a whole number.');
  if(over>200)throw Error('Overage must be 0–200%.');
  if(input['dose-volume-mode']==='final'&&dose>=mediumVol)throw Error('Fixed addition volume must be smaller than the desired final volume per well.');
@@ -135,13 +142,20 @@ function calculateDosing(input){
  const stockInTargetUnit=convertConc(stock,stockUnit,targetUnit,mw),solvent=input['dose-solvent']||'stock solvent';
  const requiredVolume=dose*wells*(1+over/100);const prepVol=Math.max(minPrep,requiredVolume);
  if(prepVol<minPip*1.00001)throw Error('Intermediate prep volume must be at least as large as the minimum pipetting volume.');
- const preferred=Math.max(minPip,2);const maxFold=prepVol/preferred;
+ if(maxPrep+1e-9<prepVol)throw Error('Maximum intermediate prep must be at least '+fmt(prepVol)+' µL.');
  const conditions=[];
  for(const v of values){
   if(v===0){conditions.push({target:0,intermediate:0,steps:[],vehicle:true,prepVolume:prepVol,requiredVolume});continue}
   const ci=v*totalVol/dose;if(ci>stockInTargetUnit*(1+1e-9))throw Error(`${fmt(v)} ${targetUnit} needs an intermediate at ${fmt(ci)} ${targetUnit}, greater than the available stock (${fmt(stockInTargetUnit)} ${targetUnit}). Increase dose volume or use a more concentrated stock.`);
-  let source=stockInTargetUnit,ratio=source/ci,steps=[];
-  if(ratio>1+1e-10){if(maxFold<=1+1e-10)throw Error('Increase the intermediate preparation volume or lower the preferred/minimum pipetting threshold.');let count=Math.max(1,Math.ceil(Math.log(ratio)/Math.log(maxFold)));if(count>15)throw Error('Dilution requires more than 15 stages. Consider a larger preparation volume or different dosing strategy.');
+  let source=stockInTargetUnit,ratio=source/ci,steps=[],conditionPrep=prepVol;
+  if(ratio>1+1e-10){
+   // Increase the preparation volume only when it eliminates unnecessary stages.
+   // Both stock and diluent transfers should satisfy the configured pipetting floor.
+   const requiredDirect=Math.max(ratio*minPip,ratio*minPip/(ratio-1));
+   const directVolume=requiredDirect<=prepVol*(1+1e-10)?prepVol:roundPrepVolume(requiredDirect);
+   if(strategy==='fewest'&&directVolume<=maxPrep+1e-9)conditionPrep=directVolume;
+   const maxFold=conditionPrep/minPip;
+   if(maxFold<=1+1e-10)throw Error('Increase the intermediate preparation volume or lower the preferred/minimum pipetting threshold.');let count=Math.max(1,Math.ceil(Math.log(ratio)/Math.log(maxFold)-1e-12));if(count>15)throw Error('Dilution requires more than 15 stages. Consider a larger preparation volume or different dosing strategy.');
    let remainingRatio=ratio;
    // Prefer practical, easy-to-pipette intermediate ratios when possible.
    // The last stage is calculated exactly rather than rounding the target concentration.
@@ -152,7 +166,7 @@ function calculateDosing(input){
       const left=count-j,ideal=Math.pow(remainingRatio,1/(left+1));
       const choices=convenient.filter(f=>f<=maxFold+1e-9&&f<=remainingRatio+1e-9&&remainingRatio/f<=Math.pow(maxFold,left)*(1+1e-9));
       if(choices.length){
-        const ease=f=>{const transfer=prepVol/f;return Math.abs(transfer*2-Math.round(transfer*2))};
+        const ease=f=>{const transfer=conditionPrep/f;return Math.abs(transfer*2-Math.round(transfer*2))};
         choices.sort((a,b)=>{
           const score=f=>{
             const next=remainingRatio/f;
@@ -165,27 +179,30 @@ function calculateDosing(input){
       }else thisFold=ideal;
     }
     const c=j===count?ci:source/thisFold;
-    const take=prepVol/thisFold;
-    steps.push({stage:j,from:source,to:c,transfer:take,solvent:Math.max(0,prepVol-take),volume:prepVol});
+    const take=conditionPrep/thisFold;
+    steps.push({stage:j,from:source,to:c,transfer:take,solvent:Math.max(0,conditionPrep-take),volume:conditionPrep});
     source=c;remainingRatio/=thisFold;
    }
   }
-  conditions.push({target:v,intermediate:ci,steps,vehicle:false,prepVolume:prepVol,requiredVolume});
+  conditions.push({target:v,intermediate:ci,steps,vehicle:false,prepVolume:conditionPrep,requiredVolume});
  }
  const vehiclePercent=100*dose/totalVol;
  const lowVolume=conditions.filter(c=>!c.vehicle&&c.steps.some(s=>s.transfer<minPip-1e-8));
  if(lowVolume.length)throw Error('Calculated intermediate transfers fall below the minimum pipetting volume. Increase preparation volume.');
+ const lowDiluent=conditions.filter(c=>!c.vehicle&&c.steps.some(s=>s.solvent>1e-8&&s.solvent<minPip-1e-8));
+ if(lowDiluent.length)throw Error('One or more diluent transfers are below the minimum pipetting volume; increase the preparation volume or change concentration.');
  const warns=[];
  if(vehiclePercent>0.1)warns.push(`Vehicle addition corresponds to ${fmt(vehiclePercent)}% v/v ${solvent} (assuming stock/intermediates are entirely in that solvent). Assess vehicle tolerance for your model.`);
  if(!values.includes(0))warns.push('No vehicle-only (0 concentration) condition was entered. Consider including one.');
  if(/dmso/i.test(solvent))warns.push('Preparing every intermediate in DMSO keeps the added DMSO volume matched but may cause solubility/precipitation problems. Check compound solubility.');
  if(input['dose-volume-mode']==='existing')warns.push('Concentrations account for the treatment volume being added to the existing medium.');
- if(prepVol===minPrep&&requiredVolume>minPrep+1e-9)throw Error('Insufficient intermediate volume.');
- return {stockInTargetUnit,totalVol,mediumBefore:input['dose-volume-mode']==='final'?mediumVol-dose:mediumVol,vehiclePercent,solvent,conditions,prepVol,wells,over,warnings:warns,minPip,targetUnit,stockUnit};
+ if(conditions.some(c=>!c.vehicle&&c.prepVolume>prepVol+1e-9))warns.push('Some single-step preparations use a larger volume to avoid extra dilution stages. Review the amount of reagent used.');
+ if(conditions.some(c=>!c.vehicle&&c.steps.some(step=>step.transfer<=minPip*(1+1e-8))))warns.push('One or more stock transfers are at the configured minimum ('+fmt(minPip)+' µL). Increase the minimum pipetting volume for greater accuracy.');
+ return {stockInTargetUnit,totalVol,mediumBefore:input['dose-volume-mode']==='final'?mediumVol-dose:mediumVol,vehiclePercent,solvent,conditions,prepVol,maxPrep,strategy,wells,over,warnings:warns,minPip,targetUnit,stockUnit};
 }
-function treatmentNote(rec){const inp=rec.input,r=rec.result;let t=`[LAB EXPERIMENTAL DOSING PLAN]\nCalculated: ${dt(rec.timestamp)}\nExperiment: ${rec.name}\nChemical: ${rec.chemicalName}\n${rec.catalog?'Catalog: '+rec.catalog+'\n':''}${rec.lot?'Lot: '+rec.lot+'\n':''}Starting stock: ${inp['dose-stock']} ${inp['dose-stock-unit']} in ${r.solvent}\nTarget concentrations: ${r.conditions.map(c=>fmt(c.target)).join(', ')} ${r.targetUnit}\nWells/condition: ${r.wells}\nMedium before dosing: ${fmt(r.mediumBefore)} µL per well\nAdd per well: ${fmt(Number(inp['dose-add']))} µL of intermediate or vehicle\nFinal volume: ${fmt(r.totalVol)} µL per well\nCalculated vehicle: ${fmt(r.vehiclePercent)}% v/v if all solutions are in ${r.solvent}\nIntermediate preparation volume: ${fmt(r.prepVol)} µL per condition (includes ${fmt(r.over)}% volume overhead for replicate dispensing)\nMinimum pipetting transfer: ${fmt(r.minPip)} µL\n\nTREATMENT CONDITIONS\n`;
+function treatmentNote(rec){const inp=rec.input,r=rec.result;let t=`[LAB EXPERIMENTAL DOSING PLAN]\nCalculated: ${dt(rec.timestamp)}\nExperiment: ${rec.name}\nChemical: ${rec.chemicalName}\n${rec.catalog?'Catalog: '+rec.catalog+'\n':''}${rec.lot?'Lot: '+rec.lot+'\n':''}Starting stock: ${inp['dose-stock']} ${inp['dose-stock-unit']} in ${r.solvent}\nTarget concentrations: ${r.conditions.map(c=>fmt(c.target)).join(', ')} ${r.targetUnit}\nWells/condition: ${r.wells}\nMedium before dosing: ${fmt(r.mediumBefore)} µL per well\nAdd per well: ${fmt(Number(inp['dose-add']))} µL of intermediate or vehicle\nFinal volume: ${fmt(r.totalVol)} µL per well\nCalculated vehicle: ${fmt(r.vehiclePercent)}% v/v if all solutions are in ${r.solvent}\nMinimum intermediate volume: ${fmt(r.prepVol)} µL; each condition may require more to avoid additional stages.\nStrategy: ${r.strategy==='smallest'?'Smallest volume':r.maxPrep?'Fewest steps, maximum '+fmt(r.maxPrep)+' µL':'Earlier saved plan'}; overage: ${fmt(r.over)}%\nMinimum pipetting transfer: ${fmt(r.minPip)} µL\n\nTREATMENT CONDITIONS\n`;
  for(const c of r.conditions){t+=`\n${fmt(c.target)} ${r.targetUnit}: `;if(c.vehicle){t+=`vehicle control — add ${fmt(Number(inp['dose-add']))} µL of ${r.solvent} per well.\n`;continue}
- t+=`prepare ${fmt(c.intermediate)} ${r.targetUnit} intermediate; add ${fmt(Number(inp['dose-add']))} µL/well.\n`;
+ t+=`prepare ${fmt(c.prepVolume??r.prepVol)} µL at ${fmt(c.intermediate)} ${r.targetUnit}; add ${fmt(Number(inp['dose-add']))} µL/well.\n`;
  if(!c.steps.length){t+=`  Use the starting stock directly (no intermediate dilution).\n`}else for(const s of c.steps){const source=s.stage===1?'starting stock':`stage ${s.stage-1}`;t+=`  Stage ${s.stage}: ${fmt(s.transfer)} µL ${source} + ${fmt(s.solvent)} µL ${r.solvent} = ${fmt(s.volume)} µL at ${fmt(s.to)} ${r.targetUnit}.\n`}
  }
  if(inp['dose-notes'])t+=`\nExperiment notes: ${inp['dose-notes']}\n`;
@@ -193,7 +210,7 @@ function treatmentNote(rec){const inp=rec.input,r=rec.result;let t=`[LAB EXPERIM
  t+='\nVerify compound solubility, stability, final well-volume interpretation, and pipette range.\n';return t;
 }
 function calculateDose(){try{const input=dosingInputs();const chemical=getChem(input['dose-chemical']);const result=calculateDosing(input);latestDose=autoHistory({kind:'dosing',name:input['dose-title']||'Experimental treatment',chemicalName:input['dose-name'],catalog:chemical?.catalog||'',lot:chemical?.lot||'',chemicalId:input['dose-chemical'],input,result,notes:input['dose-notes']||''});renderDosingResult(latestDose);toast('Dosing plan calculated and saved to history.')}catch(e){latestDose=null;byId('dose-actions').classList.add('hidden');byId('dose-status').textContent='CHECK INPUT';byId('dose-status').className='tag error';errorMessage('dose-result',e.message)}}
-function renderDosingResult(rec){const r=rec.result;let rows=r.conditions.map(c=>`<tr><td><strong>${fmt(c.target)} ${escapeHTML(r.targetUnit)}</strong></td><td>${c.vehicle?'Vehicle only':fmt(c.intermediate)+' '+escapeHTML(r.targetUnit)}</td><td>${fmt(Number(rec.input['dose-add']))} µL</td><td>${c.vehicle?'—':c.steps.length===0?'Stock direct':c.steps.length+' step'+(c.steps.length>1?'s':'')}</td></tr>`).join('');let steps=r.conditions.map(c=>`<div class="result-section-title">${fmt(c.target)} ${escapeHTML(r.targetUnit)} ${c.vehicle?'· vehicle control':''}</div>${c.vehicle?`<p class="tiny">Add ${fmt(Number(rec.input['dose-add']))} µL pure ${escapeHTML(r.solvent)} per well. Prepare enough for replicate pipetting.</p>`:c.steps.length?`<ol class="steps">${c.steps.map(s=>`<li><strong>Stage ${s.stage}:</strong> ${fmt(s.transfer)} µL of ${s.stage===1?'starting stock':'stage '+(s.stage-1)} + ${fmt(s.solvent)} µL ${escapeHTML(r.solvent)} → ${fmt(s.volume)} µL at ${fmt(s.to)} ${escapeHTML(r.targetUnit)}.</li>`).join('')}</ol>`:`<p class="tiny">Use the starting stock without predilution. Add ${fmt(Number(rec.input['dose-add']))} µL per well.</p>`}`).join('');byId('dose-result').className='';byId('dose-result').innerHTML=`<div class="result-highlight"><label>FIXED DOSE / VEHICLE PLAN</label><strong>${fmt(Number(rec.input['dose-add']))} µL per well</strong><div class="result-sub">${fmt(r.mediumBefore)} µL medium + ${fmt(Number(rec.input['dose-add']))} µL treatment = ${fmt(r.totalVol)} µL final. Vehicle: ${fmt(r.vehiclePercent)}% v/v (if homogeneous solvent).</div></div><div class="result-section-title">Condition summary</div><div class="table-scroll"><table class="data-table"><thead><tr><th>Final target</th><th>Intermediate / vehicle</th><th>Add/well</th><th>Stages</th></tr></thead><tbody>${rows}</tbody></table></div><div class="small-note">Prepare at least ${fmt(r.prepVol)} µL of each intermediate for ${r.wells} wells, allowing ${fmt(r.over)}% overhead. Use the same solvent for all intermediate solutions and the vehicle control.</div>${r.warnings.map(w=>`<div class="small-note warning">${escapeHTML(w)}</div>`).join('')}<div class="result-section-title">Serial dilution recipes</div>${steps}<div class="result-section-title">Copy-ready note</div><div class="doc-preview">${escapeHTML(treatmentNote(rec))}</div>`;byId('dose-actions').classList.remove('hidden');byId('dose-status').className='tag success';byId('dose-status').textContent='SAVED'}
+function renderDosingResult(rec){const r=rec.result;let rows=r.conditions.map(c=>`<tr><td><strong>${fmt(c.target)} ${escapeHTML(r.targetUnit)}</strong></td><td>${c.vehicle?'Vehicle only':fmt(c.intermediate)+' '+escapeHTML(r.targetUnit)}</td><td>${fmt(Number(rec.input['dose-add']))} µL</td><td>${c.vehicle?'—':fmt(c.prepVolume??r.prepVol)+' µL'}</td><td>${c.vehicle?'—':c.steps.length===0?'Stock direct':c.steps.length+' step'+(c.steps.length>1?'s':'')}</td></tr>`).join('');let steps=r.conditions.map(c=>`<div class="result-section-title">${fmt(c.target)} ${escapeHTML(r.targetUnit)} ${c.vehicle?'· vehicle control':''}</div>${c.vehicle?`<p class="tiny">Add ${fmt(Number(rec.input['dose-add']))} µL pure ${escapeHTML(r.solvent)} per well. Prepare enough for replicate pipetting.</p>`:c.steps.length?`<p class="tiny">Prepare ${fmt(c.prepVolume??r.prepVol)} µL of intermediate.</p><ol class="steps">${c.steps.map(s=>`<li><strong>${c.steps.length===1?'Direct dilution':'Stage '+s.stage}:</strong> ${fmt(s.transfer)} µL of ${s.stage===1?'starting stock':'stage '+(s.stage-1)} + ${fmt(s.solvent)} µL ${escapeHTML(r.solvent)} → ${fmt(s.volume)} µL at ${fmt(s.to)} ${escapeHTML(r.targetUnit)}.</li>`).join('')}</ol>`:`<p class="tiny">Use the starting stock without predilution. Add ${fmt(Number(rec.input['dose-add']))} µL per well.</p>`}`).join('');byId('dose-result').className='';byId('dose-result').innerHTML=`<div class="result-highlight"><label>FIXED DOSE / VEHICLE PLAN</label><strong>${fmt(Number(rec.input['dose-add']))} µL per well</strong><div class="result-sub">${fmt(r.mediumBefore)} µL medium + ${fmt(Number(rec.input['dose-add']))} µL treatment = ${fmt(r.totalVol)} µL final. Vehicle: ${fmt(r.vehiclePercent)}% v/v (if homogeneous solvent).</div></div><div class="result-section-title">Condition summary</div><div class="table-scroll"><table class="data-table"><thead><tr><th>Final target</th><th>Intermediate / vehicle</th><th>Add/well</th><th>Prep</th><th>Stages</th></tr></thead><tbody>${rows}</tbody></table></div><div class="small-note">Minimum ${fmt(r.prepVol)} µL per intermediate for ${r.wells} wells, allowing ${fmt(r.over)}% overhead. Individual doses may use larger preparation volumes to reduce the number of dilution steps. Use the same solvent for all intermediate solutions and the vehicle control.</div>${r.warnings.map(w=>`<div class="small-note warning">${escapeHTML(w)}</div>`).join('')}<div class="result-section-title">Intermediate preparation recipes</div>${steps}<div class="result-section-title">Copy-ready note</div><div class="doc-preview">${escapeHTML(treatmentNote(rec))}</div>`;byId('dose-actions').classList.remove('hidden');byId('dose-status').className='tag success';byId('dose-status').textContent='SAVED'}
 function saveTemplate(){if(!latestDose)return;const label=prompt('Name this reusable dosing template:',latestDose.name);if(label===null)return;if(!clean(label))return toast('Template name cannot be empty.',true);db.templates.unshift({id:uid(),name:clean(label),createdAt:isoNow(),inputs:{...latestDose.input}});store();toast('Dosing template saved. Open Templates to reuse it.')}
 function loadTemplate(id){const t=db.templates.find(x=>x.id===id);if(!t)return;showPage('dosing');applyDosingInputs(t.inputs);latestDose=null;byId('dose-result').className='empty-result';byId('dose-result').textContent='Template loaded. Modify any field, then generate a new timestamped record.';byId('dose-actions').classList.add('hidden');byId('dose-status').className='tag';byId('dose-status').textContent='TEMPLATE LOADED';toast('Template loaded. Review inputs before recalculating.')}
 
