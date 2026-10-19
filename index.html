@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="Local-first laboratory chemical preparation, dosing calculator and digital lab note records." />
   <title>Lab Chemical Manager</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=plate-grid-20261019-2" />
   <script src="app.js" defer></script>
-  <script src="plate.js" defer></script>
+  <script src="plate.js?v=plate-grid-20261019-2" defer></script>
 
 </head>
 <body>
@@ -50,7 +50,7 @@
             <p class="tiny muted plate-instructions"><strong>Select mode:</strong> drag to select a rectangle; Ctrl/⌘ + drag to add areas; Alt + drag to subtract. <strong>Move labels:</strong> switch modes and drag a label to move or swap it. Shift + drag a label also moves it in Select mode. Double-click a well to edit its text.</p>
             <div id="pl-selection-count" class="plate-counter" aria-live="polite">All wells available</div>
             <div class="plate-grid-scroll"><div id="pl-grid" class="simple-plate-grid" role="grid" aria-label="Well plate layout"></div></div>
-            <div class="plate-legend-plain">Empty = available · Gray = manually selected · Labeled = assigned · The plate stays editable after generating</div>
+            <div class="plate-legend-plain">White = available · Gray-blue = selected · Light blue = assigned · Labels remain editable</div>
           </div>
           <div class="plate-panels">
             <div class="panel">
