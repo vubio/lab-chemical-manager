@@ -27,10 +27,11 @@ function dosing(overrides={}) {
  return scope.calculateDosing({...settings,...overrides});
 }
 function near(a,b) {assert(Math.abs(a-b)<1e-6, a+' ≠ '+b);}
+const getDose=(result,target)=>result.conditions.find(c=>c.target===target);
 const plan=dosing();
 near(plan.vehiclePercent,0.2);
 near(plan.mediumBefore,499);
-assert.equal(plan.conditions[0].vehicle,true);
+assert.equal(getDose(plan,0).vehicle,true);
 for (const [dose,concentration,volume,stockAdded] of [[0.05,25,200,0.5],[0.1,50,100,0.5],[0.2,100,100,1]]) {
  const c=plan.conditions.find(c=>c.target===dose);
  assert(c,'Missing dose '+dose);
@@ -40,14 +41,14 @@ for (const [dose,concentration,volume,stockAdded] of [[0.05,25,200,0.5],[0.1,50,
  near(c.steps[0].transfer,stockAdded);
  near(c.steps[0].from*c.steps[0].transfer/c.steps[0].volume,c.intermediate);
 }
-assert.equal(dosing({'dose-strategy':'smallest'}).conditions[1].steps.length,2);
-const pip1=dosing({'dose-minpip':'1'}).conditions[1];
+assert.equal(getDose(dosing({'dose-strategy':'smallest'}),0.05).steps.length,2);
+const pip1=getDose(dosing({'dose-minpip':'1'}),0.05);
 assert.equal(pip1.steps.length,1);
 near(pip1.steps[0].transfer,1);
 near(pip1.prepVolume,400);
-assert.equal(dosing({'dose-max-prep':'150'}).conditions[1].steps.length,2);
-assert.equal(dosing({'dose-targets':'0, 0.01'}).conditions[1].steps.length,2);
-assert.equal(dosing({'dose-stock':'25','dose-stock-unit':'µM','dose-targets':'0,0.05'}).conditions[1].steps.length,0);
+assert.equal(getDose(dosing({'dose-max-prep':'150'}),0.05).steps.length,2);
+assert.equal(getDose(dosing({'dose-targets':'0, 0.01'}),0.01).steps.length,2);
+assert.equal(getDose(dosing({'dose-stock':'25','dose-stock-unit':'µM','dose-targets':'0,0.05'}),0.05).steps.length,0);
 near(dosing({'dose-volume-mode':'existing'}).totalVol,501);
 assert.throws(()=>dosing({'dose-max-prep':'50'}),/Maximum intermediate prep/);
 for(const c of dosing({'dose-targets':'0,0.00001,0.05'}).conditions) {
