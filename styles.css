@@ -9,3 +9,7 @@
 .dose-well-item input{width:62px;min-width:0;padding:6px 7px;border:1px solid var(--border);border-radius:6px;background:var(--panel);color:var(--ink);font:inherit;text-align:center}
 .dose-summary .mix-cell{min-width:150px;white-space:normal;line-height:1.6}
 .dose-summary th{white-space:nowrap}
+
+/* Keep the expanded per-condition mixing summary readable without a tiny side panel. */
+#page-dosing .workspace-grid{grid-template-columns:minmax(0,1fr)}
+#page-dosing .result-panel{position:static}
