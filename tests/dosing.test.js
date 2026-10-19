@@ -50,7 +50,7 @@ assert.equal(getDose(dosing({'dose-max-prep':'150'}),0.05).steps.length,2);
 assert.equal(getDose(dosing({'dose-targets':'0, 0.01'}),0.01).steps.length,2);
 assert.equal(getDose(dosing({'dose-stock':'25','dose-stock-unit':'µM','dose-targets':'0,0.05'}),0.05).steps.length,0);
 near(dosing({'dose-volume-mode':'existing'}).totalVol,501);
-assert.throws(()=>dosing({'dose-max-prep':'50'}),/Maximum intermediate prep/);
+assert.throws(()=>dosing({'dose-max-prep':'50'}),/maximum intermediate prep/i);
 for(const c of dosing({'dose-targets':'0,0.00001,0.05'}).conditions) {
  for(const step of c.steps) {
   assert(step.transfer>=0.5-1e-7,'Unpipettable stock transfer');
