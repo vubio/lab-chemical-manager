@@ -298,8 +298,8 @@ function treatmentNote(rec){
  for(const c of r.conditions){
   t+=`\n${fmt(c.target)} ${r.targetUnit}: `;
   const actual=c.wells??r.wells??1,extra=actual+1,amount=Number(inp['dose-add']);
-  t+=`${actual} wells: ${fmt(actual*amount)} µL treatment + ${fmt(actual*r.mediumBefore)} µL medium (${fmt(actual*r.totalVol)} µL final).\n`;
-  t+=`  With 1 extra well (${extra} wells): ${fmt(extra*amount)} µL treatment + ${fmt(extra*r.mediumBefore)} µL medium (${fmt(extra*r.totalVol)} µL final).\n`;
+  t+=`${actual} wells: ${fmt(actual*amount)} µL ${c.vehicle?'vehicle':'treatment'} + ${fmt(actual*r.mediumBefore)} µL medium (${fmt(actual*r.totalVol)} µL final).\n`;
+  t+=`  With 1 extra well (${extra} wells): ${fmt(extra*amount)} µL ${c.vehicle?'vehicle':'treatment'} + ${fmt(extra*r.mediumBefore)} µL medium (${fmt(extra*r.totalVol)} µL final).\n`;
   if(c.vehicle){t+=`  vehicle control — use pure ${r.solvent}; ${fmt(amount)} µL/well.\n`;continue}
   t+=`  prepare ${fmt(c.prepVolume??r.prepVol)} µL of ${fmt(c.intermediate)} ${r.targetUnit}; add ${fmt(amount)} µL/well. Intermediate preparation includes handling reserve and ${fmt(r.over)}% overage.\n`;
   if(!c.steps.length)t+=`  Use starting stock directly (no dilution).\n`;
@@ -316,7 +316,7 @@ function renderDosingResult(rec){
  const switcher=`<div class="strategy-switch"><div class="result-section-title">Preparation strategy</div><div class="strategy-buttons" role="group" aria-label="Intermediate preparation strategy">${choices.map(([value,label])=>`<button type="button" class="btn small ${r.strategy===value?'selected':''}" data-dose-plan="${value}" aria-pressed="${r.strategy===value}">${label}</button>`).join('')}</div><div class="tiny muted">Choose another strategy to recalculate and save a separate dated plan. Shared mode uses prepared higher-concentration intermediates when advantageous.</div></div>`;
  const rows=r.conditions.map(c=>{
   const nw=c.wells??r.wells??1;
-  const formatMix=count=>`${fmt(count*Number(rec.input['dose-add']))} µL <span class="muted">treatment +</span> ${fmt(count*r.mediumBefore)} µL <span class="muted">medium</span><div class="tiny muted">${fmt(count*r.totalVol)} µL final</div>`;
+  const formatMix=count=>`${fmt(count*Number(rec.input['dose-add']))} µL <span class="muted">${c.vehicle?'vehicle':'treatment'} +</span> ${fmt(count*r.mediumBefore)} µL <span class="muted">medium</span><div class="tiny muted">${fmt(count*r.totalVol)} µL final</div>`;
   let source='—',fold='—',recipe='—';
   if(c.vehicle){source=`${solvent} only`;recipe=`${dose} µL vehicle/well`;}
   else if(!c.steps.length){source='Starting stock';fold='No dilution';recipe='Use stock directly';}
