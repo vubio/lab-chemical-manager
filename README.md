@@ -66,3 +66,10 @@ The **Plate layout** page is separate from **Dosing planner**. Plate maps do not
 - Plate work-in-progress and saved layouts use browser storage key `labchem.plate.layouts.v1` and have their own **Backup / Restore plate layouts (.json)** actions. They are **not** included in the chemical/dosing JSON backup. Keep both backups if you need both types of data. Neither module uses cloud synchronization.
 
 A label grid is **not randomization**. Review biological replicates, plate-edge effects, and treatment location when designing an experiment.
+
+## Plate layout quality-of-life updates
+
+- **Replicate batches:** Set a count for all condition combinations, for checked condition rows, or for any combination matching a selected factor value. Each replicate cell can still be changed independently.
+- **Axis annotations:** Add arbitrary text beside each plate row (A–H on 96-well plates) and beneath the numbered column headers (1–12). These notes are separate from well labels, persist with saved layouts and JSON backups, and are included in exports.
+- **Copy for OneNote:** **Copy condition table** and **Copy plate table** use `text/html` plus `text/plain` clipboard formats; supported apps like OneNote can paste an actual bordered table. **Copy plate note** includes layout metadata and the full table with row/column annotations. Plain-text fallback is used if the browser does not support formatted clipboard writes.
+- **Module isolation:** This changes only the independent plate layout. The dosing calculator has not been coupled to the plate layout.
