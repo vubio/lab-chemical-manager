@@ -13,32 +13,26 @@ const FACTOR_COLORS=['#A41E22','#1E5196','#216A45','#68428B'];
 const FACTOR_RANKS=['Primary','Secondary','Third','Fourth'];
 function legendEntries(source='plate'){
  const current=activeFactors().map(x=>x.name.trim());
- let names=current;
- if(source==='plate'){
-  const records=Object.values(state.assignments);
-  const indices=records.flatMap(r=>(r.labels||[]).map((v,i)=>String(v||'').trim()?i:-1)).filter(i=>i>=0);
-  const length=indices.length?Math.max(...indices)+1:0;
-  if(length)names=Array.from({length},(_,i)=>{
-   const r=records.find(r=>String(r.labels?.[i]||'').trim());
-   return r?.factorNames?.[i]?.trim()||current[i]||`Factor ${i+1}`;
-  });
+ let count=current.length;
+ if(source==='plate')for(const r of Object.values(state.assignments)){
+  if(r.group==='manual')for(let i=0;i<Math.min(4,(r.labels||[]).length);i++)if(String(r.labels[i]||'').trim())count=Math.max(count,i+1);
  }
- return names.slice(0,4).map((name,i)=>({name:name||`Factor ${i+1}`,rank:FACTOR_RANKS[i],color:FACTOR_COLORS[i]}));
+ return Array.from({length:Math.min(4,count)},(_,i)=>({name:current[i]||state.factors[i]?.name.trim()||`Factor ${i+1}`,rank:FACTOR_RANKS[i],color:FACTOR_COLORS[i]}));
 }
 function factorLegendHTML(source='plate'){
  const items=legendEntries(source);
  if(!items.length)return '';
- return `<div style="font-family:Arial,Helvetica,sans-serif;font-size:11pt;line-height:1.5;margin:0 0 10px 0;padding:0;color:#374151"><strong style="font-weight:700">Factor colors: </strong>${items.map(f=>`<span style="display:inline-block;margin:0 14px 3px 0;white-space:nowrap"><strong style="font-weight:700;color:${f.color}">&#9632; ${esc(f.rank)}:</strong> <span style="color:${f.color};font-weight:600">${esc(f.name)}</span></span>`).join('')}</div>`;
+ return `<div style="font-family:Arial,Helvetica,sans-serif;font-size:11pt;line-height:1.5;margin:0 0 10px 0;padding:0;color:#374151">${items.map(f=>`<span style="display:inline-block;margin:0 16px 3px 0;white-space:nowrap"><span style="font-weight:800;color:${f.color}">&#9632;</span> <span style="color:${f.color};font-weight:600">${esc(f.name)}</span></span>`).join('')}</div>`;
 }
 function factorLegendPlain(source='plate'){
  const items=legendEntries(source);
- return items.length?'Factor colors: '+items.map(f=>`${f.rank} = ${f.name} (${['dark red','blue','green','purple'][FACTOR_RANKS.indexOf(f.rank)]})`).join(' | '):'';
+ return items.map(f=>`${f.name} (${['dark red','blue','green','purple'][FACTOR_RANKS.indexOf(f.rank)]})`).join(' | ');
 }
 function renderFactorLegend(){const el=$('pl-factor-legend');if(el)el.innerHTML=factorLegendHTML('plate')}
 
-const defaults=()=>({id:null,name:'New experiment',format:'96',selection:[],rowNotes:{},colNotes:{},fillOrder:'rows',mode:'select',factors:[{id:'factor1',name:'Dose',values:'0 µM; 0.05 µM; 0.1 µM; 0.2 µM'},{id:'factor2',name:'Cell density',values:''},{id:'factor3',name:'',values:''},{id:'factor4',name:'',values:''}],counts:{},assignments:{},notes:'',generatedAt:null});
-let state=defaults(),saved=[],activeCell=null,drag=null,suppressClick=false,selectionAnchor=null,checkedCombinations=new Set();
-function normalize(s){const d=defaults();if(!s||typeof s!=='object')return d;return {...d,...s, format:SHAPES[String(s.format)]?String(s.format):'96',selection:Array.isArray(s.selection)?s.selection:[],rowNotes:s.rowNotes&&typeof s.rowNotes==='object'?s.rowNotes:{},colNotes:s.colNotes&&typeof s.colNotes==='object'?s.colNotes:{},fillOrder:s.fillOrder==='columns'?'columns':'rows', factors:Array.isArray(s.factors)&&s.factors.length?s.factors.slice(0,4).map((f,i)=>({id:String(f.id||'factor'+(i+1)),name:String(f.name||''),values:String(f.values||'')})):d.factors,counts:s.counts&&typeof s.counts==='object'?s.counts:{},assignments:s.assignments&&typeof s.assignments==='object'?s.assignments:{}}}
+const defaults=()=>({id:null,name:'New experiment',format:'96',selection:[],rowNotes:{},colNotes:{},fillOrder:'rows',mode:'select',factors:[{id:'factor1',name:'Dose',values:'0 µM; 0.05 µM; 0.1 µM; 0.2 µM'},{id:'factor2',name:'Cell density',values:''},{id:'factor3',name:'',values:''},{id:'factor4',name:'',values:''}],counts:{},assignments:{},notes:'',generatedAt:null,manualLayoutChanges:false,factorDraftStale:false});
+let state=defaults(),saved=[],activeCell=null,drag=null,suppressClick=false,selectionAnchor=null,checkedCombinations=new Set(),factorUpdateTimer=null;
+function normalize(s){const d=defaults();if(!s||typeof s!=='object')return d;return {...d,...s, format:SHAPES[String(s.format)]?String(s.format):'96',selection:Array.isArray(s.selection)?s.selection:[],rowNotes:s.rowNotes&&typeof s.rowNotes==='object'?s.rowNotes:{},colNotes:s.colNotes&&typeof s.colNotes==='object'?s.colNotes:{},fillOrder:s.fillOrder==='columns'?'columns':'rows', factors:Array.isArray(s.factors)&&s.factors.length?s.factors.slice(0,4).map((f,i)=>({id:String(f.id||'factor'+(i+1)),name:String(f.name||''),values:String(f.values||'')})):d.factors,counts:s.counts&&typeof s.counts==='object'?s.counts:{},assignments:s.assignments&&typeof s.assignments==='object'?s.assignments:{},manualLayoutChanges:!!s.manualLayoutChanges,factorDraftStale:!!s.factorDraftStale}}
 function dimensions(){return SHAPES[state.format]}
 function allCoords(){let [rows,cols]=dimensions(),arr=[];for(let r=0;r<rows;r++)for(let c=0;c<cols;c++)arr.push(cellName(r,c));return arr}
 function available(){const all=allCoords(),chosen=new Set(state.selection);return chosen.size?all.filter(x=>chosen.has(x)):all}
@@ -147,7 +141,7 @@ function applyBatchReplicates(){
  targets.forEach(c=>state.counts[c.key]=count);
  persist();renderCombinations();notify(`Set ${count} replicate${count===1?'':'s'} for ${targets.length} condition${targets.length===1?'':'s'}. Existing plate labels are unchanged until regenerated.`);
 }
-function updateEditorFields(){if(!activeCell)return;let vals=[...Array(4)].map((_,i)=>$('pl-edit-'+i)?.value?.trim()||'');state.assignments[activeCell]={labels:vals,factorNames:state.factors.map(x=>x.name),group:'manual'};if(!vals.some(Boolean))delete state.assignments[activeCell];renderPlate();updateNote()}
+function updateEditorFields(){if(!activeCell)return;let vals=[...Array(4)].map((_,i)=>$('pl-edit-'+i)?.value?.trim()||'');state.assignments[activeCell]={labels:vals,factorNames:state.factors.map(x=>x.name),group:'manual'};state.manualLayoutChanges=true;if(!vals.some(Boolean))delete state.assignments[activeCell];renderPlate();updateNote()}
 function renderEditor(){const record=activeCell?state.assignments[activeCell]:null;const active=Boolean(activeCell);$('pl-save-label').disabled=!active;$('pl-remove-label').disabled=!active;
  $('pl-label-fields').innerHTML=Array.from({length:4},(_,i)=>`<label class="field"><span>${i===0?'Primary':i===1?'Secondary':i===2?'Third':'Fourth'} text</span><input id="pl-edit-${i}" ${active?'':'disabled'} value="${esc(record?.labels?.[i]||'')}" placeholder="${esc(state.factors[i]?.name||'Optional label')}"/></label>`).join('');
 }
@@ -190,7 +184,7 @@ async function copyRich(html,plain,success){
  }catch(e){notify('Clipboard access was blocked. Try opening the site over HTTPS and allow clipboard access.',true)}
 }
 function copyConditionsTable(){const rows=[['Condition','Replicates'],...conditionTable()];return copyRich(factorLegendHTML('conditions')+conditionHTML(),[factorLegendPlain('conditions'),'',...rows.map(r=>r.join('\t'))].join('\n'),'Condition table copied.')}
-function copyPlateTable(){const rows=plateTable();return copyRich(factorLegendHTML('plate')+plateHTML(),[factorLegendPlain('plate'),'',...rows.map(r=>r.join('\t'))].join('\n'),'Plate table copied, including color legend and axis notes.')}
+function copyPlateTable(){if(state.factorDraftStale)return notify('Plate labels still reflect the previous factors. Click Apply factors to plate before copying.',true);const rows=plateTable();return copyRich(factorLegendHTML('plate')+plateHTML(),[factorLegendPlain('plate'),'',...rows.map(r=>r.join('\t'))].join('\n'),'Plate table copied, including color legend and axis notes.')}
 function persist(){try{localStorage.setItem(STORAGE,JSON.stringify({draft:state,saved}))}catch(e){notify('Could not save plate layout: browser storage full or unavailable.',true)}}
 function bootStored(){try{const data=JSON.parse(localStorage.getItem(STORAGE)||'null');if(data){state=normalize(data.draft);saved=Array.isArray(data.saved)?data.saved.map(normalize):[]}}catch(e){state=defaults();saved=[]}}
 function syncMeta(){state.name=$('pl-title').value;state.notes=$('pl-notes').value;state.mode=$('pl-mode').value;persist();updateNote()}
@@ -241,7 +235,7 @@ function finishDrag(){
   try{
    const [rows,cols]=dimensions();
    const result=moveBlock(state.assignments,base,start,last,rows,cols);
-   state.assignments=result.assignments;state.selection=result.selection;
+   state.assignments=result.assignments;state.selection=result.selection;state.manualLayoutChanges=true;
    activeCell=last;selectionAnchor=last;
    notify(`Moved ${result.sourceCount} labeled well${result.sourceCount===1?'':'s'} to ${result.selection.join(', ')}.`);
   }catch(err){notify(err.message,true)}
@@ -262,35 +256,77 @@ function finishDrag(){
  }
  renderPlate();updateNote();persist();
 }
-function generate(){syncFactors();const factors=activeFactors(),combos=desired();if(!factors.length)return notify('Enter a factor with at least one value.',true);if(!combos.every(c=>Number.isInteger(c.replicates)&&c.replicates>0))return notify('Replicates must be positive whole numbers.',true);
- if(Object.keys(state.assignments).length&&!window.confirm('Replace the current plate labels with a newly generated layout? Manual edits will be overwritten.'))return;
- try{const [rows,cols]=dimensions();state.assignments=place(available(),combos,rows,cols,state.fillOrder);state.generatedAt=new Date().toISOString();activeCell=null;selectionAnchor=null;renderPlate();updateNote();persist();notify(`Assigned ${Object.keys(state.assignments).length} wells across ${combos.length} conditions.`)}catch(e){notify(e.message,true)}
+function plannedAvailable(combos){
+ const needed=combos.reduce((total,c)=>total+c.replicates,0),all=allCoords();
+ if(!state.selection.length||state.selection.length>=needed)return {wells:available(),clearSelection:false};
+ const chosen=new Set(state.selection),hadLabeledOutside=Object.keys(state.assignments).some(w=>!chosen.has(w));
+ if(hadLabeledOutside&&needed<=all.length)return {wells:all,clearSelection:true};
+ return {wells:available(),clearSelection:false};
 }
-function syncFactors(){state.factors.forEach(f=>{const name=$('pl-factors').querySelector(`[data-fname="${f.id}"]`),values=$('pl-factors').querySelector(`[data-fvalues="${f.id}"]`);if(name)f.name=name.value;if(values)f.values=values.value});}
+function replan(silent=false){
+ const factors=activeFactors(),combos=desired();
+ if(!factors.length){if(Object.keys(state.assignments).length)state.factorDraftStale=true;if(!silent)notify('Enter at least one factor with values.',true);return false}
+ try{
+  const [rows,cols]=dimensions(),plan=plannedAvailable(combos);
+  const next=place(plan.wells,combos,rows,cols,state.fillOrder);
+  state.assignments=next;
+  if(plan.clearSelection)state.selection=[];
+  state.generatedAt=new Date().toISOString();state.manualLayoutChanges=false;state.factorDraftStale=false;activeCell=null;selectionAnchor=null;
+  renderPlate();updateNote();persist();
+  notify(`${silent?'Updated':'Generated'} ${Object.keys(next).length} wells for ${combos.length} conditions.${plan.clearSelection?' Cleared a previous editing selection and used the entire plate.':''}`);
+  return true;
+ }catch(e){if(Object.keys(state.assignments).length)state.factorDraftStale=true;persist();notify(`${e.message} ${state.selection.length?'Use “Use entire plate” to remove an intentional well restriction.':''}`,true);return false}
+}
+function generate(){syncFactors();
+ if(Object.keys(state.assignments).length&&!window.confirm('Replace existing plate labels with the current factors? Manual edits, if any, will be overwritten.'))return;
+ replan(false);
+}
+function autoSyncPlate(){
+ renderFactorLegend();
+ if(!Object.keys(state.assignments).length)return;
+ if(state.manualLayoutChanges||Object.values(state.assignments).some(r=>r.group==='manual')){
+  state.factorDraftStale=true;persist();notify('Factor names updated. Manual well edits prevent automatic relabeling. Click Apply factors to plate before copying.');return;
+ }
+ replan(true);
+}
+function syncFactors(){
+ const previous=state.factors.map(f=>({...f}));
+ state.factors.forEach(f=>{const name=$('pl-factors').querySelector(`[data-fname="${f.id}"]`),values=$('pl-factors').querySelector(`[data-fvalues="${f.id}"]`);if(name)f.name=name.value;if(values)f.values=values.value});
+ const before=previous.map(f=>({...f,options:splitValues(f.values)})).filter(f=>f.name.trim()&&f.options.length);
+ const after=activeFactors();
+ for(const combo of combinations(after)){
+  if(Number.isInteger(state.counts[combo.key]))continue;
+  const nearest=combo.parts.map(p=>{const current=after.find(x=>x.id===p.id),old=before.find(x=>x.id===p.id);if(!old)return null;const idx=current.options.indexOf(p.value);return [p.id,old.options[Math.min(idx,old.options.length-1)]]}).filter(Boolean);
+  if(!nearest.length)continue;
+  const oldKey=JSON.stringify(nearest.sort((a,b)=>a[0].localeCompare(b[0])));
+  if(Number.isInteger(state.counts[oldKey]))state.counts[combo.key]=state.counts[oldKey];
+ }
+}
 function fileDownload(text,name,type='text/plain'){const blob=new Blob([text],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),2000)}
 function downloadTSV(){const safe=(state.name||'plate').replace(/[^\w-]+/g,'_').slice(0,50);fileDownload(plateTable().map(row=>row.map(x=>String(x).replace(/\n/g,' / ')).join('\t')).join('\n'),safe+'-plate.tsv','text/tab-separated-values')}
-async function copyNote(){const title=`<p style="font-family:Arial,sans-serif"><b>${esc(state.name)}</b> · ${esc(state.format)}-well plate</p>`;
+async function copyNote(){if(state.factorDraftStale)return notify('Plate labels still reflect the previous factors. Click Apply factors to plate before copying.',true);const title=`<p style="font-family:Arial,sans-serif"><b>${esc(state.name)}</b> · ${esc(state.format)}-well plate</p>`;
  const extra=state.notes.trim()?`<p style="font-family:Arial,sans-serif">${esc(state.notes)}</p>`:'';
  return copyRich(title+extra+factorLegendHTML('plate')+plateHTML(),makeNote(),'Plate note copied, including factor colors and axis notes.');}
 function transposeCurrent(){
- try{const [rows,cols]=dimensions(),result=transposeMap(state.assignments,state.selection,rows,cols);state.assignments=result.assignments;state.selection=result.selection;activeCell=null;renderPlate();updateNote();persist();notify(`Transposed ${result.oldSize.join(' × ')} → ${result.newSize.join(' × ')}. Row and column notes stay with their physical plate axes.`)}catch(e){notify(e.message,true)}
+ try{const [rows,cols]=dimensions(),result=transposeMap(state.assignments,state.selection,rows,cols);state.manualLayoutChanges=true;state.assignments=result.assignments;state.selection=result.selection;activeCell=null;renderPlate();updateNote();persist();notify(`Transposed ${result.oldSize.join(' × ')} → ${result.newSize.join(' × ')}. Row and column notes stay with their physical plate axes.`)}catch(e){notify(e.message,true)}
 }
 function save(){syncMeta();syncFactors();const item=structuredClone(state);item.id='plate-'+Date.now()+'-'+Math.random().toString(36).slice(2,6);item.savedAt=new Date().toISOString();saved.unshift(item);state.id=item.id;persist();renderSaved();$('pl-saved').value=item.id;notify('Layout saved. Older saved layouts are kept unchanged.')}
 function bind(){const grid=$('pl-grid');grid.addEventListener('pointerdown',e=>{if(e.pointerType==='touch')return;beginDrag(e)});document.addEventListener('pointermove',e=>{if(drag)moveDrag(e)});document.addEventListener('pointerup',()=>{if(drag)finishDrag()});grid.addEventListener('click',e=>{const w=e.target.closest('[data-well]');if(!w)return;if(suppressClick){suppressClick=false;return}activeCell=w.dataset.well;renderPlate()});grid.addEventListener('dblclick',e=>{const w=e.target.closest('[data-well]');if(!w)return;activeCell=w.dataset.well;renderPlate();$('pl-edit-0').focus();$('pl-well-panel').scrollIntoView({block:'nearest',behavior:'smooth'})});
  // Keyboard support: arrow navigation is native via tab, Enter opens the inline editor.
  grid.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const w=e.target.closest('[data-well]');if(w){activeCell=w.dataset.well;renderPlate();$('pl-edit-0').focus()}});
  $('pl-grid').addEventListener('input',e=>{const t=e.target;if(t.matches('[data-row-note]'))state.rowNotes[t.dataset.rowNote]=t.value;else if(t.matches('[data-column-note]'))state.colNotes[t.dataset.columnNote]=t.value;else return;persist();updateNote()});
- $('pl-format').addEventListener('change',e=>{const selected=state.selection.length||Object.keys(state.assignments).length;if(selected&&!confirm('Changing plate format clears selection and current labels. Continue?')){e.target.value=state.format;return}state.format=e.target.value;state.selection=[];state.assignments={};state.rowNotes={};state.colNotes={};activeCell=null;selectionAnchor=null;renderCombinations();renderPlate();updateNote();persist()});
+ $('pl-format').addEventListener('change',e=>{const selected=state.selection.length||Object.keys(state.assignments).length;if(selected&&!confirm('Changing plate format clears selection and current labels. Continue?')){e.target.value=state.format;return}state.format=e.target.value;state.selection=[];state.assignments={};state.manualLayoutChanges=false;state.rowNotes={};state.colNotes={};activeCell=null;selectionAnchor=null;renderCombinations();renderPlate();updateNote();persist()});
  $('pl-fill-order').addEventListener('change',e=>{state.fillOrder=e.target.value==='columns'?'columns':'rows';persist();notify('Fill preference saved. Click Generate to apply it; current labels are unchanged.')});$('pl-transpose').addEventListener('click',transposeCurrent);$('pl-mode').addEventListener('change',syncMeta);$('pl-title').addEventListener('input',syncMeta);$('pl-notes').addEventListener('input',syncMeta);
- $('pl-all').addEventListener('click',()=>{state.selection=[];renderPlate();persist();notify('Entire plate available for layout.')});$('pl-clear').addEventListener('click',()=>{if(Object.keys(state.assignments).length&&!confirm('Clear all well labels from the current plate? Saved layouts remain available.'))return;state.assignments={};activeCell=null;renderPlate();updateNote();persist();notify('All well labels cleared. Selected well areas are unchanged.')});
- $('pl-factors').addEventListener('input',e=>{if(!e.target.matches('[data-fname],[data-fvalues]'))return;syncFactors();renderCombinations();renderFactorLegend();persist()});
- $('pl-factors').addEventListener('click',e=>{const b=e.target.closest('[data-movefactor]');if(!b)return;syncFactors();const i=state.factors.findIndex(f=>f.id===b.dataset.movefactor),j=i+Number(b.dataset.direction);if(j<0||j>=state.factors.length)return;[state.factors[i],state.factors[j]]=[state.factors[j],state.factors[i]];renderFactors();renderCombinations();renderFactorLegend();persist()});
- $('pl-preview').addEventListener('click',()=>{syncFactors();renderCombinations();persist()});
+ $('pl-all').addEventListener('click',()=>{state.selection=[];renderPlate();persist();notify('Entire plate available for layout.')});$('pl-clear').addEventListener('click',()=>{if(Object.keys(state.assignments).length&&!confirm('Clear all well labels from the current plate? Saved layouts remain available.'))return;state.assignments={};state.manualLayoutChanges=false;activeCell=null;renderPlate();updateNote();persist();notify('All well labels cleared. Selected well areas are unchanged.')});
+ $('pl-factors').addEventListener('input',e=>{if(!e.target.matches('[data-fname],[data-fvalues]'))return;syncFactors();renderCombinations();renderFactorLegend();persist();clearTimeout(factorUpdateTimer);factorUpdateTimer=setTimeout(autoSyncPlate,650)});
+ $('pl-factors').addEventListener('change',e=>{if(!e.target.matches('[data-fname],[data-fvalues]'))return;clearTimeout(factorUpdateTimer);syncFactors();renderCombinations();autoSyncPlate()});
+ $('pl-factors').addEventListener('click',e=>{const b=e.target.closest('[data-movefactor]');if(!b)return;syncFactors();const i=state.factors.findIndex(f=>f.id===b.dataset.movefactor),j=i+Number(b.dataset.direction);if(j<0||j>=state.factors.length)return;[state.factors[i],state.factors[j]]=[state.factors[j],state.factors[i]];renderFactors();renderCombinations();autoSyncPlate();persist()});
+ $('pl-preview').addEventListener('click',()=>{syncFactors();renderCombinations();autoSyncPlate();persist()});
  $('pl-batch-apply').addEventListener('click',applyBatchReplicates);$('pl-batch-scope').addEventListener('change',e=>{$('pl-batch-factor-wrap').classList.toggle('hidden',e.target.value!=='factor')});
  $('pl-combos').addEventListener('change',e=>{if(e.target.id==='pl-check-all'){const keys=desired().map(c=>c.key);checkedCombinations=e.target.checked?new Set(keys):new Set();renderCombinations();return}if(e.target.matches('[data-select-combo]')){if(e.target.checked)checkedCombinations.add(e.target.dataset.selectCombo);else checkedCombinations.delete(e.target.dataset.selectCombo);const all=$('pl-check-all');if(all)all.checked=checkedCombinations.size===desired().length;}});
  $('pl-combos').addEventListener('input',e=>{const el=e.target;if(!el.matches('[data-reps]'))return;const n=Number(el.value);state.counts[el.dataset.reps]=Number.isInteger(n)&&n>0?n:1;persist();const combos=desired();notify(`${combos.reduce((a,c)=>a+c.replicates,0)} wells requested · ${available().length} available`)});
  $('pl-copy-table').addEventListener('click',copyPlateTable);$('pl-copy-conditions').addEventListener('click',copyConditionsTable);
- $('pl-generate').addEventListener('click',generate);$('pl-save-label').addEventListener('click',()=>{if(activeCell)updateEditorFields();persist()});$('pl-remove-label').addEventListener('click',()=>{if(activeCell){delete state.assignments[activeCell];renderPlate();updateNote();persist()}});
+ $('pl-generate').addEventListener('click',generate);$('pl-save-label').addEventListener('click',()=>{if(activeCell)updateEditorFields();persist()});$('pl-remove-label').addEventListener('click',()=>{if(activeCell){delete state.assignments[activeCell];state.manualLayoutChanges=true;renderPlate();updateNote();persist()}});
  $('pl-save').addEventListener('click',save);$('pl-copy').addEventListener('click',copyNote);$('pl-tsv').addEventListener('click',downloadTSV);
  $('pl-new').addEventListener('click',()=>{if(!confirm('Start a new blank plate layout? Your saved layouts remain available.'))return;state=defaults();checkedCombinations.clear();activeCell=null;selectionAnchor=null;persist();refreshAll()});
  $('pl-load').addEventListener('click',()=>{const src=saved.find(x=>x.id===$('pl-saved').value);if(!src)return notify('Choose a saved layout.',true);state=normalize(structuredClone(src));checkedCombinations.clear();activeCell=null;selectionAnchor=null;persist();refreshAll();notify('Saved plate layout loaded. You can edit and save it as another version.')});
