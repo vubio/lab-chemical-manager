@@ -9,7 +9,7 @@ const numberOfWells=s=>SHAPES[s][0]*SHAPES[s][1];
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const splitValues=s=>String(s||'').split(/[,;\n]+/).map(x=>x.trim()).filter(Boolean);
 const defaults=()=>({id:null,name:'New experiment',format:'96',selection:[],rowNotes:{},colNotes:{},fillOrder:'rows',mode:'select',factors:[{id:'factor1',name:'Dose',values:'0 µM; 0.05 µM; 0.1 µM; 0.2 µM'},{id:'factor2',name:'Cell density',values:''},{id:'factor3',name:'',values:''},{id:'factor4',name:'',values:''}],counts:{},assignments:{},notes:'',generatedAt:null});
-let state=defaults(),saved=[],activeCell=null,drag=null,suppressClick=false,checkedCombinations=new Set();
+let state=defaults(),saved=[],activeCell=null,drag=null,suppressClick=false,selectionAnchor=null,checkedCombinations=new Set();
 function normalize(s){const d=defaults();if(!s||typeof s!=='object')return d;return {...d,...s, format:SHAPES[String(s.format)]?String(s.format):'96',selection:Array.isArray(s.selection)?s.selection:[],rowNotes:s.rowNotes&&typeof s.rowNotes==='object'?s.rowNotes:{},colNotes:s.colNotes&&typeof s.colNotes==='object'?s.colNotes:{},fillOrder:s.fillOrder==='columns'?'columns':'rows', factors:Array.isArray(s.factors)&&s.factors.length?s.factors.slice(0,4).map((f,i)=>({id:String(f.id||'factor'+(i+1)),name:String(f.name||''),values:String(f.values||'')})):d.factors,counts:s.counts&&typeof s.counts==='object'?s.counts:{},assignments:s.assignments&&typeof s.assignments==='object'?s.assignments:{}}}
 function dimensions(){return SHAPES[state.format]}
 function allCoords(){let [rows,cols]=dimensions(),arr=[];for(let r=0;r<rows;r++)for(let c=0;c<cols;c++)arr.push(cellName(r,c));return arr}
@@ -17,8 +17,9 @@ function available(){const all=allCoords(),chosen=new Set(state.selection);retur
 function activeFactors(){return state.factors.map(f=>({...f,options:splitValues(f.values)})).filter(f=>f.name.trim()&&f.options.length)}
 function combinations(factors){if(!factors.length)return [];let combos=[{key:'',parts:[]}];for(const f of factors){combos=combos.flatMap(c=>f.options.map(v=>({key:JSON.stringify([...c.parts.map(p=>[p.id,p.value]),[f.id,v]].sort((a,b)=>a[0].localeCompare(b[0]))),parts:[...c.parts,{id:f.id,name:f.name,value:v}]})))}return combos}
 function desired(){return combinations(activeFactors()).map(c=>({...c,replicates:Math.max(1,Number(state.counts[c.key])||1)}))}
-/* Compact allocation. A whole replicate group fits in one row (or column)
-   whenever a contiguous run exists; unused cells are allowed at line ends. */
+/* Group by the primary factor before assigning secondary-factor replicates.
+   A complete primary group gets one horizontal/vertical run where possible;
+   groups too large or irregular to fit fall back to compact condition runs. */
 function place(availableCoords,combos,rows,cols,order='rows'){
  const colFirst=order==='columns',availableSet=new Set(availableCoords),out={},occupied=new Set();
  const total=combos.reduce((n,c)=>n+c.replicates,0);
@@ -26,30 +27,42 @@ function place(availableCoords,combos,rows,cols,order='rows'){
  const ordered=[];
  if(colFirst){for(let c=0;c<cols;c++)for(let r=0;r<rows;r++)ordered.push(cellName(r,c))}
  else{for(let r=0;r<rows;r++)for(let c=0;c<cols;c++)ordered.push(cellName(r,c))}
- const pos=new Map(ordered.map((w,i)=>[w,i])),lineLength=colFirst?rows:cols;
- let cursor=0;
+ const lineLength=colFirst?rows:cols;let cursor=0;
+ const groups=[];
  for(const combo of combos){
-  const needed=combo.replicates;
-  let chosen=[];
-  if(needed<=lineLength){
-   function findRun(begin,finish){
-    for(let i=begin;i+needed<=finish;i++){
-     const line=Math.floor(i/lineLength);
-     if(Math.floor((i+needed-1)/lineLength)!==line)continue;
-     const run=ordered.slice(i,i+needed);
-     if(run.every(w=>availableSet.has(w)&&!occupied.has(w)))return run;
-    }
-    return [];
-   }
-   chosen=findRun(cursor,ordered.length);
-   if(!chosen.length)chosen=findRun(0,ordered.length);
+  const first=combo.parts?.[0],key=first?JSON.stringify([first.id,first.value]):combo.key;
+  let g=groups.find(x=>x.key===key);
+  if(!g){g={key,combos:[],count:0};groups.push(g)}
+  g.combos.push(combo);g.count+=combo.replicates;
+ }
+ function findRun(count,preferFresh){
+  if(count>lineLength)return [];
+  const runs=[];
+  for(let i=0;i+count<=ordered.length;i++){
+   if(Math.floor(i/lineLength)!==Math.floor((i+count-1)/lineLength))continue;
+   const run=ordered.slice(i,i+count);
+   if(run.every(w=>availableSet.has(w)&&!occupied.has(w)))runs.push({run,line:Math.floor(i/lineLength),start:i%lineLength,index:i});
   }
-  if(!chosen.length){
-   chosen=[...ordered.slice(cursor),...ordered.slice(0,cursor)].filter(w=>availableSet.has(w)&&!occupied.has(w)).slice(0,needed);
+  if(!runs.length)return [];
+  if(preferFresh){const unused=runs.filter(({line})=>ordered.slice(line*lineLength,(line+1)*lineLength).every(w=>!occupied.has(w)));
+   if(unused.length)return unused[0].run;}
+  return (runs.find(x=>x.index>=cursor)||runs[0]).run;
+ }
+ function write(combo,wells){
+  if(wells.length!==combo.replicates)throw Error('Not enough unoccupied wells for all conditions.');
+  wells.forEach(w=>{occupied.add(w);out[w]={labels:combo.parts.map(p=>p.value),factorNames:combo.parts.map(p=>p.name),group:combo.key}});
+  cursor=Math.max(cursor,...wells.map(w=>ordered.indexOf(w)+1));
+ }
+ for(const group of groups){
+  // Keep all the secondary-factor conditions for a primary value in one row.
+  const groupRun=group.combos.length>1?findRun(group.count,true):[];
+  if(groupRun.length){let at=0;for(const combo of group.combos){write(combo,groupRun.slice(at,at+combo.replicates));at+=combo.replicates}continue}
+  // The group cannot occupy one intact row/column; keep individual conditions compact.
+  for(const combo of group.combos){
+   let run=findRun(combo.replicates,false);
+   if(!run.length)run=ordered.filter(w=>availableSet.has(w)&&!occupied.has(w)).slice(0,combo.replicates);
+   write(combo,run);
   }
-  if(chosen.length!==needed)throw Error('Not enough unoccupied wells for all conditions.');
-  chosen.forEach(w=>{occupied.add(w);out[w]={labels:combo.parts.map(p=>p.value),factorNames:combo.parts.map(p=>p.name),group:combo.key}});
-  cursor=Math.max(cursor,...chosen.map(w=>pos.get(w)+1));
  }
  return out;
 }
@@ -159,18 +172,71 @@ function notify(message,problem=false){const el=$('pl-layout-status');el.textCon
 function selectionRect(start,end){const [r1,c1]=coord(start),[r2,c2]=coord(end);const arr=[];for(let r=Math.min(r1,r2);r<=Math.max(r1,r2);r++)for(let c=Math.min(c1,c2);c<=Math.max(c1,c2);c++)arr.push(cellName(r,c));return arr}
 function coord(w){const m=/^([A-P])(\d+)$/.exec(w);if(!m)throw Error('Invalid well coordinate');return [m[1].charCodeAt(0)-65,Number(m[2])-1]}
 function applySelection(region,mode,base){const result=new Set(base);if(mode==='replace')result.clear();for(const w of region){if(mode==='subtract')result.delete(w);else result.add(w)}return [...result]}
-function beginDrag(e){const well=e.target.closest('[data-well]');if(!well||e.button!==0)return;e.preventDefault();const start=well.dataset.well,mode=e.shiftKey||(state.mode==='move'&&!e.ctrlKey&&!e.metaKey&&!e.altKey)?'move':e.altKey?'subtract':e.ctrlKey||e.metaKey?'add':'replace';
- drag={start,last:start,mode,base:[...state.selection],moved:false};activeCell=start;renderPlate();}
-function moveDrag(e){if(!drag)return;const w=document.elementFromPoint(e.clientX,e.clientY)?.closest('[data-well]');if(!w)return;const dest=w.dataset.well;if(dest===drag.last)return;drag.last=dest;drag.moved=true;
- if(drag.mode!=='move'){state.selection=applySelection(selectionRect(drag.start,dest),drag.mode,drag.base);renderPlate()}}
-function finishDrag(){if(!drag)return;const {start,last,mode,base,moved}=drag;drag=null;suppressClick=true;
- if(mode==='move'){
-  if(moved&&start!==last){if(!state.assignments[start]){notify('The source well has no label to move.',true)}else{const existing=state.assignments[last]||null;state.assignments[last]=state.assignments[start];if(existing)state.assignments[start]=existing;else delete state.assignments[start];activeCell=last;notify(existing?`Swapped labels ${start} and ${last}.`:`Moved label ${start} → ${last}.`);}}
- }else if(moved || !state.assignments[start] || mode!=='replace') state.selection=applySelection(selectionRect(start,last),mode,base);
- renderPlate();updateNote();persist();}
+/* Translate a selected multiwell block without changing relative well positions.
+   Reject partial moves and collisions; no label is silently overwritten. */
+function moveBlock(assignments,selection,start,end,rows,cols){
+ const picked=selection.includes(start)?selection.filter(w=>assignments[w]):[];
+ const sources=picked.length?picked:(assignments[start]?[start]:[]);
+ if(!sources.length)throw Error('Select labeled wells to move.');
+ const [r0,c0]=coord(start),[r1,c1]=coord(end),dr=r1-r0,dc=c1-c0;
+ const targets=sources.map(w=>{const [r,c]=coord(w);return [r+dr,c+dc]});
+ if(targets.some(([r,c])=>r<0||c<0||r>=rows||c>=cols))throw Error('Cannot move the selected group beyond the plate edge. No labels were changed.');
+ const destinations=targets.map(([r,c])=>cellName(r,c));
+ const srcSet=new Set(sources);
+ const occupied=destinations.filter(w=>!srcSet.has(w)&&assignments[w]);
+ if(occupied.length&&sources.length>1)throw Error(`Move blocked: ${occupied.join(', ')} already contain labels. No labels were changed.`);
+ const next={...assignments};
+ if(occupied.length&&sources.length===1)next[start]=assignments[end]; // Preserve single-well swap.
+ else sources.forEach(w=>delete next[w]);
+ sources.forEach((w,i)=>next[destinations[i]]=assignments[w]);
+ return {assignments:next,selection:destinations,sourceCount:sources.length};
+}
+function beginDrag(e){
+ const well=e.target.closest('[data-well]');if(!well||e.button!==0)return;
+ e.preventDefault();const start=well.dataset.well,selected=state.selection.includes(start);
+ const mode=e.altKey?'subtract':e.ctrlKey||e.metaKey?'add':e.shiftKey?'shift':state.mode==='move'||(selected&&Boolean(state.assignments[start]))?'move':'replace';
+ drag={start,last:start,mode,base:[...state.selection],moved:false};activeCell=start;renderPlate();
+}
+function moveDrag(e){
+ if(!drag)return;
+ const w=document.elementFromPoint(e.clientX,e.clientY)?.closest('[data-well]');if(!w)return;
+ const dest=w.dataset.well;if(dest===drag.last)return;
+ drag.last=dest;drag.moved=true;
+ if(drag.mode!=='move'&&drag.mode!=='shift'){
+  state.selection=applySelection(selectionRect(drag.start,dest),drag.mode,drag.base);renderPlate();
+ }
+}
+function finishDrag(){
+ if(!drag)return;
+ const {start,last,mode,base,moved}=drag;drag=null;suppressClick=true;
+ if(moved&&(mode==='move'||mode==='shift')){
+  try{
+   const [rows,cols]=dimensions();
+   const result=moveBlock(state.assignments,base,start,last,rows,cols);
+   state.assignments=result.assignments;state.selection=result.selection;
+   activeCell=last;selectionAnchor=last;
+   notify(`Moved ${result.sourceCount} labeled well${result.sourceCount===1?'':'s'} to ${result.selection.join(', ')}.`);
+  }catch(err){notify(err.message,true)}
+ }else if(!moved&&mode==='shift'){
+  const anchor=selectionAnchor||base[0]||start;
+  state.selection=applySelection(selectionRect(anchor,start),'add',base);
+  if(!selectionAnchor)selectionAnchor=anchor;
+ }else if(!moved&&mode==='add'){
+  const chosen=new Set(base);if(chosen.has(start))chosen.delete(start);else chosen.add(start);
+  state.selection=[...chosen];selectionAnchor=start;
+ }else if(!moved&&mode==='subtract'){
+  state.selection=base.filter(w=>w!==start);selectionAnchor=start;
+ }else if(!moved&&mode==='replace'){
+  state.selection=[start];selectionAnchor=start;
+ }else if(moved){
+  state.selection=applySelection(selectionRect(start,last),mode,base);
+  selectionAnchor=start;
+ }
+ renderPlate();updateNote();persist();
+}
 function generate(){syncFactors();const factors=activeFactors(),combos=desired();if(!factors.length)return notify('Enter a factor with at least one value.',true);if(!combos.every(c=>Number.isInteger(c.replicates)&&c.replicates>0))return notify('Replicates must be positive whole numbers.',true);
  if(Object.keys(state.assignments).length&&!window.confirm('Replace the current plate labels with a newly generated layout? Manual edits will be overwritten.'))return;
- try{const [rows,cols]=dimensions();state.assignments=place(available(),combos,rows,cols,state.fillOrder);state.generatedAt=new Date().toISOString();activeCell=null;renderPlate();updateNote();persist();notify(`Assigned ${Object.keys(state.assignments).length} wells across ${combos.length} conditions.`)}catch(e){notify(e.message,true)}
+ try{const [rows,cols]=dimensions();state.assignments=place(available(),combos,rows,cols,state.fillOrder);state.generatedAt=new Date().toISOString();activeCell=null;selectionAnchor=null;renderPlate();updateNote();persist();notify(`Assigned ${Object.keys(state.assignments).length} wells across ${combos.length} conditions.`)}catch(e){notify(e.message,true)}
 }
 function syncFactors(){state.factors.forEach(f=>{const name=$('pl-factors').querySelector(`[data-fname="${f.id}"]`),values=$('pl-factors').querySelector(`[data-fvalues="${f.id}"]`);if(name)f.name=name.value;if(values)f.values=values.value});}
 function fileDownload(text,name,type='text/plain'){const blob=new Blob([text],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),2000)}
@@ -186,7 +252,7 @@ function bind(){const grid=$('pl-grid');grid.addEventListener('pointerdown',e=>{
  // Keyboard support: arrow navigation is native via tab, Enter opens the inline editor.
  grid.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const w=e.target.closest('[data-well]');if(w){activeCell=w.dataset.well;renderPlate();$('pl-edit-0').focus()}});
  $('pl-grid').addEventListener('input',e=>{const t=e.target;if(t.matches('[data-row-note]'))state.rowNotes[t.dataset.rowNote]=t.value;else if(t.matches('[data-column-note]'))state.colNotes[t.dataset.columnNote]=t.value;else return;persist();updateNote()});
- $('pl-format').addEventListener('change',e=>{const selected=state.selection.length||Object.keys(state.assignments).length;if(selected&&!confirm('Changing plate format clears selection and current labels. Continue?')){e.target.value=state.format;return}state.format=e.target.value;state.selection=[];state.assignments={};state.rowNotes={};state.colNotes={};activeCell=null;renderCombinations();renderPlate();updateNote();persist()});
+ $('pl-format').addEventListener('change',e=>{const selected=state.selection.length||Object.keys(state.assignments).length;if(selected&&!confirm('Changing plate format clears selection and current labels. Continue?')){e.target.value=state.format;return}state.format=e.target.value;state.selection=[];state.assignments={};state.rowNotes={};state.colNotes={};activeCell=null;selectionAnchor=null;renderCombinations();renderPlate();updateNote();persist()});
  $('pl-fill-order').addEventListener('change',e=>{state.fillOrder=e.target.value==='columns'?'columns':'rows';persist();notify('Fill preference saved. Click Generate to apply it; current labels are unchanged.')});$('pl-transpose').addEventListener('click',transposeCurrent);$('pl-mode').addEventListener('change',syncMeta);$('pl-title').addEventListener('input',syncMeta);$('pl-notes').addEventListener('input',syncMeta);
  $('pl-all').addEventListener('click',()=>{state.selection=[];renderPlate();persist();notify('Entire plate available for layout.')});$('pl-clear').addEventListener('click',()=>{if(Object.keys(state.assignments).length&&!confirm('Clear all well labels from the current plate? Saved layouts remain available.'))return;state.assignments={};activeCell=null;renderPlate();updateNote();persist();notify('All well labels cleared. Selected well areas are unchanged.')});
  $('pl-factors').addEventListener('input',e=>{if(!e.target.matches('[data-fname],[data-fvalues]'))return;syncFactors();renderCombinations();persist()});
@@ -198,13 +264,13 @@ function bind(){const grid=$('pl-grid');grid.addEventListener('pointerdown',e=>{
  $('pl-copy-table').addEventListener('click',copyPlateTable);$('pl-copy-conditions').addEventListener('click',copyConditionsTable);
  $('pl-generate').addEventListener('click',generate);$('pl-save-label').addEventListener('click',()=>{if(activeCell)updateEditorFields();persist()});$('pl-remove-label').addEventListener('click',()=>{if(activeCell){delete state.assignments[activeCell];renderPlate();updateNote();persist()}});
  $('pl-save').addEventListener('click',save);$('pl-copy').addEventListener('click',copyNote);$('pl-tsv').addEventListener('click',downloadTSV);
- $('pl-new').addEventListener('click',()=>{if(!confirm('Start a new blank plate layout? Your saved layouts remain available.'))return;state=defaults();checkedCombinations.clear();activeCell=null;persist();refreshAll()});
- $('pl-load').addEventListener('click',()=>{const src=saved.find(x=>x.id===$('pl-saved').value);if(!src)return notify('Choose a saved layout.',true);state=normalize(structuredClone(src));checkedCombinations.clear();activeCell=null;persist();refreshAll();notify('Saved plate layout loaded. You can edit and save it as another version.')});
+ $('pl-new').addEventListener('click',()=>{if(!confirm('Start a new blank plate layout? Your saved layouts remain available.'))return;state=defaults();checkedCombinations.clear();activeCell=null;selectionAnchor=null;persist();refreshAll()});
+ $('pl-load').addEventListener('click',()=>{const src=saved.find(x=>x.id===$('pl-saved').value);if(!src)return notify('Choose a saved layout.',true);state=normalize(structuredClone(src));checkedCombinations.clear();activeCell=null;selectionAnchor=null;persist();refreshAll();notify('Saved plate layout loaded. You can edit and save it as another version.')});
  $('pl-delete').addEventListener('click',()=>{const id=$('pl-saved').value;if(!id)return notify('Choose a saved layout.',true);if(!confirm('Permanently delete this saved layout?'))return;saved=saved.filter(x=>x.id!==id);persist();renderSaved();notify('Saved layout deleted. Current working map is unchanged.')});
  $('pl-export').addEventListener('click',()=>{syncMeta();syncFactors();fileDownload(JSON.stringify({version:1,draft:state,saved,exportedAt:new Date().toISOString()},null,2),'LabChem-plates-backup.json','application/json')});
- $('pl-import').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{const data=JSON.parse(await file.text());if(data.version!==1||!Array.isArray(data.saved)||!data.draft)throw Error('Unsupported layout backup.');if(!confirm('Replace the current plate draft and all saved plate layouts with the selected backup? Dosing records will not change.'))return;state=normalize(data.draft);saved=data.saved.map(normalize);checkedCombinations.clear();activeCell=null;persist();refreshAll();notify('Plate layouts restored successfully.')}catch(err){notify('Import failed: '+err.message,true)}finally{e.target.value=''}});
+ $('pl-import').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{const data=JSON.parse(await file.text());if(data.version!==1||!Array.isArray(data.saved)||!data.draft)throw Error('Unsupported layout backup.');if(!confirm('Replace the current plate draft and all saved plate layouts with the selected backup? Dosing records will not change.'))return;state=normalize(data.draft);saved=data.saved.map(normalize);checkedCombinations.clear();activeCell=null;selectionAnchor=null;persist();refreshAll();notify('Plate layouts restored successfully.')}catch(err){notify('Import failed: '+err.message,true)}finally{e.target.value=''}});
 }
 function init(){if(!$('pl-grid'))return;bootStored();bind();refreshAll()}
-window.PlateLayoutCore={SHAPES,place,transposeMap,combinations,splitValues,cellName,applySelection,selectionRect,plateHTML,plateTable,conditionHTML,conditionTable};
+window.PlateLayoutCore={SHAPES,place,moveBlock,transposeMap,combinations,splitValues,cellName,applySelection,selectionRect,plateHTML,plateTable,conditionHTML,conditionTable};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
