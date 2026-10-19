@@ -22,21 +22,23 @@
 .plate-topline .btn{flex:0 0 auto}
 .plate-instructions{line-height:1.6;margin-bottom:8px}
 .plate-counter{font-size:12px;font-weight:600;color:#34475a;margin:10px 0}
-.plate-grid-scroll{overflow-x:auto;max-width:100%;border:1px solid #d4dce2;border-radius:4px;padding:12px;background:#fff}
-.simple-plate-grid{display:grid;grid-template-columns:44px repeat(var(--plate-cols), 89px);gap:4px;width:max-content;user-select:none;touch-action:pan-y}
-.pl-header{display:flex;align-items:center;justify-content:center;min-height:25px;font:600 12px/1.1 inherit;color:#4b5968}
+.plate-grid-scroll{overflow-x:auto;max-width:100%;border:1px solid #cbd4dd;border-radius:0;padding:12px;background:#fff}
+.simple-plate-grid{display:grid;grid-template-columns:38px repeat(var(--plate-cols), 108px);gap:6px;width:max-content;user-select:none;touch-action:pan-y}
+.pl-header{display:flex;align-items:center;justify-content:center;min-height:27px;font:700 12px/1.15 Arial,sans-serif;color:#3e5365}
 .pl-corner{background:transparent}
-.pl-well{border:1px solid #c8d2dc;background:#fff;border-radius:3px;min-width:0;min-height:65px;padding:4px 3px;position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:2px;cursor:crosshair;color:#222;overflow:hidden;font-family:inherit;box-shadow:none;text-align:center}
-.pl-well:hover{border-color:#637487;background:#f5f7f8}
-.pl-well.pl-selected{background:#e5e9ed;border-color:#7d8994}
-.pl-well.pl-assigned{background:#f0f2f3;border-color:#98a3ad}
-.pl-well.pl-assigned.pl-selected{background:#e4e8ec}
-.pl-well.pl-unselected:not(.pl-assigned){background:#fafafa;color:#a5aab0}
-.pl-well.pl-focus{outline:2px solid #536878;outline-offset:-3px}
-.pl-coord{font-size:9px;color:#7b858f;position:absolute;top:2px;left:4px;font-weight:400}
-.pl-primary{font-size:12px;font-weight:700;line-height:1.12;max-width:100%;overflow-wrap:anywhere}
-.pl-secondary{font-size:10px;font-weight:400;line-height:1.1;max-width:100%;overflow-wrap:anywhere;color:#53606d}
-.pl-tertiary{font-size:9px;font-weight:400;line-height:1.1;max-width:100%;overflow-wrap:anywhere;color:#727c86;font-style:italic}
+.pl-well{border:1px solid #9aa9b7;background:#fff;border-radius:0;min-width:0;min-height:90px;padding:0;position:relative;display:flex;flex-direction:column;justify-content:flex-start;align-items:stretch;cursor:crosshair;color:#192d3d;overflow:hidden;font:inherit;box-shadow:none;text-align:left}
+.pl-well:hover{border-color:#385b72;background:#f4f8fb}
+.pl-well.pl-selected{background:#e5edf5;border-color:#68839a}
+.pl-well.pl-assigned{background:#eaf3f8;border-color:#668198}
+.pl-well.pl-assigned.pl-selected{background:#dbeaf5}
+.pl-well.pl-unselected:not(.pl-assigned){background:#fafbfc;color:#a5aab0}
+.pl-well.pl-focus{outline:2px solid #395f77;outline-offset:-2px}
+.pl-coord{display:block;padding:4px 6px;border-bottom:1px solid #cfdae3;background:#edf1f4;font-size:10px;line-height:1.2;color:#3c5161;font-weight:700;text-align:left}
+.pl-labels{display:flex;flex-direction:column;justify-content:center;align-items:stretch;gap:4px;min-height:62px;padding:7px 6px 9px}
+.pl-primary,.pl-secondary,.pl-tertiary{display:block;max-width:100%;overflow-wrap:anywhere;word-break:break-word}
+.pl-primary{font-size:13px;font-weight:700;line-height:1.24;color:#102b3e}
+.pl-secondary{font-size:11px;font-weight:500;line-height:1.24;color:#3a5368}
+.pl-tertiary{font-size:10px;font-weight:400;line-height:1.2;color:#607385}
 .plate-legend-plain{font-size:11px;color:#677482;margin-top:8px}
 .plate-panels{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-bottom:16px}
 .plate-panels>.panel{min-width:0}
@@ -63,4 +65,4 @@
 .plate-saved-controls>.field{min-width:240px;flex:1 1 300px;max-width:500px}
 .plate-note-preview{white-space:pre-wrap;overflow:auto;max-height:300px;font:11px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;color:#334054;background:#f8f9fa;border:1px solid #d9e0e6;padding:12px;border-radius:3px}
 @media(max-width:900px){.plate-panels{grid-template-columns:1fr}.plate-edit-fields{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:540px){.plate-edit-fields{grid-template-columns:1fr}.plate-topline .field{max-width:none}.simple-plate-grid{grid-template-columns:32px repeat(var(--plate-cols),76px)}.pl-well{min-height:57px}}
+@media(max-width:540px){.plate-edit-fields{grid-template-columns:1fr}.plate-topline .field{max-width:none}.simple-plate-grid{grid-template-columns:32px repeat(var(--plate-cols),90px)}.pl-well{min-height:76px}}
