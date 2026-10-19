@@ -119,3 +119,33 @@
 .plate-factor-row:nth-child(2) .pl-number{color:#1E5196}
 .plate-factor-row:nth-child(3) .pl-number{color:#216A45}
 .plate-factor-row:nth-child(4) .pl-number{color:#68428B}
+
+/* Plate viewport fit: full-width 96-well map, scroll on narrow displays */
+@media (min-width: 1000px) {
+  .content:has(#page-plate.active) {
+    width: 100%;
+    max-width: none;
+    padding-left: clamp(16px, 2vw, 34px);
+    padding-right: clamp(16px, 2vw, 34px);
+  }
+}
+#page-plate .plate-grid-scroll {
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+}
+#page-plate .simple-plate-grid {
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: minmax(80px, 96px) repeat(var(--plate-cols), minmax(65px, 1fr));
+  gap: 5px;
+}
+#page-plate .pl-well,
+#page-plate .pl-axis-header {
+  min-width: 0;
+}
+@media (max-width: 999px) {
+  #page-plate .simple-plate-grid {
+    grid-template-columns: 82px repeat(var(--plate-cols), minmax(82px, 1fr));
+  }
+}
