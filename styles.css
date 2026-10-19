@@ -2,3 +2,10 @@
 
 /* Dosing preparation strategies and compact, copy-friendly summary */
 .strategy-switch{margin:8px 0 17px;padding:12px 13px;background:#f7fafb;border:1px solid #e1eaee;border-radius:9px}.strategy-switch .result-section-title{margin:0 0 8px}.strategy-buttons{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:7px}.strategy-buttons .btn{font-size:11px;padding:7px 9px}.strategy-buttons .btn.selected{background:#e0f3ee;color:#006f66;border-color:#52ad9e}.dose-summary{min-width:790px;white-space:nowrap}.dose-summary th:nth-child(5),.dose-summary td:nth-child(5){min-width:152px}.dose-summary td:nth-child(1){color:#24445a}.dose-summary td:nth-child(3){color:#41677b}.dose-summary tr:hover td{background:#fbfdfd}
+
+/* Per-concentration well quantities and compact master-mix output */
+.dose-wells-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:9px;margin-top:8px}
+.dose-well-item{display:flex;align-items:center;justify-content:space-between;gap:9px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:7px 9px;font-size:12px;font-weight:600}
+.dose-well-item input{width:62px;min-width:0;padding:6px 7px;border:1px solid var(--border);border-radius:6px;background:var(--panel);color:var(--ink);font:inherit;text-align:center}
+.dose-summary .mix-cell{min-width:150px;white-space:normal;line-height:1.6}
+.dose-summary th{white-space:nowrap}
