@@ -73,3 +73,11 @@ A label grid is **not randomization**. Review biological replicates, plate-edge 
 - **Axis annotations:** Add arbitrary text beside each plate row (A–H on 96-well plates) and beneath the numbered column headers (1–12). These notes are separate from well labels, persist with saved layouts and JSON backups, and are included in exports.
 - **Copy for OneNote:** **Copy condition table** and **Copy plate table** use `text/html` plus `text/plain` clipboard formats; supported apps like OneNote can paste an actual bordered table. **Copy plate note** includes layout metadata and the full table with row/column annotations. Plain-text fallback is used if the browser does not support formatted clipboard writes.
 - **Module isolation:** This changes only the independent plate layout. The dosing calculator has not been coupled to the plate layout.
+
+## Plate layout (v4)
+
+- Row/column notes are edited **within the same header cells** as the letters/numbers and included in exports. No separate axis-note row or column is added.
+- **Auto-fill direction:** `Rows first` (default, compact horizontal rows) or `Columns first` (vertical columns). Changing the setting only changes the next generated layout; existing labels stay put until Generate.
+- **Transpose current map:** swaps the axes of assigned wells and explicitly selected wells if the transposed bounding area fits the current plate. The action leaves the map unchanged if it would overflow. Axis notes stay attached to the physical row and column labels.
+- **Copy plate table / Copy plate note:** HTML clipboard table with bold larger primary-factor values, subdued smaller secondary text, and finer tertiary labels. Falls back to plain text when the rich clipboard is unavailable.
+- Row and column notes remain editable and persistent in saved layouts, backups, and TSV exports.
