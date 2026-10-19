@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="Local-first laboratory chemical preparation, dosing calculator and digital lab note records." />
   <title>Lab Chemical Manager</title>
-  <link rel="stylesheet" href="styles.css?v=primary-groups-multimove-2" />
+  <link rel="stylesheet" href="styles.css?v=factor-colors-20261019-1" />
   <script src="app.js" defer></script>
-  <script src="plate.js?v=primary-groups-multimove-2" defer></script>
+  <script src="plate.js?v=factor-colors-20261019-1" defer></script>
 </head>
 <body>
   <div class="app-shell">
@@ -48,7 +48,7 @@
             </div>
             <p class="tiny muted plate-instructions"><strong>Selection:</strong> click a well, then Shift-click another to select a range; Ctrl/⌘-click toggles individual wells. Drag across empty wells to select a rectangle; Ctrl/⌘-drag adds areas; Alt-drag subtracts. <strong>Move multiple wells:</strong> select the labeled wells, then drag one of the highlighted labels to its destination. The whole group moves together. In Move labels mode, dragging an unselected label moves it individually. Double-click a well to edit its text.</p>
             <div id="pl-selection-count" class="plate-counter" aria-live="polite">All wells available</div>
-            <div class="plate-placement-controls"><label class="field"><span>Auto-fill direction</span><select id="pl-fill-order"><option value="rows">Rows first (left → right, then down)</option><option value="columns">Columns first (top → bottom, then right)</option></select></label><button class="btn" id="pl-transpose" type="button" title="Swap the rows and columns of the current well map if the transposed pattern fits">Transpose current map</button><span class="tiny muted">Direction applies on Generate. Transpose rotates the existing assignment axes only if they fit the plate.</span></div><div class="action-row plate-grid-actions"><button class="btn" id="pl-copy-table">Copy plate table</button><span class="tiny muted">Formatted table for OneNote, including row and column notes</span></div><div class="plate-grid-scroll"><div id="pl-grid" class="simple-plate-grid" role="grid" aria-label="Well plate layout"></div></div>
+            <div class="plate-placement-controls"><label class="field"><span>Auto-fill direction</span><select id="pl-fill-order"><option value="rows">Rows first (left → right, then down)</option><option value="columns">Columns first (top → bottom, then right)</option></select></label><button class="btn" id="pl-transpose" type="button" title="Swap the rows and columns of the current well map if the transposed pattern fits">Transpose current map</button><span class="tiny muted">Direction applies on Generate. Transpose rotates the existing assignment axes only if they fit the plate.</span></div><div class="action-row plate-grid-actions"><button class="btn" id="pl-copy-table">Copy plate table</button><span class="tiny muted">Formatted table for OneNote, including row and column notes</span></div><div id="pl-factor-legend" class="pl-factor-legend" aria-label="Factor label colors"></div><div class="plate-grid-scroll"><div id="pl-grid" class="simple-plate-grid" role="grid" aria-label="Well plate layout"></div></div>
             <div class="plate-legend-plain">Empty = available · Gray = manually selected · Labeled = assigned · The plate stays editable after generating</div>
           </div>
           <div class="plate-panels">
