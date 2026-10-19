@@ -12,6 +12,8 @@ const splitValues=s=>String(s||'').split(/[,;\n]+/).map(x=>x.trim()).filter(Bool
 const FACTOR_COLORS=['#A41E22','#1E5196','#216A45','#68428B'];
 const FACTOR_RANKS=['Primary','Secondary','Third','Fourth'];
 function legendEntries(source='plate'){
+ // Factor identity comes from the live editor, not old well assignments.
+ // Keep an unnamed fallback for manually entered third/fourth labels.
  const current=activeFactors().map(x=>x.name.trim());
  let count=current.length;
  if(source==='plate')for(const r of Object.values(state.assignments)){
@@ -104,15 +106,42 @@ function transposeMap(assignments,selection,rows,cols){
  for(const [w,data] of Object.entries(assignments))swapped[target(w)]=structuredClone(data);
  return {assignments:swapped,selection:selection.map(target),oldSize:[height,width],newSize:[width,height]};
 }
-function renderPlate(){const [rows,cols]=dimensions(),selected=new Set(state.selection),hasSelected=selected.size>0;const grid=$('pl-grid');grid.style.setProperty('--plate-cols',cols);
+function renderPlate(){
+ const [rows,cols]=dimensions(),isMove=state.mode==='move';
+ const selected=new Set(state.selection),hasSelected=selected.size>0;
+ const preview=drag?.mode==='move'?drag.preview:null;
+ const assignments=preview?.assignments||state.assignments;
+ const targetSet=new Set(preview?.selection||[]);
+ const sourceSet=new Set(drag?.mode==='move'?drag.sources||[]:[]);
+ const changedSet=new Set(preview?.displaced||[]);
+ const grid=$('pl-grid');grid.style.setProperty('--plate-cols',cols);
  let h='<span class="pl-header pl-corner"></span>';
  for(let c=1;c<=cols;c++)h+=`<label class="pl-header pl-axis-header pl-col-axis"><span class="pl-axis-id">${c}</span><input data-column-note="${c}" aria-label="Note for column ${c}" type="text" value="${esc(state.colNotes[c]||'')}" placeholder="Note" title="Optional note for column ${c}"/></label>`;
- for(let r=0;r<rows;r++){const row=String.fromCharCode(65+r);h+=`<label class="pl-header pl-axis-header pl-row-axis"><span class="pl-axis-id">${row}</span><input data-row-note="${row}" aria-label="Note for row ${row}" value="${esc(state.rowNotes[row]||'')}" placeholder="Note" title="Optional note for row ${row}"/></label>`;
- for(let c=0;c<cols;c++){const pos=cellName(r,c),record=state.assignments[pos],disabled=hasSelected&&!selected.has(pos),selectedHere=selected.has(pos);let classes='pl-well'+(record?' pl-assigned':'')+(selectedHere?' pl-selected':'')+(disabled?' pl-unselected':'')+(activeCell===pos?' pl-focus':'');let labels=record?.labels||[],labelText=labels.filter(Boolean).map(x=>String(x)).join(' | ');
- h+=`<button type="button" class="${classes}" data-well="${pos}" role="gridcell" title="${esc(pos+(labelText?' — '+labelText:''))}" aria-label="${esc(pos+(labelText?' '+labelText:''))}"><span class="pl-coord">${pos}</span><span class="pl-labels"><span class="pl-primary">${esc(labels[0]||'')}</span>${labels.length>1?`<span class="pl-secondary">${esc(labels[1])}</span>`:''}${labels[2]?`<span class="pl-tertiary">${esc(labels[2])}</span>`:''}${labels[3]?`<span class="pl-quaternary">${esc(labels[3])}</span>`:''}</span></button>`;
- }}grid.innerHTML=h;renderFactorLegend();
- $('pl-selection-count').textContent=hasSelected?`${selected.size} selected / ${numberOfWells(state.format)} total wells · ${Object.keys(state.assignments).length} labeled`: `Entire ${state.format}-well plate available · ${Object.keys(state.assignments).length} labeled`;
- $('pl-current-well').textContent=activeCell?`Well ${activeCell} · manual changes affect this well only`:'Click or double-click a well to edit its labels';
+ for(let r=0;r<rows;r++){
+  const row=String.fromCharCode(65+r);
+  h+=`<label class="pl-header pl-axis-header pl-row-axis"><span class="pl-axis-id">${row}</span><input data-row-note="${row}" aria-label="Note for row ${row}" value="${esc(state.rowNotes[row]||'')}" placeholder="Note" title="Optional note for row ${row}"/></label>`;
+  for(let c=0;c<cols;c++){
+   const pos=cellName(r,c),record=assignments[pos],disabled=!isMove&&hasSelected&&!selected.has(pos),selectedHere=selected.has(pos);
+   const classes='pl-well'+(record?' pl-assigned':'')+(selectedHere?' pl-selected':'')+(disabled?' pl-unselected':'')+(activeCell===pos?' pl-focus':'')+(sourceSet.has(pos)?' pl-move-origin':'')+(targetSet.has(pos)?' pl-drop-target':'')+(changedSet.has(pos)?' pl-ripple':'')+(drag?.invalid===pos?' pl-drop-invalid':'');
+   const labels=record?.labels||[],labelText=labels.filter(Boolean).map(x=>String(x)).join(' | ');
+   h+=`<button type="button" class="${classes}" data-well="${pos}" role="gridcell" title="${esc(pos+(labelText?' — '+labelText:''))}" aria-label="${esc(pos+(labelText?' '+labelText:''))}" aria-selected="${selectedHere?'true':'false'}"><span class="pl-coord">${pos}</span><span class="pl-labels"><span class="pl-primary">${esc(labels[0]||'')}</span>${labels.length>1?`<span class="pl-secondary">${esc(labels[1])}</span>`:''}${labels[2]?`<span class="pl-tertiary">${esc(labels[2])}</span>`:''}${labels[3]?`<span class="pl-quaternary">${esc(labels[3])}</span>`:''}</span></button>`;
+  }
+ }
+ grid.innerHTML=h;renderFactorLegend();
+ const chosen=[...selected].sort((a,b)=>wellIndex(a,cols)-wellIndex(b,cols));
+ const isContinuous=contiguous(chosen,cols);
+ const countLabeled=chosen.filter(w=>state.assignments[w]).length;
+ $('pl-selection-count').textContent=hasSelected?`${selected.size} selected (${countLabeled} labeled) · ${chosen.length===1?chosen[0]:`${chosen[0]}–${chosen.at(-1)}`} · ${isContinuous?'Consecutive':'Not consecutive'} · ${Object.keys(state.assignments).length} total labeled`: `No wells selected · ${Object.keys(state.assignments).length} labeled on ${state.format}-well plate`;
+ $('pl-selection-count').classList.toggle('pl-selection-active',hasSelected);
+ const feedback=$('pl-drag-preview');
+ if(feedback){
+  if(drag?.mode==='move'){
+   feedback.hidden=false;
+   feedback.className='pl-drag-preview'+(drag.error?' pl-preview-error':'');
+   feedback.textContent=drag.error?`Cannot drop here: ${drag.error} · Release to cancel, or press Esc.`:preview?`PREVIEW · ${preview.sourceCount} labeled well${preview.sourceCount===1?'':'s'} → ${preview.selection[0]}–${preview.selection.at(-1)} · ${preview.displaced.length?'Other labels shift automatically.':'Empty destination.'} Release to apply · Esc to cancel.`:`Moving ${drag.sources.length} well${drag.sources.length===1?'':'s'} · Hover over a destination to preview · Esc to cancel.`;
+  }else{feedback.hidden=true;feedback.textContent=''}
+ }
+ $('pl-current-well').textContent=activeCell?`Well ${activeCell} · double-click to edit its labels`:'Click or double-click a well to edit its labels';
  renderEditor();
 }
 function renderFactors(){const el=$('pl-factors');el.innerHTML=state.factors.map((f,i)=>`<div class="plate-factor-row" data-factor="${esc(f.id)}"><span class="pl-number">${i+1}</span><input class="pl-fname" data-fname="${esc(f.id)}" value="${esc(f.name)}" placeholder="Factor ${i+1}" aria-label="Factor ${i+1} name"/><input class="pl-fvalues" data-fvalues="${esc(f.id)}" value="${esc(f.values)}" placeholder="e.g. 0, 0.05, 0.1" aria-label="Factor ${i+1} values"/><span class="plate-updown"><button type="button" data-movefactor="${esc(f.id)}" data-direction="-1" ${i===0?'disabled':''} title="Higher priority">↑</button><button type="button" data-movefactor="${esc(f.id)}" data-direction="1" ${i===state.factors.length-1?'disabled':''} title="Lower priority">↓</button></span></div>`).join('');}
@@ -194,63 +223,101 @@ function notify(message,problem=false){const el=$('pl-layout-status');el.textCon
 function selectionRect(start,end){const [r1,c1]=coord(start),[r2,c2]=coord(end);const arr=[];for(let r=Math.min(r1,r2);r<=Math.max(r1,r2);r++)for(let c=Math.min(c1,c2);c<=Math.max(c1,c2);c++)arr.push(cellName(r,c));return arr}
 function coord(w){const m=/^([A-P])(\d+)$/.exec(w);if(!m)throw Error('Invalid well coordinate');return [m[1].charCodeAt(0)-65,Number(m[2])-1]}
 function applySelection(region,mode,base){const result=new Set(base);if(mode==='replace')result.clear();for(const w of region){if(mode==='subtract')result.delete(w);else result.add(w)}return [...result]}
-/* Translate a selected multiwell block without changing relative well positions.
-   Reject partial moves and collisions; no label is silently overwritten. */
+/* A selection is consecutive if its occupied grid positions form one row-major
+   interval. The last cell of a row is next to the first cell of the next row. */
+function wellIndex(w,cols){const [r,c]=coord(w);return r*cols+c}
+function wellAt(i,cols){return cellName(Math.floor(i/cols),i%cols)}
+function contiguous(wells,cols){const n=[...new Set(wells)].map(w=>wellIndex(w,cols)).sort((a,b)=>a-b);return n.every((i,j)=>j===0||i===n[j-1]+1)}
+function linearRange(a,b,cols){const lo=Math.min(wellIndex(a,cols),wellIndex(b,cols)),hi=Math.max(wellIndex(a,cols),wellIndex(b,cols));return Array.from({length:hi-lo+1},(_,i)=>wellAt(lo+i,cols))}
+/* Move a consecutive block, following the grabbed well. A clear destination
+   is moved into directly. On collision, insert the block by rotating the
+   intervening plate cells, keeping every label, never swapping/overwriting. */
 function moveBlock(assignments,selection,start,end,rows,cols){
- const picked=selection.includes(start)?selection.filter(w=>assignments[w]):[];
- const sources=picked.length?picked:(assignments[start]?[start]:[]);
- if(!sources.length)throw Error('Select labeled wells to move.');
- const [r0,c0]=coord(start),[r1,c1]=coord(end),dr=r1-r0,dc=c1-c0;
- const targets=sources.map(w=>{const [r,c]=coord(w);return [r+dr,c+dc]});
- if(targets.some(([r,c])=>r<0||c<0||r>=rows||c>=cols))throw Error('Cannot move the selected group beyond the plate edge. No labels were changed.');
- const destinations=targets.map(([r,c])=>cellName(r,c));
- const srcSet=new Set(sources);
- const occupied=destinations.filter(w=>!srcSet.has(w)&&assignments[w]);
- if(occupied.length&&sources.length>1)throw Error(`Move blocked: ${occupied.join(', ')} already contain labels. No labels were changed.`);
- const next={...assignments};
- if(occupied.length&&sources.length===1)next[start]=assignments[end]; // Preserve single-well swap.
- else sources.forEach(w=>delete next[w]);
- sources.forEach((w,i)=>next[destinations[i]]=assignments[w]);
- return {assignments:next,selection:destinations,sourceCount:sources.length};
+ const total=rows*cols;
+ const picked=selection.includes(start)?[...new Set(selection)]:[start];
+ const sources=picked.sort((a,b)=>wellIndex(a,cols)-wellIndex(b,cols));
+ if(!sources.length||sources.some(w=>!assignments[w]))throw Error('Select only labeled wells for a group move.');
+ if(!contiguous(sources,cols))throw Error('The selected wells must be consecutive (row end connects to the next row). Use Shift-click to select one range.');
+ const indexes=sources.map(w=>wellIndex(w,cols));
+ const blockStart=indexes[0],count=sources.length,offset=wellIndex(start,cols)-blockStart;
+ const targetStart=wellIndex(end,cols)-offset;
+ if(targetStart<0||targetStart+count>total)throw Error('The selected block would extend outside this plate.');
+ const target=Array.from({length:count},(_,i)=>wellAt(targetStart+i,cols));
+ if(targetStart===blockStart)return {assignments:{...assignments},selection:target,sourceCount:count,displaced:[],method:'unchanged'};
+ const originals=Array.from({length:total},(_,i)=>assignments[wellAt(i,cols)]||null);
+ const block=originals.slice(blockStart,blockStart+count);
+ let after=originals.slice(),displaced=[],method='empty';
+ const sourceSet=new Set(indexes);
+ const clearTarget=Array.from({length:count},(_,i)=>targetStart+i).every(i=>sourceSet.has(i)||!after[i]);
+ if(clearTarget){
+  for(const i of indexes)after[i]=null;
+  for(let j=0;j<count;j++)after[targetStart+j]=block[j];
+ }else{
+  method='insert';
+  // Shift the occupants toward the next empty slots after the destination.
+  // We never move another label back into the origin, and never swap.
+  indexes.forEach(i=>after[i]=null);
+  const tail=after.slice(targetStart);
+  const shifted=[...block];
+  let freed=0;
+  for(const record of tail){
+   if(record===null&&freed<count){freed++;continue}
+   shifted.push(record);
+  }
+  if(freed!==count)throw Error('Not enough empty wells after the destination to insert without replacing labels. Choose another destination.');
+  after=after.slice(0,targetStart).concat(shifted);
+  if(after.length!==total)throw Error('Internal move size error.');
+  for(let i=0;i<total;i++)if(originals[i]!==after[i]&&!sourceSet.has(i)&&!(i>=targetStart&&i<targetStart+count)&&after[i])displaced.push(wellAt(i,cols));
+
+ }
+ const next={};after.forEach((record,i)=>{if(record)next[wellAt(i,cols)]=record});
+ return {assignments:next,selection:target,sourceCount:count,displaced,method};
 }
 function beginDrag(e){
  const well=e.target.closest('[data-well]');if(!well||e.button!==0)return;
- e.preventDefault();const start=well.dataset.well,selected=state.selection.includes(start);
- const mode=e.altKey?'subtract':e.ctrlKey||e.metaKey?'add':e.shiftKey?'shift':state.mode==='move'||(selected&&Boolean(state.assignments[start]))?'move':'replace';
- drag={start,last:start,mode,base:[...state.selection],moved:false};activeCell=start;renderPlate();
+ e.preventDefault();const start=well.dataset.well,selected=state.selection.includes(start),[rows,cols]=dimensions();
+ // Modifiers act on the selection; dragging a selected labeled block in Move
+ // mode moves it. In Select mode an existing selected group is also draggable.
+ const mode=e.altKey?'subtract':e.ctrlKey||e.metaKey?'add':e.shiftKey?'shift':(state.mode==='move'&&state.assignments[start])||(selected&&state.assignments[start])?'move':'replace';
+ const sources=mode==='move'?(selected?[...state.selection]:[start]):[];
+ drag={start,last:start,mode,base:[...state.selection],sources,moved:false,preview:null,error:null,invalid:null};
+ activeCell=start;renderPlate();
 }
 function moveDrag(e){
  if(!drag)return;
- const w=document.elementFromPoint(e.clientX,e.clientY)?.closest('[data-well]');if(!w)return;
- const dest=w.dataset.well;if(dest===drag.last)return;
+ const well=document.elementFromPoint(e.clientX,e.clientY)?.closest('[data-well]');
+ if(!well)return;
+ const dest=well.dataset.well;if(dest===drag.last)return;
  drag.last=dest;drag.moved=true;
- if(drag.mode!=='move'&&drag.mode!=='shift'){
+ if(drag.mode==='move'){
+  try{const [rows,cols]=dimensions();drag.preview=moveBlock(state.assignments,drag.sources,drag.start,dest,rows,cols);drag.error=null;drag.invalid=null}
+  catch(err){drag.preview=null;drag.error=err.message;drag.invalid=dest}
+  renderPlate();
+ }else if(drag.mode!=='shift'){
   state.selection=applySelection(selectionRect(drag.start,dest),drag.mode,drag.base);renderPlate();
  }
 }
 function finishDrag(){
  if(!drag)return;
- const {start,last,mode,base,moved}=drag;drag=null;suppressClick=true;
- if(moved&&(mode==='move'||mode==='shift')){
-  try{
-   const [rows,cols]=dimensions();
-   const result=moveBlock(state.assignments,base,start,last,rows,cols);
-   state.assignments=result.assignments;state.selection=result.selection;state.manualLayoutChanges=true;
-   activeCell=last;selectionAnchor=last;
-   notify(`Moved ${result.sourceCount} labeled well${result.sourceCount===1?'':'s'} to ${result.selection.join(', ')}.`);
-  }catch(err){notify(err.message,true)}
+ const {start,last,mode,base,moved,preview,error}=drag;drag=null;suppressClick=true;
+ if(mode==='move'&&moved){
+  if(preview&&!error&&preview.method!=='unchanged'){
+   state.assignments=preview.assignments;state.selection=preview.selection;state.manualLayoutChanges=true;
+   activeCell=preview.selection[0];selectionAnchor=activeCell;
+   notify(`Moved ${preview.sourceCount} label${preview.sourceCount===1?'':'s'} to ${preview.selection[0]}–${preview.selection.at(-1)}.${preview.method==='insert'?' Other labels shifted; none were replaced.':''}`);
+  }else if(error)notify('Move canceled: '+error,true);
  }else if(!moved&&mode==='shift'){
   const anchor=selectionAnchor||base[0]||start;
-  state.selection=applySelection(selectionRect(anchor,start),'add',base);
-  if(!selectionAnchor)selectionAnchor=anchor;
+  state.selection=linearRange(anchor,start,dimensions()[1]);
+  selectionAnchor=anchor;
  }else if(!moved&&mode==='add'){
   const chosen=new Set(base);if(chosen.has(start))chosen.delete(start);else chosen.add(start);
   state.selection=[...chosen];selectionAnchor=start;
  }else if(!moved&&mode==='subtract'){
   state.selection=base.filter(w=>w!==start);selectionAnchor=start;
- }else if(!moved&&mode==='replace'){
+ }else if(!moved&&mode==='replace'||!moved&&mode==='move'){
   state.selection=[start];selectionAnchor=start;
- }else if(moved){
+ }else if(moved&&mode!=='move'){
   state.selection=applySelection(selectionRect(start,last),mode,base);
   selectionAnchor=start;
  }
@@ -259,6 +326,8 @@ function finishDrag(){
 function plannedAvailable(combos){
  const needed=combos.reduce((total,c)=>total+c.replicates,0),all=allCoords();
  if(!state.selection.length||state.selection.length>=needed)return {wells:available(),clearSelection:false};
+ // An incidental editing selection doesn't become a permanent restriction
+ // when the existing labeled map already extends beyond that selection.
  const chosen=new Set(state.selection),hadLabeledOutside=Object.keys(state.assignments).some(w=>!chosen.has(w));
  if(hadLabeledOutside&&needed<=all.length)return {wells:all,clearSelection:true};
  return {wells:available(),clearSelection:false};
@@ -292,6 +361,8 @@ function autoSyncPlate(){
 function syncFactors(){
  const previous=state.factors.map(f=>({...f}));
  state.factors.forEach(f=>{const name=$('pl-factors').querySelector(`[data-fname="${f.id}"]`),values=$('pl-factors').querySelector(`[data-fvalues="${f.id}"]`);if(name)f.name=name.value;if(values)f.values=values.value});
+ // Preserve replicate counts by factor position when the user renames values;
+ // an added level inherits the final existing level's replicate count.
  const before=previous.map(f=>({...f,options:splitValues(f.values)})).filter(f=>f.name.trim()&&f.options.length);
  const after=activeFactors();
  for(const combo of combinations(after)){
@@ -311,9 +382,10 @@ function transposeCurrent(){
  try{const [rows,cols]=dimensions(),result=transposeMap(state.assignments,state.selection,rows,cols);state.manualLayoutChanges=true;state.assignments=result.assignments;state.selection=result.selection;activeCell=null;renderPlate();updateNote();persist();notify(`Transposed ${result.oldSize.join(' × ')} → ${result.newSize.join(' × ')}. Row and column notes stay with their physical plate axes.`)}catch(e){notify(e.message,true)}
 }
 function save(){syncMeta();syncFactors();const item=structuredClone(state);item.id='plate-'+Date.now()+'-'+Math.random().toString(36).slice(2,6);item.savedAt=new Date().toISOString();saved.unshift(item);state.id=item.id;persist();renderSaved();$('pl-saved').value=item.id;notify('Layout saved. Older saved layouts are kept unchanged.')}
-function bind(){const grid=$('pl-grid');grid.addEventListener('pointerdown',e=>{if(e.pointerType==='touch')return;beginDrag(e)});document.addEventListener('pointermove',e=>{if(drag)moveDrag(e)});document.addEventListener('pointerup',()=>{if(drag)finishDrag()});grid.addEventListener('click',e=>{const w=e.target.closest('[data-well]');if(!w)return;if(suppressClick){suppressClick=false;return}activeCell=w.dataset.well;renderPlate()});grid.addEventListener('dblclick',e=>{const w=e.target.closest('[data-well]');if(!w)return;activeCell=w.dataset.well;renderPlate();$('pl-edit-0').focus();$('pl-well-panel').scrollIntoView({block:'nearest',behavior:'smooth'})});
+function bind(){const grid=$('pl-grid');grid.addEventListener('pointerdown',e=>{if(e.pointerType==='touch')return;beginDrag(e)});document.addEventListener('pointermove',e=>{if(drag)moveDrag(e)});document.addEventListener('pointerup',e=>{if(!drag)return;if(drag.mode==='move'&&!document.elementFromPoint(e.clientX,e.clientY)?.closest('[data-well]')){drag=null;renderPlate();notify('Move canceled: release over a well to apply it.');return}finishDrag()});grid.addEventListener('click',e=>{const w=e.target.closest('[data-well]');if(!w)return;if(suppressClick){suppressClick=false;return}activeCell=w.dataset.well;renderPlate()});grid.addEventListener('dblclick',e=>{const w=e.target.closest('[data-well]');if(!w)return;activeCell=w.dataset.well;renderPlate();$('pl-edit-0').focus();$('pl-well-panel').scrollIntoView({block:'nearest',behavior:'smooth'})});
  // Keyboard support: arrow navigation is native via tab, Enter opens the inline editor.
  grid.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const w=e.target.closest('[data-well]');if(w){activeCell=w.dataset.well;renderPlate();$('pl-edit-0').focus()}});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&drag){drag=null;renderPlate();notify('Move canceled. No labels changed.')}});
  $('pl-grid').addEventListener('input',e=>{const t=e.target;if(t.matches('[data-row-note]'))state.rowNotes[t.dataset.rowNote]=t.value;else if(t.matches('[data-column-note]'))state.colNotes[t.dataset.columnNote]=t.value;else return;persist();updateNote()});
  $('pl-format').addEventListener('change',e=>{const selected=state.selection.length||Object.keys(state.assignments).length;if(selected&&!confirm('Changing plate format clears selection and current labels. Continue?')){e.target.value=state.format;return}state.format=e.target.value;state.selection=[];state.assignments={};state.manualLayoutChanges=false;state.rowNotes={};state.colNotes={};activeCell=null;selectionAnchor=null;renderCombinations();renderPlate();updateNote();persist()});
  $('pl-fill-order').addEventListener('change',e=>{state.fillOrder=e.target.value==='columns'?'columns':'rows';persist();notify('Fill preference saved. Click Generate to apply it; current labels are unchanged.')});$('pl-transpose').addEventListener('click',transposeCurrent);$('pl-mode').addEventListener('change',syncMeta);$('pl-title').addEventListener('input',syncMeta);$('pl-notes').addEventListener('input',syncMeta);
@@ -336,6 +408,6 @@ function bind(){const grid=$('pl-grid');grid.addEventListener('pointerdown',e=>{
  $('pl-import').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{const data=JSON.parse(await file.text());if(data.version!==1||!Array.isArray(data.saved)||!data.draft)throw Error('Unsupported layout backup.');if(!confirm('Replace the current plate draft and all saved plate layouts with the selected backup? Dosing records will not change.'))return;state=normalize(data.draft);saved=data.saved.map(normalize);checkedCombinations.clear();activeCell=null;selectionAnchor=null;persist();refreshAll();notify('Plate layouts restored successfully.')}catch(err){notify('Import failed: '+err.message,true)}finally{e.target.value=''}});
 }
 function init(){if(!$('pl-grid'))return;bootStored();bind();refreshAll()}
-window.PlateLayoutCore={SHAPES,place,moveBlock,transposeMap,combinations,splitValues,cellName,applySelection,selectionRect,plateHTML,plateTable,conditionHTML,conditionTable,labelsHTML,legendEntries,factorLegendHTML,factorLegendPlain};
+window.PlateLayoutCore={SHAPES,place,moveBlock,transposeMap,combinations,splitValues,cellName,applySelection,selectionRect,contiguous,linearRange,plateHTML,plateTable,conditionHTML,conditionTable,labelsHTML,legendEntries,factorLegendHTML,factorLegendPlain};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
