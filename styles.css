@@ -94,3 +94,16 @@
 .pl-check-title input,.pl-combo-label input{width:16px;min-width:16px;height:16px;margin:0;accent-color:#2f728e;cursor:pointer}
 .pl-combo-label span{min-width:0;overflow-wrap:anywhere}
 @media(max-width:540px){.simple-plate-grid{grid-template-columns:32px 85px repeat(var(--plate-cols),90px)}.pl-well{min-height:76px}.pl-column-header{min-height:62px}}
+
+/* Plate v4: axis note belongs inside the row/column header; no extra note column. */
+.simple-plate-grid{grid-template-columns:102px repeat(var(--plate-cols),108px);gap:6px;align-items:stretch}
+.pl-axis-header{display:flex;flex-direction:column;align-items:stretch;justify-content:center;gap:5px;min-width:0;min-height:80px;border:1px solid #c5d0d9;background:#f1f4f6;padding:6px;box-sizing:border-box}
+.pl-axis-id{display:block;font-size:13px;line-height:1.2;font-weight:700;color:#314a5d;text-align:left}
+.pl-axis-header input{display:block;width:100%;min-width:0;margin:0;padding:5px;border:1px solid #cad5de;border-radius:0;font:11px/1.25 Arial,sans-serif;background:#fff;color:#344c60}
+.pl-row-axis{min-height:90px}
+.pl-col-axis{min-height:70px}
+.plate-placement-controls{display:flex;align-items:end;flex-wrap:wrap;gap:12px;padding:9px 0 12px;border-top:1px solid #e4e9ee;border-bottom:1px solid #e4e9ee;margin:10px 0}
+.plate-placement-controls .field{max-width:345px;min-width:260px;margin:0;flex:0 1 345px}
+.plate-placement-controls select,.plate-placement-controls .btn{border-radius:0}
+.plate-placement-controls .tiny{max-width:330px;line-height:1.4}
+@media(max-width:540px){.simple-plate-grid{grid-template-columns:86px repeat(var(--plate-cols),90px)}.pl-axis-header{padding:5px}}
