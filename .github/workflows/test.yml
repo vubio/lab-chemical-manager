@@ -1,4 +1,4 @@
-name: Dosing calculator tests
+name: Lab Chemical Manager tests
 on:
   push:
     branches: [main]
@@ -14,6 +14,10 @@ jobs:
         with:
           node-version: '22'
       - name: Check JavaScript syntax
-        run: node --check app.js
+        run: |
+          node --check app.js
+          node --check plate.js
       - name: Test dosing calculations
         run: node tests/dosing.test.js
+      - name: Test plate layouts
+        run: node tests/plate.test.js
