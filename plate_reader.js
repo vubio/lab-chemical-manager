@@ -43,23 +43,40 @@ function normalizeGrid(raw,rows,cols,order='rows'){
 }
 function matchReadings(state,input){
  if(state.factorDraftStale)throw Error('Apply the current experimental factors to the plate before matching.');
- const a=state.assignments||{};if(!Object.keys(a).length)throw Error('Generate or load labeled wells before matching reader values.');
+ const assignments=state.assignments||{};
+ if(!Object.keys(assignments).length)throw Error('Generate or load labeled wells before matching reader values.');
  const factors=(state.factors||[]).filter(f=>f.name?.trim()&&f.values?.trim()).map(f=>f.name.trim());
- const [rows,cols]=shapes[state.format];const data=[],missing=[],unassigned=[],groups={};
+ const [rows,cols]=shapes[state.format],data=[],controls=[],missing=[],unassigned=[],groups={},specialGroups={};
  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
-  const pos=well(r,c),item=a[pos],reading=input.plate[pos];
+  const pos=well(r,c),item=assignments[pos],reading=input.plate[pos];
   if(!item){if(reading!==null)unassigned.push(pos);continue}
   if(reading===null){missing.push(pos);continue}
-  const labels=Array.from({length:factors.length},(_,i)=>item.labels?.[i]??'');
-  const key=JSON.stringify(labels);groups[key]=(groups[key]||0)+1;
-  data.push({well:pos,labels,replicate:'R'+groups[key],reading});
+  const isSpecial=item.kind==='special'||(item.group==='manual'&&!item.kind);
+  if(isSpecial){
+   const label=String(item.controlName||item.labels?.[0]||'Special control').trim();
+   specialGroups[label]=(specialGroups[label]||0)+1;
+   controls.push({well:pos,label,replicate:'R'+specialGroups[label],reading});
+  }else{
+   const labels=Array.from({length:factors.length},(_,i)=>item.labels?.[i]??'');
+   const key=JSON.stringify(labels);groups[key]=(groups[key]||0)+1;
+   data.push({well:pos,labels,replicate:'R'+groups[key],reading});
+  }
  }
- return {data,missing,unassigned,factors,plate:input.plate,rows,cols,format:state.format,stateName:state.name};
+ return {data,controls,missing,unassigned,factors,plate:input.plate,rows,cols,format:state.format,stateName:state.name};
 }
-function outputTable(m,kind){
- const d=m.data,f=m.factors;
- if(kind==='long'||kind==='long_well')return {headers:[...f,'Replicate','Read value',...(kind==='long_well'?['Well']:[])],rows:d.map(x=>[...x.labels,x.replicate,x.reading,...(kind==='long_well'?[x.well]:[])]),description:'One measurement per row'};
- if(kind==='matrix')return {headers:['Row / column',...Array.from({length:m.cols},(_,i)=>String(i+1))],rows:Array.from({length:m.rows},(_,r)=>[String.fromCharCode(65+r),...Array.from({length:m.cols},(_,c)=>m.plate[well(r,c)]??'')]),description:'Complete plate grid, including unlabeled wells'};
+function controlTable(m){
+ return {headers:['Well','Control label','Replicate','Read value'],rows:(m.controls||[]).map(x=>[x.well,x.label,x.replicate,x.reading]),description:'Special control wells, separate from experimental factors'};
+}
+function outputTable(m,kind,options={}){
+ const d=m.data,f=m.factors,controls=m.controls||[],placement=options.controlPlacement||'separate';
+ if(kind==='long'||kind==='long_well'){
+  const withWell=kind==='long_well',include=controls.length&&(['top','bottom'].includes(placement));
+  const headers=[...f,'Replicate','Read value',...(withWell?['Well']:[]),...(include?['Special control']:[])];
+  const normalRows=d.map(x=>[...x.labels,x.replicate,x.reading,...(withWell?[x.well]:[]),...(include?['']:[])]);
+  const extras=include?controls.map(x=>[...f.map(()=>''),x.replicate,x.reading,...(withWell?[x.well]:[]),x.label]):[];
+  return {headers,rows:placement==='top'?[...extras,...normalRows]:[...normalRows,...extras],description:'One measurement per row'+(include?' (special controls '+placement+')':'')};
+ }
+ if(kind==='matrix')return {headers:['Row / column',...Array.from({length:m.cols},(_,i)=>String(i+1))],rows:Array.from({length:m.rows},(_,r)=>[String.fromCharCode(65+r),...Array.from({length:m.cols},(_,c)=>m.plate[well(r,c)]??'')]),description:'Complete plate grid, including unlabeled and control wells'};
  if(kind==='wide'){
   const groups=[...new Set(d.map(x=>JSON.stringify(x.labels)))].map(x=>JSON.parse(x));
   const lookup=new Map(d.map(x=>[JSON.stringify(x.labels)+'#'+x.replicate,x.reading]));
@@ -115,19 +132,32 @@ function makeXlsx(sheets){
 function download(content,name,type){const b=new Blob([content],{type}),url=URL.createObjectURL(b),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);}
 const format=()=>$('pr-format').value;
 const name=()=>String(matched.stateName||'plate').replace(/[^a-z0-9_-]+/gi,'_').slice(0,55)+'_'+matched.format+'well_'+format();
+function tablePreview(t){
+ return `<div class="pr-table-wrap"><table class="pr-table"><thead><tr>${t.headers.map(x=>`<th>${esc(x)}</th>`).join('')}</tr></thead><tbody>${t.rows.slice(0,70).map(r=>`<tr>${r.map(x=>`<td>${esc(x)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+}
+function controlPlacement(){return $('pr-control-placement').value}
+function separateControls(){return matched&&matched.controls?.length&&controlPlacement()!=='omit'&&(!['long','long_well'].includes(format())||!['top','bottom'].includes(controlPlacement()))}
 function render(){
  if(!matched)return;
  try{
-  view=outputTable(matched,format());$('pr-error').textContent='';$('pr-export').hidden=false;
-  $('pr-preview').innerHTML=`<p class="pr-mini">${esc(view.description)} · ${view.rows.length} rows${view.rows.length>70?' (first 70 shown)':''}</p><div class="pr-table-wrap"><table class="pr-table"><thead><tr>${view.headers.map(x=>`<th>${esc(x)}</th>`).join('')}</tr></thead><tbody>${view.rows.slice(0,70).map(r=>`<tr>${r.map(x=>`<td>${esc(x)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  view=outputTable(matched,format(),{controlPlacement:controlPlacement()});
+  $('pr-error').textContent='';$('pr-export').hidden=false;
+  let html=`<p class="pr-mini">${esc(view.description)} · ${view.rows.length} rows${view.rows.length>70?' (first 70 shown)':''}</p>`+tablePreview(view);
+  if(separateControls()){
+   const ct=controlTable(matched);
+   html+=`<h3 class="pr-control-title">Special controls (${ct.rows.length})</h3><p class="pr-mini">These measurements are excluded from normal factor analysis. Download them separately, or use Excel to save both tables.</p>`+tablePreview(ct);
+  }
+  $('pr-preview').innerHTML=html;
+  $('pr-controls-csv').hidden=!matched.controls?.length||controlPlacement()==='omit';
  }catch(e){view=null;$('pr-export').hidden=true;$('pr-error').textContent=e.message;}
 }
+
 function match(){
  const state=window.PlateLayoutCore.getSnapshot(),shape=shapes[state.format];
  try{
   const parsed=normalizeGrid(parseDelimited($('pr-paste').value),shape[0],shape[1],$('pr-order').value);
   matched=matchReadings(state,parsed);
-  $('pr-summary').textContent=`${matched.data.length} labeled wells matched · ${matched.missing.length} labeled wells missing readings · ${matched.unassigned.length} readings in unlabeled wells.`;
+  $('pr-summary').textContent=`${matched.data.length} experimental readings · ${matched.controls.length} special controls · ${matched.missing.length} labeled wells missing readings · ${matched.unassigned.length} readings in unlabeled wells.`;
   $('pr-warning').textContent=(matched.missing.length?'Missing labeled wells: '+matched.missing.slice(0,22).join(', ')+'. ':'')+(matched.unassigned.length?matched.unassigned.length+' readings from unlabeled wells will be excluded from analysis (retained in plate-matrix export).':'');
   render();
  }catch(e){matched=null;view=null;$('pr-export').hidden=true;$('pr-preview').innerHTML='';$('pr-summary').textContent='';$('pr-warning').textContent='';$('pr-error').textContent=e.message;}
@@ -135,39 +165,46 @@ function match(){
 function excel(){
  if(!view||!matched)return;
  const sheets=[{name:'Selected format',table:view}];
- if(format()!=='long')sheets.push({name:'Long data',table:outputTable(matched,'long')});
+ if(format()!=='long')sheets.push({name:'Long data',table:outputTable(matched,'long',{controlPlacement:controlPlacement()})});
+ if(matched.controls.length&&controlPlacement()!=='omit')sheets.push({name:'Special controls',table:controlTable(matched)});
  if(format()!=='matrix')sheets.push({name:'Plate readings',table:outputTable(matched,'matrix')});
- sheets.push({name:'Metadata',table:{headers:['Field','Value'],rows:[['Experiment',matched.stateName],['Plate format',matched.format+' wells'],['Exported at',new Date().toLocaleString()],['Matched labeled wells',matched.data.length],['Missing labeled well values',matched.missing.length],['Readings in unlabeled wells',matched.unassigned.length],['Factors',matched.factors.join(' / ')]]}});
+ sheets.push({name:'Metadata',table:{headers:['Field','Value'],rows:[['Experiment',matched.stateName],['Plate format',matched.format+' wells'],['Exported at',new Date().toLocaleString()],['Experimental readings',matched.data.length],['Special-control readings',matched.controls.length],['Special control handling',controlPlacement()],['Missing labeled well values',matched.missing.length],['Readings in unlabeled wells',matched.unassigned.length],['Factors',matched.factors.join(' / ')]]}});
  download(makeXlsx(sheets),name()+'.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 }
+
 async function copy(){
  if(!view)return;
- const rich='<table style="border-collapse:collapse;font:11pt Arial,sans-serif"><tr>'+view.headers.map(x=>`<th style="background:#eaf0f3;border:1px solid #9badb9;padding:7px">${esc(x)}</th>`).join('')+'</tr>'+view.rows.map(r=>'<tr>'+r.map(x=>`<td style="border:1px solid #cad4dc;padding:6px 8px">${esc(x)}</td>`).join('')+'</tr>').join('')+'</table>';
- try{if(navigator.clipboard?.write&&typeof ClipboardItem!=='undefined')await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([rich],{type:'text/html'}),'text/plain':new Blob([makeCSV(view)],{type:'text/plain'})})]);else await navigator.clipboard.writeText(makeCSV(view));$('pr-summary').textContent+=' Table copied.';}catch(e){$('pr-error').textContent='Clipboard permission denied; download CSV or Excel instead.';}
+ const makeRich=t=>'<table style="border-collapse:collapse;font:11pt Arial,sans-serif"><tr>'+t.headers.map(x=>`<th style="background:#eaf0f3;border:1px solid #9badb9;padding:7px">${esc(x)}</th>`).join('')+'</tr>'+t.rows.map(r=>'<tr>'+r.map(x=>`<td style="border:1px solid #cad4dc;padding:6px 8px">${esc(x)}</td>`).join('')+'</tr>').join('')+'</table>';
+ const extras=separateControls()?controlTable(matched):null;
+ const rich=makeRich(view)+(extras?'<p><b>Special controls</b></p>'+makeRich(extras):'');
+ const plain=makeCSV(view)+(extras?'\r\nSpecial controls\r\n'+makeCSV(extras):'');
+ try{if(navigator.clipboard?.write&&typeof ClipboardItem!=='undefined')await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([rich],{type:'text/html'}),'text/plain':new Blob([plain],{type:'text/plain'})})]);else await navigator.clipboard.writeText(plain);$('pr-summary').textContent+=' Table copied.';}catch(e){$('pr-error').textContent='Clipboard permission denied; download CSV or Excel instead.';}
 }
+
 function init(){
  const actions=document.querySelector('#page-plate .plate-grid-actions');if(!actions||!window.PlateLayoutCore)return;
  const btn=document.createElement('button');btn.type='button';btn.className='btn';btn.id='pr-open';btn.textContent='Match reader values';actions.appendChild(btn);
  const overlay=document.createElement('div');overlay.id='pr-dialog';overlay.className='pr-overlay';overlay.hidden=true;
  overlay.innerHTML=`<section class="pr-modal" role="dialog" aria-modal="true" aria-labelledby="pr-title"><div class="pr-modal-head"><div><h2 id="pr-title">Match plate-reader values</h2><p>Paste the complete plate grid. Measurements are matched to labeled wells by their positions.</p></div><button class="btn" type="button" id="pr-close">Close ×</button></div>
- <div class="pr-inputs"><label class="field"><span>Source order</span><select id="pr-order"><option value="rows">Rows A–H (8 × 12 for a 96-well plate)</option><option value="columns">Columns 1–12 (12 × 8 for a 96-well plate)</option></select></label><label class="field"><span>Output format</span><select id="pr-format">${Object.entries(formats).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></label></div>
+ <div class="pr-inputs"><label class="field"><span>Source order</span><select id="pr-order"><option value="rows">Rows A–H (8 × 12 for a 96-well plate)</option><option value="columns">Columns 1–12 (12 × 8 for a 96-well plate)</option></select></label><label class="field"><span>Special controls</span><select id="pr-control-placement"><option value="separate">Separate table (recommended)</option><option value="bottom">Append below (long format)</option><option value="top">Append above (long format)</option><option value="omit">Exclude controls from output</option></select></label><label class="field"><span>Output format</span><select id="pr-format">${Object.entries(formats).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></label></div>
  <label class="field"><span>Paste readings copied from Excel, CSV, or your plate-reader software</span><textarea id="pr-paste" spellcheck="false" rows="7" placeholder="Paste the 8 × 12 grid (or a one-column list of all 96 values)."></textarea></label>
  <div class="pr-run"><button class="btn btn-primary" id="pr-match">Match values</button><label class="pr-file">Or open a .csv/.tsv file<input type="file" id="pr-file" accept=".csv,.tsv,.txt,text/csv"/></label></div>
  <p id="pr-summary" class="pr-summary" aria-live="polite"></p><p id="pr-warning" class="pr-warning"></p><p id="pr-error" class="pr-error" role="alert"></p><div id="pr-preview"></div>
- <div class="pr-export" id="pr-export" hidden><button class="btn" id="pr-copy">Copy table</button><button class="btn" id="pr-csv">Download CSV</button><button class="btn btn-primary" id="pr-xlsx">Download Excel (.xlsx)</button></div>
+ <div class="pr-export" id="pr-export" hidden><button class="btn" id="pr-copy">Copy table</button><button class="btn" id="pr-csv">Download CSV</button><button class="btn" id="pr-controls-csv" hidden>Download controls CSV</button><button class="btn btn-primary" id="pr-xlsx">Download Excel (.xlsx)</button></div>
  </section>`;
  document.body.appendChild(overlay);
  const close=()=>{overlay.hidden=true;document.body.classList.remove('pr-open')};
  btn.addEventListener('click',()=>{matched=null;view=null;overlay.hidden=false;document.body.classList.add('pr-open');$('pr-preview').innerHTML='';$('pr-export').hidden=true;$('pr-summary').textContent='';$('pr-warning').textContent='';$('pr-error').textContent='';$('pr-paste').focus()});
  $('pr-close').addEventListener('click',close);overlay.addEventListener('mousedown',e=>{if(e.target===overlay)close()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!overlay.hidden)close()});
- $('pr-match').addEventListener('click',match);$('pr-format').addEventListener('change',render);
+ $('pr-match').addEventListener('click',match);$('pr-format').addEventListener('change',render);$('pr-control-placement').addEventListener('change',render);
  $('pr-paste').addEventListener('input',()=>{matched=null;view=null;$('pr-export').hidden=true;$('pr-preview').innerHTML='';$('pr-summary').textContent=''});
  $('pr-order').addEventListener('change',()=>{matched=null;view=null;$('pr-export').hidden=true;$('pr-preview').innerHTML='';$('pr-summary').textContent=''});
  $('pr-file').addEventListener('change',async e=>{const file=e.target.files?.[0];if(file){$('pr-paste').value=await file.text();match()}e.target.value=''});
  $('pr-copy').addEventListener('click',copy);
  $('pr-csv').addEventListener('click',()=>{if(view)download(makeCSV(view),name()+'.csv','text/csv;charset=utf-8')});
+ $('pr-controls-csv').addEventListener('click',()=>{if(matched?.controls?.length)download(makeCSV(controlTable(matched)),name()+'_special_controls.csv','text/csv;charset=utf-8')});
  $('pr-xlsx').addEventListener('click',excel);
 }
-window.PlateReadoutCore={parseDelimited,normalizeGrid,matchReadings,outputTable,makeCSV,makeXlsx};
+window.PlateReadoutCore={parseDelimited,normalizeGrid,matchReadings,outputTable,controlTable,makeCSV,makeXlsx};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
