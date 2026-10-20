@@ -33,7 +33,7 @@ function factorLegendPlain(source='plate'){
 function renderFactorLegend(){const el=$('pl-factor-legend');if(el)el.innerHTML=factorLegendHTML('plate')}
 
 const defaults=()=>({id:null,name:'New experiment',format:'96',selection:[],rowNotes:{},colNotes:{},fillOrder:'rows',mode:'select',factors:[{id:'factor1',name:'Dose',values:'0 µM; 0.05 µM; 0.1 µM; 0.2 µM'},{id:'factor2',name:'Cell density',values:''},{id:'factor3',name:'',values:''},{id:'factor4',name:'',values:''}],counts:{},assignments:{},notes:'',generatedAt:null,manualLayoutChanges:false,factorDraftStale:false});
-let state=defaults(),saved=[],activeCell=null,drag=null,suppressClick=false,selectionAnchor=null,checkedCombinations=new Set(),factorUpdateTimer=null;
+let state=defaults(),saved=[],activeCell=null,drag=null,suppressClick=false,selectionAnchor=null,checkedCombinations=new Set(),factorUpdateTimer=null,lastWellPointer=null,labelDialogTargets=[];
 function normalize(s){const d=defaults();if(!s||typeof s!=='object')return d;return {...d,...s, format:SHAPES[String(s.format)]?String(s.format):'96',selection:Array.isArray(s.selection)?s.selection:[],rowNotes:s.rowNotes&&typeof s.rowNotes==='object'?s.rowNotes:{},colNotes:s.colNotes&&typeof s.colNotes==='object'?s.colNotes:{},fillOrder:s.fillOrder==='columns'?'columns':'rows', factors:Array.isArray(s.factors)&&s.factors.length?s.factors.slice(0,4).map((f,i)=>({id:String(f.id||'factor'+(i+1)),name:String(f.name||''),values:String(f.values||'')})):d.factors,counts:s.counts&&typeof s.counts==='object'?s.counts:{},assignments:s.assignments&&typeof s.assignments==='object'?s.assignments:{},manualLayoutChanges:!!s.manualLayoutChanges,factorDraftStale:!!s.factorDraftStale}}
 function dimensions(){return SHAPES[state.format]}
 function allCoords(){let [rows,cols]=dimensions(),arr=[];for(let r=0;r<rows;r++)for(let c=0;c<cols;c++)arr.push(cellName(r,c));return arr}
@@ -122,7 +122,7 @@ function renderPlate(){
   h+=`<label class="pl-header pl-axis-header pl-row-axis"><span class="pl-axis-id">${row}</span><input data-row-note="${row}" aria-label="Note for row ${row}" value="${esc(state.rowNotes[row]||'')}" placeholder="Note" title="Optional note for row ${row}"/></label>`;
   for(let c=0;c<cols;c++){
    const pos=cellName(r,c),record=assignments[pos],disabled=!isMove&&hasSelected&&!selected.has(pos),selectedHere=selected.has(pos);
-   const classes='pl-well'+(record?' pl-assigned':'')+(selectedHere?' pl-selected':'')+(disabled?' pl-unselected':'')+(activeCell===pos?' pl-focus':'')+(sourceSet.has(pos)?' pl-move-origin':'')+(targetSet.has(pos)?' pl-drop-target':'')+(changedSet.has(pos)?' pl-ripple':'')+(drag?.invalid===pos?' pl-drop-invalid':'');
+   const classes='pl-well'+(record?' pl-assigned':'')+(selectedHere?' pl-selected':'')+(disabled?' pl-unselected':'')+(activeCell===pos?' pl-focus':'')+(record?.kind==='special'?' pl-special':'')+(sourceSet.has(pos)?' pl-move-origin':'')+(targetSet.has(pos)?' pl-drop-target':'')+(changedSet.has(pos)?' pl-ripple':'')+(drag?.invalid===pos?' pl-drop-invalid':'');
    const labels=record?.labels||[],labelText=labels.filter(Boolean).map(x=>String(x)).join(' | ');
    h+=`<button type="button" class="${classes}" data-well="${pos}" role="gridcell" title="${esc(pos+(labelText?' — '+labelText:''))}" aria-label="${esc(pos+(labelText?' '+labelText:''))}" aria-selected="${selectedHere?'true':'false'}"><span class="pl-coord">${pos}</span><span class="pl-labels"><span class="pl-primary">${esc(labels[0]||'')}</span>${labels.length>1?`<span class="pl-secondary">${esc(labels[1])}</span>`:''}${labels[2]?`<span class="pl-tertiary">${esc(labels[2])}</span>`:''}${labels[3]?`<span class="pl-quaternary">${esc(labels[3])}</span>`:''}</span></button>`;
   }
@@ -170,7 +170,7 @@ function applyBatchReplicates(){
  targets.forEach(c=>state.counts[c.key]=count);
  persist();renderCombinations();if(Object.keys(state.assignments).length)autoSyncPlate();else notify(`Set ${count} replicate${count===1?'':'s'} for ${targets.length} condition${targets.length===1?'':'s'}. Click Apply factors to plate to create the first map.`);
 }
-function updateEditorFields(){if(!activeCell)return;let vals=[...Array(4)].map((_,i)=>$('pl-edit-'+i)?.value?.trim()||'');state.assignments[activeCell]={labels:vals,factorNames:state.factors.map(x=>x.name),group:'manual'};state.manualLayoutChanges=true;if(!vals.some(Boolean))delete state.assignments[activeCell];renderPlate();updateNote()}
+function updateEditorFields(){if(!activeCell)return;let vals=[...Array(4)].map((_,i)=>$('pl-edit-'+i)?.value?.trim()||'');state.assignments[activeCell]={labels:vals,factorNames:state.factors.map(x=>x.name),group:'manual',kind:'normal'};state.manualLayoutChanges=true;if(!vals.some(Boolean))delete state.assignments[activeCell];renderPlate();updateNote()}
 function renderEditor(){const record=activeCell?state.assignments[activeCell]:null;const active=Boolean(activeCell);$('pl-save-label').disabled=!active;$('pl-remove-label').disabled=!active;
  $('pl-label-fields').innerHTML=Array.from({length:4},(_,i)=>`<label class="field"><span>${i===0?'Primary':i===1?'Secondary':i===2?'Third':'Fourth'} text</span><input id="pl-edit-${i}" ${active?'':'disabled'} value="${esc(record?.labels?.[i]||'')}" placeholder="${esc(state.factors[i]?.name||'Optional label')}"/></label>`).join('');
 }
@@ -189,6 +189,7 @@ const tdStyle='border:1px solid #8797a6;padding:7px 8px;text-align:left;vertical
 function axisHTML(label,note){return `<span style="display:block;font-size:12px;font-weight:700;color:#263d4d">${esc(label)}</span>${note?`<span style="display:block;font-size:10px;font-weight:400;color:#53687a;margin-top:3px">${esc(note)}</span>`:''}`}
 function labelsHTML(record){if(!record||!Array.isArray(record.labels))return '';
  const vals=record.labels;
+ if(record.kind==='special')return `<div style="font:700 12px/1.3 Arial,sans-serif;color:#495562">${esc(record.controlName||vals[0]||'Control')} <span style="font-size:9px;color:#64748b">(control)</span></div>`;
  return vals.map((value,i)=>!String(value||'').trim()?'':`<div style="display:block;line-height:1.25;margin-bottom:${i===0?'3':'2'}px;font-family:Arial,Helvetica,sans-serif;font-size:${i===0?13:i===1?11:10}px;font-weight:${i===0?'700':i===1?'600':'400'};font-style:${i>=2?'italic':'normal'};color:${FACTOR_COLORS[i]||'#344054'}">${esc(value)}</div>`).join('');
 }
 function plateHTML(){const [rows,cols]=dimensions(),cells=[];
@@ -273,9 +274,61 @@ function moveBlock(assignments,selection,start,end,rows,cols){
  const next={};after.forEach((record,i)=>{if(record)next[wellAt(i,cols)]=record});
  return {assignments:next,selection:target,sourceCount:count,displaced,method};
 }
+function openWellLabelDialog(well,applySelection=false){
+ const targets=applySelection&&state.selection.length?state.selection.filter(w=>allCoords().includes(w)):[well];
+ if(!targets.length){notify('Select one or more wells first.',true);return}
+ labelDialogTargets=[...new Set(targets)];
+ const record=state.assignments[well]||null;
+ const kind=record?.kind==='special'||(!record&&applySelection)?'special':record?'normal':'special';
+ $('pl-dialog-title').textContent=labelDialogTargets.length===1?'Edit '+well:'Label '+labelDialogTargets.length+' selected wells';
+ $('pl-dialog-targets').textContent=labelDialogTargets.length===1?'Applies to '+well:'Will apply the same label to '+labelDialogTargets.length+' selected wells: '+labelDialogTargets.slice(0,16).join(', ')+(labelDialogTargets.length>16?'…':'');
+ $('pl-dialog-kind').value=kind;
+ $('pl-dialog-main').value=record?.controlName||record?.labels?.[0]||'';
+ for(let i=1;i<4;i++)$('pl-dialog-extra-'+i).value=kind==='normal'?(record?.labels?.[i]||''):'';
+ const displayExtra=()=>{$('pl-dialog-normal-fields').hidden=$('pl-dialog-kind').value!=='normal';$('pl-dialog-main-caption').textContent=$('pl-dialog-kind').value==='special'?'Control label (e.g. Media only)':'Primary factor label'};
+ displayExtra();
+ $('pl-label-dialog').hidden=false;
+ $('pl-dialog-main').focus();
+}
+function installWellLabelDialog(){
+ if($('pl-label-dialog'))return;
+ const overlay=document.createElement('div');
+ overlay.id='pl-label-dialog';overlay.className='pl-label-overlay';overlay.hidden=true;
+ overlay.innerHTML=`<section class="pl-label-modal" role="dialog" aria-modal="true" aria-labelledby="pl-dialog-title">
+ <h3 id="pl-dialog-title">Edit well label</h3>
+ <p class="tiny muted" id="pl-dialog-targets"></p>
+ <label class="field"><span>Label type</span><select id="pl-dialog-kind"><option value="special">Special control / extra well</option><option value="normal">Normal factor labels</option></select></label>
+ <label class="field"><span id="pl-dialog-main-caption">Control label</span><input id="pl-dialog-main" placeholder="Media only" maxlength="160"/></label>
+ <div id="pl-dialog-normal-fields" class="pl-dialog-factors">${[1,2,3].map(i=>`<label class="field"><span>${['','Secondary','Third','Fourth'][i]} label</span><input id="pl-dialog-extra-${i}" maxlength="160"/></label>`).join('')}</div>
+ <p class="tiny muted">Special controls are matched to reader measurements but kept separate from treatment-factor data.</p>
+ <div class="action-row"><button class="btn btn-primary" id="pl-dialog-save" type="button">Apply labels</button><button class="btn" id="pl-dialog-cancel" type="button">Cancel</button></div></section>`;
+ document.body.appendChild(overlay);
+ const close=()=>{overlay.hidden=true;labelDialogTargets=[]};
+ $('pl-dialog-cancel').addEventListener('click',close);
+ overlay.addEventListener('mousedown',e=>{if(e.target===overlay)close()});
+ $('pl-dialog-kind').addEventListener('change',()=>{$('pl-dialog-normal-fields').hidden=$('pl-dialog-kind').value!=='normal';$('pl-dialog-main-caption').textContent=$('pl-dialog-kind').value==='special'?'Control label (e.g. Media only)':'Primary factor label'});
+ $('pl-dialog-save').addEventListener('click',()=>{
+  const kind=$('pl-dialog-kind').value,label=$('pl-dialog-main').value.trim();
+  if(!label){$('pl-dialog-main').focus();notify('Enter a label such as “Media only”.',true);return}
+  const vals=kind==='special'?[label]:[label,...[1,2,3].map(i=>$('pl-dialog-extra-'+i).value.trim())];
+  const count=labelDialogTargets.length;
+  for(const w of labelDialogTargets){
+   state.assignments[w]={labels:[...vals],factorNames:kind==='special'?['Control']:state.factors.map(x=>x.name),group:'manual',kind,controlName:kind==='special'?label:undefined};
+  }
+  state.manualLayoutChanges=true;state.factorDraftStale=false;
+  close();renderPlate();updateNote();persist();
+  notify('Applied “'+label+'” to '+count+' well'+(count===1?'':'s')+'.'+(kind==='special'?' Reader matching will identify these as special controls.':''));
+ });
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!overlay.hidden){close();e.stopPropagation()}});
+}
 function beginDrag(e){
  const well=e.target.closest('[data-well]');if(!well||e.button!==0)return;
- e.preventDefault();const start=well.dataset.well,selected=state.selection.includes(start),[rows,cols]=dimensions();
+ e.preventDefault();const start=well.dataset.well,now=Date.now();
+ if(lastWellPointer?.well===start&&now-lastWellPointer.time<420&&!e.shiftKey&&!e.ctrlKey&&!e.metaKey&&!e.altKey){
+  lastWellPointer=null;drag=null;suppressClick=true;activeCell=start;openWellLabelDialog(start);return;
+ }
+ lastWellPointer={well:start,time:now};
+ const selected=state.selection.includes(start),[rows,cols]=dimensions();
  // Modifiers act on the selection; dragging a selected labeled block in Move
  // mode moves it. In Select mode an existing selected group is also draggable.
  const mode=e.altKey?'subtract':e.ctrlKey||e.metaKey?'add':e.shiftKey?'shift':(state.mode==='move'&&state.assignments[start])||(selected&&state.assignments[start])?'move':'replace';
@@ -382,9 +435,9 @@ function transposeCurrent(){
  try{const [rows,cols]=dimensions(),result=transposeMap(state.assignments,state.selection,rows,cols);state.manualLayoutChanges=true;state.assignments=result.assignments;state.selection=result.selection;activeCell=null;renderPlate();updateNote();persist();notify(`Transposed ${result.oldSize.join(' × ')} → ${result.newSize.join(' × ')}. Row and column notes stay with their physical plate axes.`)}catch(e){notify(e.message,true)}
 }
 function save(){syncMeta();syncFactors();const item=structuredClone(state);item.id='plate-'+Date.now()+'-'+Math.random().toString(36).slice(2,6);item.savedAt=new Date().toISOString();saved.unshift(item);state.id=item.id;persist();renderSaved();$('pl-saved').value=item.id;notify('Layout saved. Older saved layouts are kept unchanged.')}
-function bind(){const grid=$('pl-grid');grid.addEventListener('pointerdown',e=>{if(e.pointerType==='touch')return;beginDrag(e)});document.addEventListener('pointermove',e=>{if(drag)moveDrag(e)});document.addEventListener('pointerup',e=>{if(!drag)return;if(drag.mode==='move'&&!document.elementFromPoint(e.clientX,e.clientY)?.closest('[data-well]')){drag=null;renderPlate();notify('Move canceled: release over a well to apply it.');return}finishDrag()});grid.addEventListener('click',e=>{const w=e.target.closest('[data-well]');if(!w)return;if(suppressClick){suppressClick=false;return}activeCell=w.dataset.well;renderPlate()});grid.addEventListener('dblclick',e=>{const w=e.target.closest('[data-well]');if(!w)return;activeCell=w.dataset.well;renderPlate();$('pl-edit-0').focus();$('pl-well-panel').scrollIntoView({block:'nearest',behavior:'smooth'})});
+function bind(){installWellLabelDialog();const grid=$('pl-grid');grid.addEventListener('pointerdown',e=>{if(e.pointerType==='touch')return;beginDrag(e)});document.addEventListener('pointermove',e=>{if(drag)moveDrag(e)});document.addEventListener('pointerup',e=>{if(!drag)return;if(drag.mode==='move'&&!document.elementFromPoint(e.clientX,e.clientY)?.closest('[data-well]')){drag=null;renderPlate();notify('Move canceled: release over a well to apply it.');return}finishDrag()});grid.addEventListener('click',e=>{const w=e.target.closest('[data-well]');if(!w)return;if(suppressClick){suppressClick=false;return}activeCell=w.dataset.well;renderPlate()});grid.addEventListener('dblclick',e=>{const w=e.target.closest('[data-well]');if(w&&$('pl-label-dialog').hidden)openWellLabelDialog(w.dataset.well)});
  // Keyboard support: arrow navigation is native via tab, Enter opens the inline editor.
- grid.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const w=e.target.closest('[data-well]');if(w){activeCell=w.dataset.well;renderPlate();$('pl-edit-0').focus()}});
+ grid.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const w=e.target.closest('[data-well]');if(w){e.preventDefault();openWellLabelDialog(w.dataset.well)}});
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&drag){drag=null;renderPlate();notify('Move canceled. No labels changed.')}});
  $('pl-grid').addEventListener('input',e=>{const t=e.target;if(t.matches('[data-row-note]'))state.rowNotes[t.dataset.rowNote]=t.value;else if(t.matches('[data-column-note]'))state.colNotes[t.dataset.columnNote]=t.value;else return;persist();updateNote()});
  $('pl-format').addEventListener('change',e=>{const selected=state.selection.length||Object.keys(state.assignments).length;if(selected&&!confirm('Changing plate format clears selection and current labels. Continue?')){e.target.value=state.format;return}state.format=e.target.value;state.selection=[];state.assignments={};state.manualLayoutChanges=false;state.rowNotes={};state.colNotes={};activeCell=null;selectionAnchor=null;renderCombinations();renderPlate();updateNote();persist()});
@@ -399,6 +452,7 @@ function bind(){const grid=$('pl-grid');grid.addEventListener('pointerdown',e=>{
  $('pl-combos').addEventListener('input',e=>{const el=e.target;if(!el.matches('[data-reps]'))return;const n=Number(el.value);state.counts[el.dataset.reps]=Number.isInteger(n)&&n>0?n:1;persist();const combos=desired();notify(`${combos.reduce((a,c)=>a+c.replicates,0)} wells requested · ${available().length} available`)});
  $('pl-combos').addEventListener('change',e=>{if(!e.target.matches('[data-reps]'))return;if(Object.keys(state.assignments).length)autoSyncPlate()});
  $('pl-copy-table').addEventListener('click',copyPlateTable);$('pl-copy-conditions').addEventListener('click',copyConditionsTable);
+ $('pl-label-selected').addEventListener('click',()=>{const targets=state.selection.length?state.selection:activeCell?[activeCell]:[];if(!targets.length){notify('Select wells on the plate, then click “Label selected wells”.',true);return}openWellLabelDialog(targets[0],true)});
  $('pl-generate').addEventListener('click',generate);$('pl-save-label').addEventListener('click',()=>{if(activeCell)updateEditorFields();persist()});$('pl-remove-label').addEventListener('click',()=>{if(activeCell){delete state.assignments[activeCell];state.manualLayoutChanges=true;renderPlate();updateNote();persist()}});
  $('pl-save').addEventListener('click',save);$('pl-copy').addEventListener('click',copyNote);$('pl-tsv').addEventListener('click',downloadTSV);
  $('pl-new').addEventListener('click',()=>{if(!confirm('Start a new blank plate layout? Your saved layouts remain available.'))return;state=defaults();checkedCombinations.clear();activeCell=null;selectionAnchor=null;persist();refreshAll()});
