@@ -49,4 +49,37 @@ const xlsx=Buffer.from(makeXlsx([{name:'Long',table:long},{name:'Raw plate',tabl
 assert.equal(xlsx.subarray(0,4).toString('hex'),'504b0304','Excel must be ZIP-based XLSX');
 assert(xlsx.includes(Buffer.from('xl/workbook.xml')));
 assert(xlsx.includes(Buffer.from('xl/worksheets/sheet1.xml')));
+
+// Manually labeled wells must never be included in the ordinary factor statistics.
+const specialPlate={...plate,assignments:{...assignments,
+ G1:{labels:['Media only'],group:'manual',kind:'special',controlName:'Media only'},
+ G2:{labels:['Media only'],group:'manual',kind:'special',controlName:'Media only'},
+ G3:{labels:['No cells + reagent'],group:'manual',kind:'special',controlName:'No cells + reagent'}
+}};
+const special=c.matchReadings(specialPlate,matrix);
+assert.equal(special.data.length,36);
+assert.equal(special.controls.length,3);
+assert.equal(special.unassigned.length,57);
+assert.deepEqual(Array.from(special.controls.map(x=>x.replicate)),['R1','R2','R1']);
+const separate=c.outputTable(special,'long');
+assert.equal(separate.rows.length,36);
+assert.deepEqual(Array.from(separate.headers),['Density','Erastin2','Replicate','Read value']);
+const ct=c.controlTable(special);
+assert.deepEqual(Array.from(ct.headers),['Well','Control label','Replicate','Read value']);
+assert.deepEqual(Array.from(ct.rows[0]),['G1','Media only','R1',101073]);
+assert.equal(ct.rows.length,3);
+const append=c.outputTable(special,'long',{controlPlacement:'bottom'});
+assert.equal(append.rows.length,39);
+assert.equal(append.headers.at(-1),'Special control');
+assert.equal(append.rows.at(-1).at(-1),'No cells + reagent');
+const prepend=c.outputTable(special,'long_well',{controlPlacement:'top'});
+assert.equal(prepend.rows.length,39);
+assert.equal(prepend.rows[0].at(-2),'G1');
+assert.equal(c.outputTable(special,'prism').rows.length,4);
+const specialXlsx=Buffer.from(makeXlsx([{name:'Experiment',table:separate},{name:'Special controls',table:ct}]));
+assert.equal(specialXlsx.subarray(0,4).toString('hex'),'504b0304');
+const missingSpecial=c.matchReadings(specialPlate,{...matrix,plate:{...matrix.plate,G1:null}});
+assert(missingSpecial.missing.includes('G1'));
+assert.equal(missingSpecial.controls.length,2);
+
 console.log('Plate reader parsing, matching, CSV and XLSX tests passed');
