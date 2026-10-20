@@ -89,3 +89,13 @@ On **Plate Layout**, click **Match reader values** after labeling the experiment
 **Match values** pairs each numeric reading with the label currently assigned to that **physical well** (including manually moved labels) and assigns replicate numbers within each factor combination in plate order. Measurements in unlabeled wells are excluded from the statistical table but retained in a raw-grid export. Missing readings and unmapped wells are reported before export.
 
 Available output formats are **Long (jamovi/Python)**, **Long + Well**, **Prism grouped** (for two factors), **Wide (conditions as columns)**, and **Plate matrix (raw readings)**. You can copy the matched table or download **CSV** and **XLSX**. Excel export includes the selected format, a long-data sheet, a plate-readings sheet, and metadata where applicable. The exporter works entirely in your browser—there is no server upload. Verify orientation and the matched-well summary before using results for analysis.
+
+## Manual controls and special plate wells
+
+On **Plate Layout**, either **double-click a well** to open its label editor or select several wells (Shift-click a range, Ctrl/⌘-click for additional wells) and choose **Edit / label selected wells**. Choose **Special control / extra well**, enter a label such as `Media only`, and apply it to the selected wells. The labels appear in muted gray so they cannot be mistaken for primary/secondary factor values. The older individual-factor editor remains available below the plate for normal labels.
+
+Manual controls are stored as independent well assignments (`kind: "special"`) with the rest of the plate. They are preserved in saved layouts, plate-copy tables, and backup files. Regenerating factor labels can replace manual edits, so the page asks before doing so.
+
+**Match reader values** keeps these readings separate from the Density × Erastin2 factor combinations. Its **Special controls** selector defaults to **Separate table**, with optional **Append above** or **Append below** for long-format exports, or **Exclude controls**. All formats keep the plate coordinates; Prism and wide layouts always use a separate controls table instead of inventing factor values. A separate **Download controls CSV** button saves control data; the Excel file includes a **Special controls** sheet (when controls are included), along with the regular analysis sheet and plate matrix. The raw plate matrix retains the original readings regardless of control selection.
+
+A gray control label like `Media only` represents an experimental control, not a measured zero and not a treatment replicate. Verify the labeling and instrument-grid orientation before analysis.
