@@ -168,3 +168,19 @@ body.pr-open{overflow:hidden}
 .pr-export{padding-top:12px;border-top:1px solid #d9e1e8}
 .pr-export[hidden]{display:none!important}
 @media(max-width:600px){.pr-modal{padding:12px}.pr-inputs{grid-template-columns:1fr;gap:2px}.pr-overlay:not([hidden]){padding:4px}}
+
+
+/* Manual controls: visible on the white plate, independent of factor colors. */
+#page-plate .pl-well.pl-special{background:#f0f0ed;border-color:#7b838c}
+#page-plate .pl-well.pl-special .pl-primary{color:#495360;font-weight:750}
+#page-plate .pl-well.pl-special .pl-coord{background:#e3e7e9;color:#3b4650}
+#page-plate .pl-well.pl-special.pl-selected{background:#d6eee8}
+.pl-label-overlay[hidden]{display:none!important}
+.pl-label-overlay:not([hidden]){position:fixed;inset:0;z-index:170;display:flex;align-items:center;justify-content:center;padding:15px;background:rgba(11,22,34,.58)}
+.pl-label-modal{width:min(520px,95vw);max-height:94vh;overflow:auto;background:#fff;border:1px solid #83919c;padding:22px;color:#263c4f;box-shadow:0 14px 48px #13253644}
+.pl-label-modal h3{margin:0 0 9px;font-size:18px}
+.pl-label-modal .field{margin:12px 0}
+.pl-label-modal input,.pl-label-modal select,.pl-label-modal button{border-radius:0}
+.pl-label-modal .pl-dialog-factors[hidden]{display:none!important}
+.pr-control-title{margin:18px 0 5px;font-size:15px}
+.pr-export [hidden]{display:none!important}
