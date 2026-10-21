@@ -24,4 +24,18 @@ const combos=combinations([{id:'a',name:'Cell',options:['A','B']},{id:'b',name:'
 assert.equal(combos.length,4);
 assert.equal(Object.keys(place(coords(4,6),combos.map(x=>({...x,replicates:3})),4,6)).length,12);
 for(const n of [6,12,24,48,96,384])assert.equal(SHAPES[n][0]*SHAPES[n][1],n);
+
+const cleared= sandbox.window.PlateLayoutCore.clearSelectedAssignments(
+ {A1:{labels:['Media only'],kind:'special'},A2:{labels:['0.05']},B1:{labels:['Keep']}},
+ ['A1','A2','A2','C1']
+);
+assert.equal(cleared.count,2);
+assert.equal(cleared.assignments.A1,undefined);
+assert.equal(cleared.assignments.A2,undefined);
+assert.equal(cleared.assignments.B1.labels[0],'Keep');
+assert.equal(cleared.assignments.C1,undefined);
+const none=sandbox.window.PlateLayoutCore.clearSelectedAssignments(cleared.assignments,['A1','C1']);
+assert.equal(none.count,0);
+assert.equal(none.assignments.B1.labels[0],'Keep');
+
 console.log('Plate layout allocation and selection tests passed');
