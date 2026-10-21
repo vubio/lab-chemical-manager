@@ -106,6 +106,29 @@ function transposeMap(assignments,selection,rows,cols){
  for(const [w,data] of Object.entries(assignments))swapped[target(w)]=structuredClone(data);
  return {assignments:swapped,selection:selection.map(target),oldSize:[height,width],newSize:[width,height]};
 }
+function clearSelectedAssignments(assignments,selectedWells){
+ const next={...assignments};
+ let count=0;
+ for(const well of new Set(selectedWells)){
+  if(Object.prototype.hasOwnProperty.call(next,well)){delete next[well];count++}
+ }
+ return {assignments:next,count};
+}
+function clearSelectedLabels(){
+ if(drag){notify('Finish or cancel the current move before deleting labels.',true);return}
+ const valid=new Set(allCoords());
+ const selected=[...new Set(state.selection.filter(w=>valid.has(w)))];
+ if(!selected.length){notify('Select the well(s) you want to clear first (click, Shift-click, or Ctrl/⌘-click).',true);return}
+ const amount=selected.filter(w=>Object.prototype.hasOwnProperty.call(state.assignments,w)).length;
+ if(!amount){notify('The selected wells have no labels to delete. Nothing changed.',true);return}
+ if(amount>1&&!window.confirm('Clear labels from '+amount+' selected wells? Other wells and row/column notes will stay unchanged.'))return;
+ const result=clearSelectedAssignments(state.assignments,selected);
+ state.assignments=result.assignments;
+ state.manualLayoutChanges=true;
+ activeCell=null;
+ renderPlate();updateNote();persist();
+ notify('Cleared labels from '+result.count+' selected well'+(result.count===1?'':'s')+'. The selected wells are now empty.');
+}
 function renderPlate(){
  const [rows,cols]=dimensions(),isMove=state.mode==='move';
  const selected=new Set(state.selection),hasSelected=selected.size>0;
@@ -131,6 +154,7 @@ function renderPlate(){
  const chosen=[...selected].sort((a,b)=>wellIndex(a,cols)-wellIndex(b,cols));
  const isContinuous=contiguous(chosen,cols);
  const countLabeled=chosen.filter(w=>state.assignments[w]).length;
+ $('pl-clear-selected').disabled=countLabeled===0;
  $('pl-selection-count').textContent=hasSelected?`${selected.size} selected (${countLabeled} labeled) · ${chosen.length===1?chosen[0]:`${chosen[0]}–${chosen.at(-1)}`} · ${isContinuous?'Consecutive':'Not consecutive'} · ${Object.keys(state.assignments).length} total labeled`: `No wells selected · ${Object.keys(state.assignments).length} labeled on ${state.format}-well plate`;
  $('pl-selection-count').classList.toggle('pl-selection-active',hasSelected);
  const feedback=$('pl-drag-preview');
@@ -437,11 +461,17 @@ function transposeCurrent(){
 function save(){syncMeta();syncFactors();const item=structuredClone(state);item.id='plate-'+Date.now()+'-'+Math.random().toString(36).slice(2,6);item.savedAt=new Date().toISOString();saved.unshift(item);state.id=item.id;persist();renderSaved();$('pl-saved').value=item.id;notify('Layout saved. Older saved layouts are kept unchanged.')}
 function bind(){installWellLabelDialog();const grid=$('pl-grid');grid.addEventListener('pointerdown',e=>{if(e.pointerType==='touch')return;beginDrag(e)});document.addEventListener('pointermove',e=>{if(drag)moveDrag(e)});document.addEventListener('pointerup',e=>{if(!drag)return;if(drag.mode==='move'&&!document.elementFromPoint(e.clientX,e.clientY)?.closest('[data-well]')){drag=null;renderPlate();notify('Move canceled: release over a well to apply it.');return}finishDrag()});grid.addEventListener('click',e=>{const w=e.target.closest('[data-well]');if(!w)return;if(suppressClick){suppressClick=false;return}activeCell=w.dataset.well;renderPlate()});grid.addEventListener('dblclick',e=>{const w=e.target.closest('[data-well]');if(w&&$('pl-label-dialog').hidden)openWellLabelDialog(w.dataset.well)});
  // Keyboard support: arrow navigation is native via tab, Enter opens the inline editor.
- grid.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const w=e.target.closest('[data-well]');if(w){e.preventDefault();openWellLabelDialog(w.dataset.well)}});
+ grid.addEventListener('keydown',e=>{
+  const w=e.target.closest('[data-well]');
+  if(!w)return;
+  if(e.key==='Enter'){e.preventDefault();openWellLabelDialog(w.dataset.well)}
+  else if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();clearSelectedLabels()}
+ });
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&drag){drag=null;renderPlate();notify('Move canceled. No labels changed.')}});
  $('pl-grid').addEventListener('input',e=>{const t=e.target;if(t.matches('[data-row-note]'))state.rowNotes[t.dataset.rowNote]=t.value;else if(t.matches('[data-column-note]'))state.colNotes[t.dataset.columnNote]=t.value;else return;persist();updateNote()});
  $('pl-format').addEventListener('change',e=>{const selected=state.selection.length||Object.keys(state.assignments).length;if(selected&&!confirm('Changing plate format clears selection and current labels. Continue?')){e.target.value=state.format;return}state.format=e.target.value;state.selection=[];state.assignments={};state.manualLayoutChanges=false;state.rowNotes={};state.colNotes={};activeCell=null;selectionAnchor=null;renderCombinations();renderPlate();updateNote();persist()});
  $('pl-fill-order').addEventListener('change',e=>{state.fillOrder=e.target.value==='columns'?'columns':'rows';persist();notify('Fill preference saved. Click Generate to apply it; current labels are unchanged.')});$('pl-transpose').addEventListener('click',transposeCurrent);$('pl-mode').addEventListener('change',syncMeta);$('pl-title').addEventListener('input',syncMeta);$('pl-notes').addEventListener('input',syncMeta);
+ $('pl-clear-selected').addEventListener('click',clearSelectedLabels);
  $('pl-all').addEventListener('click',()=>{state.selection=[];renderPlate();persist();notify('Entire plate available for layout.')});$('pl-clear').addEventListener('click',()=>{if(Object.keys(state.assignments).length&&!confirm('Clear all well labels from the current plate? Saved layouts remain available.'))return;state.assignments={};state.manualLayoutChanges=false;activeCell=null;renderPlate();updateNote();persist();notify('All well labels cleared. Selected well areas are unchanged.')});
  $('pl-factors').addEventListener('input',e=>{if(!e.target.matches('[data-fname],[data-fvalues]'))return;syncFactors();renderCombinations();renderFactorLegend();persist();clearTimeout(factorUpdateTimer);factorUpdateTimer=setTimeout(autoSyncPlate,650)});
  $('pl-factors').addEventListener('change',e=>{if(!e.target.matches('[data-fname],[data-fvalues]'))return;clearTimeout(factorUpdateTimer);syncFactors();renderCombinations();autoSyncPlate()});
@@ -462,6 +492,6 @@ function bind(){installWellLabelDialog();const grid=$('pl-grid');grid.addEventLi
  $('pl-import').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{const data=JSON.parse(await file.text());if(data.version!==1||!Array.isArray(data.saved)||!data.draft)throw Error('Unsupported layout backup.');if(!confirm('Replace the current plate draft and all saved plate layouts with the selected backup? Dosing records will not change.'))return;state=normalize(data.draft);saved=data.saved.map(normalize);checkedCombinations.clear();activeCell=null;selectionAnchor=null;persist();refreshAll();notify('Plate layouts restored successfully.')}catch(err){notify('Import failed: '+err.message,true)}finally{e.target.value=''}});
 }
 function init(){if(!$('pl-grid'))return;bootStored();bind();refreshAll()}
-window.PlateLayoutCore={SHAPES,place,moveBlock,transposeMap,combinations,splitValues,cellName,applySelection,selectionRect,contiguous,linearRange,plateHTML,plateTable,conditionHTML,conditionTable,labelsHTML,legendEntries,factorLegendHTML,factorLegendPlain,getSnapshot:()=>structuredClone(state)};
+window.PlateLayoutCore={SHAPES,clearSelectedAssignments,place,moveBlock,transposeMap,combinations,splitValues,cellName,applySelection,selectionRect,contiguous,linearRange,plateHTML,plateTable,conditionHTML,conditionTable,labelsHTML,legendEntries,factorLegendHTML,factorLegendPlain,getSnapshot:()=>structuredClone(state)};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
