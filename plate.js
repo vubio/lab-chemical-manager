@@ -33,7 +33,7 @@ function factorLegendPlain(source='plate'){
 function renderFactorLegend(){const el=$('pl-factor-legend');if(el)el.innerHTML=factorLegendHTML('plate')}
 
 const defaults=()=>({id:null,name:'New experiment',format:'96',selection:[],rowNotes:{},colNotes:{},fillOrder:'rows',mode:'select',factors:[{id:'factor1',name:'Dose',values:'0 µM; 0.05 µM; 0.1 µM; 0.2 µM'},{id:'factor2',name:'Cell density',values:''},{id:'factor3',name:'',values:''},{id:'factor4',name:'',values:''}],counts:{},assignments:{},notes:'',generatedAt:null,manualLayoutChanges:false,factorDraftStale:false});
-let state=defaults(),saved=[],activeCell=null,drag=null,suppressClick=false,selectionAnchor=null,checkedCombinations=new Set(),factorUpdateTimer=null,lastWellPointer=null,labelDialogTargets=[];
+let state=defaults(),saved=[],activeCell=null,drag=null,suppressClick=false,selectionAnchor=null,checkedCombinations=new Set(),factorUpdateTimer=null,lastWellPointer=null,labelDialogTargets=[],notesVisible=false;
 function normalize(s){const d=defaults();if(!s||typeof s!=='object')return d;return {...d,...s, format:SHAPES[String(s.format)]?String(s.format):'96',selection:Array.isArray(s.selection)?s.selection:[],rowNotes:s.rowNotes&&typeof s.rowNotes==='object'?s.rowNotes:{},colNotes:s.colNotes&&typeof s.colNotes==='object'?s.colNotes:{},fillOrder:s.fillOrder==='columns'?'columns':'rows', factors:Array.isArray(s.factors)&&s.factors.length?s.factors.slice(0,4).map((f,i)=>({id:String(f.id||'factor'+(i+1)),name:String(f.name||''),values:String(f.values||'')})):d.factors,counts:s.counts&&typeof s.counts==='object'?s.counts:{},assignments:s.assignments&&typeof s.assignments==='object'?s.assignments:{},manualLayoutChanges:!!s.manualLayoutChanges,factorDraftStale:!!s.factorDraftStale}}
 function dimensions(){return SHAPES[state.format]}
 function allCoords(){let [rows,cols]=dimensions(),arr=[];for(let r=0;r<rows;r++)for(let c=0;c<cols;c++)arr.push(cellName(r,c));return arr}
@@ -133,6 +133,16 @@ function axisHeaderHTML(axis,key,note=''){
  const kind=axis==='row'?'row':'column',label=String(key),value=String(note||'').trim();
  return `<div class="pl-header pl-axis-header pl-${kind==='row'?'row':'col'}-axis${value?' pl-axis-noted':''}"><button type="button" class="pl-axis-trigger" data-axis="${kind}" data-axis-key="${esc(label)}" title="${esc(value?`Edit ${kind} ${label} note: ${value}`:`Add note to ${kind} ${label}`)}" aria-label="${esc(value?`Edit note for ${kind} ${label}: ${value}`:`Add note for ${kind} ${label}`)}"><span class="pl-axis-id">${esc(label)}</span>${value?`<span class="pl-axis-note" title="${esc(value)}">${esc(value)}</span>`:''}</button></div>`;
 }
+function axisInlineHeaderHTML(axis,key,note=''){
+ const kind=axis==='row'?'row':'column',value=String(note||'');
+ return `<label class="pl-header pl-axis-header pl-${kind==='row'?'row':'col'}-axis pl-axis-inline"><span class="pl-axis-id">${esc(key)}</span><input type="text" data-${kind==='row'?'row':'column'}-note="${esc(key)}" aria-label="Note for ${kind} ${esc(key)}" placeholder="Note" maxlength="160" value="${esc(value)}" title="Optional ${kind} note"/></label>`;
+}
+function plateAxisGridStart(showNotes,cols,colNotes={}){
+ if(!showNotes)return '';
+ let content='<span class="pl-header pl-corner"></span>';
+ for(let c=1;c<=cols;c++)content+=axisInlineHeaderHTML('column',c,colNotes[c]||'');
+ return content;
+}
 function renderPlate(){
  const [rows,cols]=dimensions(),isMove=state.mode==='move';
  const selected=new Set(state.selection),hasSelected=selected.size>0;
@@ -142,11 +152,18 @@ function renderPlate(){
  const sourceSet=new Set(drag?.mode==='move'?drag.sources||[]:[]);
  const changedSet=new Set(preview?.displaced||[]);
  const grid=$('pl-grid');grid.style.setProperty('--plate-cols',cols);
- let h='<span class="pl-header pl-corner"></span>';
- for(let c=1;c<=cols;c++)h+=axisHeaderHTML('column',c,state.colNotes[c]||'');
+ grid.classList.toggle('pl-notes-expanded',notesVisible);
+ const notesCount=Object.values(state.rowNotes).filter(x=>String(x).trim()).length+Object.values(state.colNotes).filter(x=>String(x).trim()).length;
+ const toggle=$('pl-toggle-notes');
+ if(toggle){
+  toggle.textContent=(notesVisible?'Hide notes':'Show notes')+(notesCount?' ('+notesCount+')':'');
+  toggle.setAttribute('aria-expanded',String(notesVisible));
+  toggle.setAttribute('aria-pressed',String(notesVisible));
+ }
+ let h=plateAxisGridStart(notesVisible,cols,state.colNotes);
  for(let r=0;r<rows;r++){
   const row=String.fromCharCode(65+r);
-  h+=axisHeaderHTML('row',row,state.rowNotes[row]||'');
+  if(notesVisible)h+=axisInlineHeaderHTML('row',row,state.rowNotes[row]||'');
   for(let c=0;c<cols;c++){
    const pos=cellName(r,c),record=assignments[pos],disabled=!isMove&&hasSelected&&!selected.has(pos),selectedHere=selected.has(pos);
    const classes='pl-well'+(record?' pl-assigned':'')+(selectedHere?' pl-selected':'')+(disabled?' pl-unselected':'')+(activeCell===pos?' pl-focus':'')+(record?.kind==='special'?' pl-special':'')+(sourceSet.has(pos)?' pl-move-origin':'')+(targetSet.has(pos)?' pl-drop-target':'')+(changedSet.has(pos)?' pl-ripple':'')+(drag?.invalid===pos?' pl-drop-invalid':'');
@@ -504,8 +521,28 @@ function transposeCurrent(){
  try{const [rows,cols]=dimensions(),result=transposeMap(state.assignments,state.selection,rows,cols);state.manualLayoutChanges=true;state.assignments=result.assignments;state.selection=result.selection;activeCell=null;renderPlate();updateNote();persist();notify(`Transposed ${result.oldSize.join(' × ')} → ${result.newSize.join(' × ')}. Row and column notes stay with their physical plate axes.`)}catch(e){notify(e.message,true)}
 }
 function save(){syncMeta();syncFactors();const item=structuredClone(state);item.id='plate-'+Date.now()+'-'+Math.random().toString(36).slice(2,6);item.savedAt=new Date().toISOString();saved.unshift(item);state.id=item.id;persist();renderSaved();$('pl-saved').value=item.id;notify('Layout saved. Older saved layouts are kept unchanged.')}
-function bind(){installWellLabelDialog();installAxisNoteDialog();const grid=$('pl-grid');grid.addEventListener('pointerdown',e=>{if(e.pointerType==='touch')return;beginDrag(e)});document.addEventListener('pointermove',e=>{if(drag)moveDrag(e)});document.addEventListener('pointerup',e=>{if(!drag)return;if(drag.mode==='move'&&!document.elementFromPoint(e.clientX,e.clientY)?.closest('[data-well]')){drag=null;renderPlate();notify('Move canceled: release over a well to apply it.');return}finishDrag()});grid.addEventListener('click',e=>{const w=e.target.closest('[data-well]');if(!w)return;if(suppressClick){suppressClick=false;return}activeCell=w.dataset.well;renderPlate()});grid.addEventListener('dblclick',e=>{const w=e.target.closest('[data-well]');if(w&&$('pl-label-dialog').hidden)openWellLabelDialog(w.dataset.well)});
+function bind(){installWellLabelDialog();installAxisNoteDialog();const grid=$('pl-grid');
+ $('pl-toggle-notes').addEventListener('click',()=>{
+  notesVisible=!notesVisible;
+  renderPlate();
+  notify(notesVisible?'Row and column notes are now editable in their headers.':'Row and column notes are hidden; existing notes are preserved.');
+ });grid.addEventListener('pointerdown',e=>{if(e.pointerType==='touch')return;beginDrag(e)});document.addEventListener('pointermove',e=>{if(drag)moveDrag(e)});document.addEventListener('pointerup',e=>{if(!drag)return;if(drag.mode==='move'&&!document.elementFromPoint(e.clientX,e.clientY)?.closest('[data-well]')){drag=null;renderPlate();notify('Move canceled: release over a well to apply it.');return}finishDrag()});grid.addEventListener('click',e=>{const w=e.target.closest('[data-well]');if(!w)return;if(suppressClick){suppressClick=false;return}activeCell=w.dataset.well;renderPlate()});grid.addEventListener('dblclick',e=>{const w=e.target.closest('[data-well]');if(w&&$('pl-label-dialog').hidden)openWellLabelDialog(w.dataset.well)});
  grid.addEventListener('click',e=>{const axis=e.target.closest('[data-axis]');if(axis&&axis.dataset.axisKey){window.openPlateAxisNote(axis.dataset.axis,axis.dataset.axisKey)}});
+ grid.addEventListener('input',e=>{
+  const element=e.target;
+  if(element.matches('[data-row-note]')){const key=element.dataset.rowNote;if(element.value.trim())state.rowNotes[key]=element.value;else delete state.rowNotes[key]}
+  else if(element.matches('[data-column-note]')){const key=element.dataset.columnNote;if(element.value.trim())state.colNotes[key]=element.value;else delete state.colNotes[key]}
+  else return;
+  persist();updateNote();
+ });
+ grid.addEventListener('change',e=>{
+  if(!e.target.matches('[data-row-note],[data-column-note]'))return;
+  const control=e.target;const key=control.matches('[data-row-note]')?control.dataset.rowNote:control.dataset.columnNote;
+  const map=control.matches('[data-row-note]')?state.rowNotes:state.colNotes;
+  if(map[key])map[key]=map[key].trim();
+  control.value=map[key]||'';
+  renderPlate();persist();updateNote();
+ });
  // Keyboard support: arrow navigation is native via tab, Enter opens the inline editor.
  grid.addEventListener('keydown',e=>{
   const w=e.target.closest('[data-well]');
@@ -537,6 +574,6 @@ function bind(){installWellLabelDialog();installAxisNoteDialog();const grid=$('p
  $('pl-import').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{const data=JSON.parse(await file.text());if(data.version!==1||!Array.isArray(data.saved)||!data.draft)throw Error('Unsupported layout backup.');if(!confirm('Replace the current plate draft and all saved plate layouts with the selected backup? Dosing records will not change.'))return;state=normalize(data.draft);saved=data.saved.map(normalize);checkedCombinations.clear();activeCell=null;selectionAnchor=null;persist();refreshAll();notify('Plate layouts restored successfully.')}catch(err){notify('Import failed: '+err.message,true)}finally{e.target.value=''}});
 }
 function init(){if(!$('pl-grid'))return;bootStored();bind();refreshAll()}
-window.PlateLayoutCore={SHAPES,clearSelectedAssignments,axisHeaderHTML,place,moveBlock,transposeMap,combinations,splitValues,cellName,applySelection,selectionRect,contiguous,linearRange,plateHTML,plateTable,conditionHTML,conditionTable,labelsHTML,legendEntries,factorLegendHTML,factorLegendPlain,getSnapshot:()=>structuredClone(state)};
+window.PlateLayoutCore={SHAPES,clearSelectedAssignments,axisHeaderHTML,axisInlineHeaderHTML,plateAxisGridStart,place,moveBlock,transposeMap,combinations,splitValues,cellName,applySelection,selectionRect,contiguous,linearRange,plateHTML,plateTable,conditionHTML,conditionTable,labelsHTML,legendEntries,factorLegendHTML,factorLegendPlain,getSnapshot:()=>structuredClone(state)};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
