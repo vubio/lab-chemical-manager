@@ -70,7 +70,7 @@ A label grid is **not randomization**. Review biological replicates, plate-edge 
 ## Plate layout quality-of-life updates
 
 - **Replicate batches:** Set a count for all condition combinations, for checked condition rows, or for any combination matching a selected factor value. Each replicate cell can still be changed independently.
-- **Axis annotations:** Click a row letter or column number to add, edit, or clear an optional header note. Empty headers display only their labels (no input boxes). Saved notes appear as small text inside the header and are retained in copied tables, layouts, and JSON backups.
+- **Optional axis notes:** The normal plate map shows only labeled wells (A1, B3, etc.) with **no separate row/column header bands**. Use **Show notes** at the upper-left of the plate to reveal row/column labels and editable note fields; **Hide notes** returns to the compact plate. Notes are preserved when hidden and remain available in copied tables, saved layouts, and JSON backups.
 - **Copy for OneNote:** **Copy condition table** and **Copy plate table** use `text/html` plus `text/plain` clipboard formats; supported apps like OneNote can paste an actual bordered table. **Copy plate note** includes layout metadata and the full table with row/column annotations. Plain-text fallback is used if the browser does not support formatted clipboard writes.
 - **Module isolation:** This changes only the independent plate layout. The dosing calculator has not been coupled to the plate layout.
 
