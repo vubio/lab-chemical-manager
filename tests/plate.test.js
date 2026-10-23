@@ -38,4 +38,25 @@ const none=sandbox.window.PlateLayoutCore.clearSelectedAssignments(cleared.assig
 assert.equal(none.count,0);
 assert.equal(none.assignments.B1.labels[0],'Keep');
 
+
+// Compact headers must not reserve space for empty note inputs.
+const headerHTML= sandbox.window.PlateLayoutCore.axisHeaderHTML;
+assert.equal(typeof headerHTML,'function');
+const blankRow=headerHTML('row','A','');
+assert.match(blankRow,/data-axis="row"/);
+assert.match(blankRow,/data-axis-key="A"/);
+assert(!blankRow.includes('<input'));
+assert(!blankRow.includes('pl-axis-note"'));
+const blankColumn=headerHTML('column',2,'');
+assert.match(blankColumn,/data-axis-key="2"/);
+assert(!blankColumn.includes('<input'));
+const noted=headerHTML('row','B','No cells');
+assert.match(noted,/pl-axis-noted/);
+assert.match(noted,/No cells/);
+assert.match(noted,/pl-axis-note/);
+assert(!noted.includes('<input'));
+const sanitized=headerHTML('column',4,'Media <only>');
+assert.match(sanitized,/Media &lt;only&gt;/);
+assert(!sanitized.includes('Media <only>'));
+
 console.log('Plate layout allocation and selection tests passed');
