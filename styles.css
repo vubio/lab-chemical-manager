@@ -184,3 +184,73 @@ body.pr-open{overflow:hidden}
 .pl-label-modal .pl-dialog-factors[hidden]{display:none!important}
 .pr-control-title{margin:18px 0 5px;font-size:15px}
 .pr-export [hidden]{display:none!important}
+
+
+/* Compact plate axis headers: show notes only when saved, edit on click. */
+#page-plate .pl-axis-header {
+  padding:0;
+  gap:0;
+  display:flex;
+  align-items:stretch;
+  justify-content:stretch;
+  background:#f1f4f6;
+}
+#page-plate .pl-axis-header.pl-col-axis {
+  height:30px;
+  min-height:30px;
+}
+#page-plate .pl-axis-header.pl-col-axis.pl-axis-noted {
+  height:44px;
+  min-height:44px;
+}
+#page-plate .pl-axis-header.pl-row-axis {
+  min-height:90px;
+}
+#page-plate .pl-axis-trigger {
+  appearance:none;
+  width:100%;
+  height:100%;
+  min-height:0;
+  min-width:0;
+  margin:0;
+  padding:4px 6px;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:center;
+  gap:3px;
+  background:transparent;
+  border:0;
+  border-radius:0;
+  color:#334d60;
+  font:inherit;
+  text-align:left;
+  cursor:pointer;
+}
+#page-plate .pl-col-axis .pl-axis-trigger {
+  padding:2px 5px;
+}
+#page-plate .pl-axis-trigger:hover {
+  background:#e4ecf2;
+}
+#page-plate .pl-axis-trigger:focus-visible {
+  outline:2px solid #2d6b8c;
+  outline-offset:-2px;
+}
+#page-plate .pl-axis-trigger .pl-axis-id {
+  font-size:12px;
+  line-height:1.2;
+  font-weight:700;
+}
+#page-plate .pl-axis-note {
+  display:block;
+  box-sizing:border-box;
+  width:100%;
+  max-width:100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font:10px/1.2 Arial,sans-serif;
+  font-weight:400;
+  color:#4b6477;
+}
