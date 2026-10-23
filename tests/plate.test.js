@@ -59,4 +59,21 @@ const sanitized=headerHTML('column',4,'Media <only>');
 assert.match(sanitized,/Media &lt;only&gt;/);
 assert(!sanitized.includes('Media <only>'));
 
+
+const axisGridStart=sandbox.window.PlateLayoutCore.plateAxisGridStart;
+const editableAxis=sandbox.window.PlateLayoutCore.axisInlineHeaderHTML;
+assert.equal(typeof axisGridStart,'function');
+assert.equal(typeof editableAxis,'function');
+assert.equal(axisGridStart(false,12,{2:'Control'}),'','Hidden notes must remove all row/column headers from the grid');
+const visibleGrid=axisGridStart(true,3,{2:'No cells'});
+assert(visibleGrid.includes('pl-corner'));
+assert.equal((visibleGrid.match(/data-column-note=/g)||[]).length,3);
+assert(visibleGrid.includes('No cells'));
+assert(!axisGridStart(false,3,{}).includes('pl-axis-header'));
+assert(editableAxis('row','B','Media only').includes('data-row-note="B"'));
+assert(editableAxis('row','B','Media only').includes('value="Media only"'));
+assert(editableAxis('column',5,'').includes('placeholder="Note"'));
+const escapedNote=editableAxis('column',3,'A < B & C');
+assert(escapedNote.includes('A &lt; B &amp; C'));
+
 console.log('Plate layout allocation and selection tests passed');
