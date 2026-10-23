@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="LabChem flask">
+  <rect width="64" height="64" rx="12" fill="#0d817b"/>
+  <g stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M25 14h14M29 14v14L17.5 46a5 5 0 0 0 4.3 7.5h20.4a5 5 0 0 0 4.3-7.5L35 28V14"/>
+    <path d="M24 41h16"/>
+  </g>
+  <circle cx="31" cy="46" r="2.5" fill="#ffffff"/>
+  <circle cx="38" cy="48" r="1.5" fill="#ffffff"/>
+</svg>
