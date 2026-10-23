@@ -129,6 +129,10 @@ function clearSelectedLabels(){
  renderPlate();updateNote();persist();
  notify('Cleared labels from '+result.count+' selected well'+(result.count===1?'':'s')+'. The selected wells are now empty.');
 }
+function axisHeaderHTML(axis,key,note=''){
+ const kind=axis==='row'?'row':'column',label=String(key),value=String(note||'').trim();
+ return `<div class="pl-header pl-axis-header pl-${kind==='row'?'row':'col'}-axis${value?' pl-axis-noted':''}"><button type="button" class="pl-axis-trigger" data-axis="${kind}" data-axis-key="${esc(label)}" title="${esc(value?`Edit ${kind} ${label} note: ${value}`:`Add note to ${kind} ${label}`)}" aria-label="${esc(value?`Edit note for ${kind} ${label}: ${value}`:`Add note for ${kind} ${label}`)}"><span class="pl-axis-id">${esc(label)}</span>${value?`<span class="pl-axis-note" title="${esc(value)}">${esc(value)}</span>`:''}</button></div>`;
+}
 function renderPlate(){
  const [rows,cols]=dimensions(),isMove=state.mode==='move';
  const selected=new Set(state.selection),hasSelected=selected.size>0;
@@ -139,10 +143,10 @@ function renderPlate(){
  const changedSet=new Set(preview?.displaced||[]);
  const grid=$('pl-grid');grid.style.setProperty('--plate-cols',cols);
  let h='<span class="pl-header pl-corner"></span>';
- for(let c=1;c<=cols;c++)h+=`<label class="pl-header pl-axis-header pl-col-axis"><span class="pl-axis-id">${c}</span><input data-column-note="${c}" aria-label="Note for column ${c}" type="text" value="${esc(state.colNotes[c]||'')}" placeholder="Note" title="Optional note for column ${c}"/></label>`;
+ for(let c=1;c<=cols;c++)h+=axisHeaderHTML('column',c,state.colNotes[c]||'');
  for(let r=0;r<rows;r++){
   const row=String.fromCharCode(65+r);
-  h+=`<label class="pl-header pl-axis-header pl-row-axis"><span class="pl-axis-id">${row}</span><input data-row-note="${row}" aria-label="Note for row ${row}" value="${esc(state.rowNotes[row]||'')}" placeholder="Note" title="Optional note for row ${row}"/></label>`;
+  h+=axisHeaderHTML('row',row,state.rowNotes[row]||'');
   for(let c=0;c<cols;c++){
    const pos=cellName(r,c),record=assignments[pos],disabled=!isMove&&hasSelected&&!selected.has(pos),selectedHere=selected.has(pos);
    const classes='pl-well'+(record?' pl-assigned':'')+(selectedHere?' pl-selected':'')+(disabled?' pl-unselected':'')+(activeCell===pos?' pl-focus':'')+(record?.kind==='special'?' pl-special':'')+(sourceSet.has(pos)?' pl-move-origin':'')+(targetSet.has(pos)?' pl-drop-target':'')+(changedSet.has(pos)?' pl-ripple':'')+(drag?.invalid===pos?' pl-drop-invalid':'');
@@ -314,6 +318,47 @@ function openWellLabelDialog(well,applySelection=false){
  $('pl-label-dialog').hidden=false;
  $('pl-dialog-main').focus();
 }
+function installAxisNoteDialog(){
+ if($('pl-axis-dialog'))return;
+ const overlay=document.createElement('div');
+ overlay.id='pl-axis-dialog';overlay.className='pl-label-overlay';overlay.hidden=true;
+ overlay.innerHTML=`<section class="pl-label-modal" role="dialog" aria-modal="true" aria-labelledby="pl-axis-dialog-title">
+ <h3 id="pl-axis-dialog-title">Row or column note</h3>
+ <p class="tiny muted">Notes remain attached to the plate header and are included in copied plate tables.</p>
+ <label class="field"><span>Header note</span><input id="pl-axis-note-input" type="text" maxlength="160" placeholder="e.g. Media only, No cells, Control"/></label>
+ <div class="action-row"><button type="button" class="btn btn-primary" id="pl-axis-note-save">Save note</button><button type="button" class="btn" id="pl-axis-note-clear">Clear note</button><button type="button" class="btn" id="pl-axis-note-cancel">Cancel</button></div></section>`;
+ document.body.appendChild(overlay);
+ let editing=null;
+ const close=()=>{overlay.hidden=true;editing=null};
+ const save=value=>{
+  if(!editing)return;
+  const {axis,key}=editing;
+  const map=axis==='row'?state.rowNotes:state.colNotes;
+  const note=String(value||'').trim();
+  if(note)map[key]=note;else delete map[key];
+  close();renderPlate();updateNote();persist();
+  const node=$('pl-grid').querySelector(`[data-axis="${axis}"][data-axis-key="${key}"]`);
+  node?.focus();
+  notify(note?`Saved note for ${axis} ${key}.`:`Cleared note for ${axis} ${key}.`);
+ };
+ $('pl-axis-note-save').addEventListener('click',()=>save($('pl-axis-note-input').value));
+ $('pl-axis-note-clear').addEventListener('click',()=>save(''));
+ $('pl-axis-note-cancel').addEventListener('click',close);
+ $('pl-axis-note-input').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();save(e.target.value)}});
+ overlay.addEventListener('mousedown',e=>{if(e.target===overlay)close()});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!overlay.hidden){e.stopPropagation();close()}});
+ window.openPlateAxisNote=(axis,key)=>{
+  if(!['row','column'].includes(axis))return;
+  const valid=axis==='row'?Array.from({length:dimensions()[0]},(_,i)=>String.fromCharCode(65+i)):Array.from({length:dimensions()[1]},(_,i)=>String(i+1));
+  if(!valid.includes(String(key)))return;
+  editing={axis,key:String(key)};
+  $('pl-axis-dialog-title').textContent=`Note for ${axis} ${key}`;
+  $('pl-axis-note-input').value=(axis==='row'?state.rowNotes:state.colNotes)[key]||'';
+  overlay.hidden=false;
+  $('pl-axis-note-input').focus();
+  $('pl-axis-note-input').select();
+ };
+}
 function installWellLabelDialog(){
  if($('pl-label-dialog'))return;
  const overlay=document.createElement('div');
@@ -459,7 +504,8 @@ function transposeCurrent(){
  try{const [rows,cols]=dimensions(),result=transposeMap(state.assignments,state.selection,rows,cols);state.manualLayoutChanges=true;state.assignments=result.assignments;state.selection=result.selection;activeCell=null;renderPlate();updateNote();persist();notify(`Transposed ${result.oldSize.join(' × ')} → ${result.newSize.join(' × ')}. Row and column notes stay with their physical plate axes.`)}catch(e){notify(e.message,true)}
 }
 function save(){syncMeta();syncFactors();const item=structuredClone(state);item.id='plate-'+Date.now()+'-'+Math.random().toString(36).slice(2,6);item.savedAt=new Date().toISOString();saved.unshift(item);state.id=item.id;persist();renderSaved();$('pl-saved').value=item.id;notify('Layout saved. Older saved layouts are kept unchanged.')}
-function bind(){installWellLabelDialog();const grid=$('pl-grid');grid.addEventListener('pointerdown',e=>{if(e.pointerType==='touch')return;beginDrag(e)});document.addEventListener('pointermove',e=>{if(drag)moveDrag(e)});document.addEventListener('pointerup',e=>{if(!drag)return;if(drag.mode==='move'&&!document.elementFromPoint(e.clientX,e.clientY)?.closest('[data-well]')){drag=null;renderPlate();notify('Move canceled: release over a well to apply it.');return}finishDrag()});grid.addEventListener('click',e=>{const w=e.target.closest('[data-well]');if(!w)return;if(suppressClick){suppressClick=false;return}activeCell=w.dataset.well;renderPlate()});grid.addEventListener('dblclick',e=>{const w=e.target.closest('[data-well]');if(w&&$('pl-label-dialog').hidden)openWellLabelDialog(w.dataset.well)});
+function bind(){installWellLabelDialog();installAxisNoteDialog();const grid=$('pl-grid');grid.addEventListener('pointerdown',e=>{if(e.pointerType==='touch')return;beginDrag(e)});document.addEventListener('pointermove',e=>{if(drag)moveDrag(e)});document.addEventListener('pointerup',e=>{if(!drag)return;if(drag.mode==='move'&&!document.elementFromPoint(e.clientX,e.clientY)?.closest('[data-well]')){drag=null;renderPlate();notify('Move canceled: release over a well to apply it.');return}finishDrag()});grid.addEventListener('click',e=>{const w=e.target.closest('[data-well]');if(!w)return;if(suppressClick){suppressClick=false;return}activeCell=w.dataset.well;renderPlate()});grid.addEventListener('dblclick',e=>{const w=e.target.closest('[data-well]');if(w&&$('pl-label-dialog').hidden)openWellLabelDialog(w.dataset.well)});
+ grid.addEventListener('click',e=>{const axis=e.target.closest('[data-axis]');if(axis&&axis.dataset.axisKey){window.openPlateAxisNote(axis.dataset.axis,axis.dataset.axisKey)}});
  // Keyboard support: arrow navigation is native via tab, Enter opens the inline editor.
  grid.addEventListener('keydown',e=>{
   const w=e.target.closest('[data-well]');
@@ -468,7 +514,6 @@ function bind(){installWellLabelDialog();const grid=$('pl-grid');grid.addEventLi
   else if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();clearSelectedLabels()}
  });
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&drag){drag=null;renderPlate();notify('Move canceled. No labels changed.')}});
- $('pl-grid').addEventListener('input',e=>{const t=e.target;if(t.matches('[data-row-note]'))state.rowNotes[t.dataset.rowNote]=t.value;else if(t.matches('[data-column-note]'))state.colNotes[t.dataset.columnNote]=t.value;else return;persist();updateNote()});
  $('pl-format').addEventListener('change',e=>{const selected=state.selection.length||Object.keys(state.assignments).length;if(selected&&!confirm('Changing plate format clears selection and current labels. Continue?')){e.target.value=state.format;return}state.format=e.target.value;state.selection=[];state.assignments={};state.manualLayoutChanges=false;state.rowNotes={};state.colNotes={};activeCell=null;selectionAnchor=null;renderCombinations();renderPlate();updateNote();persist()});
  $('pl-fill-order').addEventListener('change',e=>{state.fillOrder=e.target.value==='columns'?'columns':'rows';persist();notify('Fill preference saved. Click Generate to apply it; current labels are unchanged.')});$('pl-transpose').addEventListener('click',transposeCurrent);$('pl-mode').addEventListener('change',syncMeta);$('pl-title').addEventListener('input',syncMeta);$('pl-notes').addEventListener('input',syncMeta);
  $('pl-clear-selected').addEventListener('click',clearSelectedLabels);
@@ -492,6 +537,6 @@ function bind(){installWellLabelDialog();const grid=$('pl-grid');grid.addEventLi
  $('pl-import').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{const data=JSON.parse(await file.text());if(data.version!==1||!Array.isArray(data.saved)||!data.draft)throw Error('Unsupported layout backup.');if(!confirm('Replace the current plate draft and all saved plate layouts with the selected backup? Dosing records will not change.'))return;state=normalize(data.draft);saved=data.saved.map(normalize);checkedCombinations.clear();activeCell=null;selectionAnchor=null;persist();refreshAll();notify('Plate layouts restored successfully.')}catch(err){notify('Import failed: '+err.message,true)}finally{e.target.value=''}});
 }
 function init(){if(!$('pl-grid'))return;bootStored();bind();refreshAll()}
-window.PlateLayoutCore={SHAPES,clearSelectedAssignments,place,moveBlock,transposeMap,combinations,splitValues,cellName,applySelection,selectionRect,contiguous,linearRange,plateHTML,plateTable,conditionHTML,conditionTable,labelsHTML,legendEntries,factorLegendHTML,factorLegendPlain,getSnapshot:()=>structuredClone(state)};
+window.PlateLayoutCore={SHAPES,clearSelectedAssignments,axisHeaderHTML,place,moveBlock,transposeMap,combinations,splitValues,cellName,applySelection,selectionRect,contiguous,linearRange,plateHTML,plateTable,conditionHTML,conditionTable,labelsHTML,legendEntries,factorLegendHTML,factorLegendPlain,getSnapshot:()=>structuredClone(state)};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
