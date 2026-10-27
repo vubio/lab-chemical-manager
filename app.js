@@ -35,7 +35,7 @@ function num(id,label,allowZero=false){return numeric(byId(id).value,label,allow
 function val(id){return clean(byId(id).value)}
 function setVal(id,v){if(byId(id))byId(id).value=(v===undefined||v===null?'':v)}
 function loadDB(){try{const parsed=JSON.parse(localStorage.getItem(STORE_KEY));if(parsed&&Array.isArray(parsed.chemicals)&&Array.isArray(parsed.history)&&Array.isArray(parsed.templates))return {...DEFAULT_DB(),...parsed}}catch(e){console.warn('Could not load saved data',e)}return DEFAULT_DB()}
-function store(){try{localStorage.setItem(STORE_KEY,JSON.stringify(db))}catch(e){toast('Unable to save: browser storage may be full or restricted.',true);throw e}updateCounts();if(byId('dose-history-list'))renderDosingHistory()}
+function store(){try{localStorage.setItem(STORE_KEY,JSON.stringify(db))}catch(e){toast('Unable to save: browser storage may be full or restricted.',true);throw e}updateCounts();if(byId('dose-history-list'))renderDosingHistory();if(typeof window.dispatchEvent==='function'&&typeof CustomEvent!=='undefined')window.dispatchEvent(new CustomEvent('labchem:data-changed',{detail:{section:'chemicals'}}))}
 function toast(msg,error=false){const el=byId('toast');el.textContent=msg;el.style.background=error?'#a34038':'#1c3441';el.classList.add('show');clearTimeout(timer);timer=setTimeout(()=>el.classList.remove('show'),3700)}
 function errorMessage(id,msg){byId(id).innerHTML=`<div class="small-note warning">${escapeHTML(msg)}</div>`}
 function options(items,selected){return items.map(v=>`<option value="${escapeHTML(v)}" ${selected===v?'selected':''}>${escapeHTML(v)}</option>`).join('')}
@@ -455,4 +455,17 @@ function init(){
 }
 window.LabChemMath={computePrep,calculateDosing,convertConc,massMg,toML,fmt};
 window.LabChemDosingUI={dosingHistoryItems,doseSummaryCopyPayload};
+window.LabChemCloud={
+ getSnapshot:()=>structuredClone(db),
+ replaceSnapshot(data){
+  if(!data||data.version!==1||!['chemicals','history','templates'].every(k=>Array.isArray(data[k])))throw Error('Invalid chemical/dosing data in cloud snapshot.');
+  db=structuredClone(data);latestPrep=null;latestDose=null;
+  store();renderChemicalOptions();renderLibrary();renderHistory();renderTemplates();renderDosingHistory();
+  byId('calc-result').className='empty-result';byId('calc-result').textContent='Cloud data loaded. Calculate to generate a new preparation.';
+  byId('dose-result').className='empty-result';byId('dose-result').textContent='Cloud data loaded. Calculate to generate a new dosing plan.';
+  byId('calc-actions').classList.add('hidden');byId('dose-actions').classList.add('hidden');
+  byId('dose-status').className='tag';byId('dose-status').textContent='READY';
+  byId('calc-status').className='tag';byId('calc-status').textContent='READY';
+ }
+};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
