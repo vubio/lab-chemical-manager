@@ -58,4 +58,37 @@ for(const c of dosing({'dose-targets':'0,0.00001,0.05'}).conditions) {
   near(step.from*step.transfer/step.volume,step.to);
  }
 }
+
+// Quick dosing history must filter to dosing only, without altering source records.
+const ui=scope.window.LabChemDosingUI;
+assert.equal(typeof ui.dosingHistoryItems,'function');
+assert.equal(typeof ui.doseSummaryCopyPayload,'function');
+const saved=[
+ {id:'a',kind:'dosing',name:'35-mm',chemicalName:'Erastin 2',timestamp:'2026-10-27T16:00:00Z'},
+ {id:'b',kind:'preparation',name:'BSA stock',chemicalName:'BSA'},
+ {id:'c',kind:'dosing',name:'24-well',chemicalName:'Compound B',timestamp:'2026-10-25T10:00:00Z'}
+];
+assert.equal(ui.dosingHistoryItems(saved).length,2);
+assert.deepEqual(ui.dosingHistoryItems(saved,'erastin').map(x=>x.id),['a']);
+assert.deepEqual(ui.dosingHistoryItems(saved,'24-well').map(x=>x.id),['c']);
+assert.equal(saved.length,3);
+const summaryTable={
+ rows:[
+  {cells:[{innerText:'Final target'},{innerText:'Intermediate'}]},
+  {cells:[{innerText:'0.05 µM'},{innerText:'100 µM'}]}
+ ],
+ cloneNode(){return {removeAttribute(){},style:{},querySelectorAll(){return []},outerHTML:'<table><tr><th>Final target</th></tr></table>'};}
+};
+const copied=ui.doseSummaryCopyPayload({chemicalName:'Erastin 2',input:{'dose-name':'Erastin 2'}},summaryTable);
+assert(copied.plain.startsWith('Erastin 2\nFinal target\tIntermediate'));
+assert(copied.plain.includes('0.05 µM\t100 µM'));
+assert(copied.html.includes('Erastin 2'));
+assert(copied.html.includes('<table>'));
+assert(!copied.plain.includes('Condition summary'));
+const page=fs.readFileSync('index.html','utf8');
+assert(page.includes('id="dose-history-panel"'));
+assert(page.includes('id="dose-history-search"'));
+assert(page.includes('id="dose-history-list"'));
+assert(script.includes('data-dose-copy-summary'));
+
 console.log('All dosing planner regression tests passed');
