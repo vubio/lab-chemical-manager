@@ -107,3 +107,30 @@ The Dosing Planner has a collapsible **Recent dosing history** panel above the e
 Above every result's **Condition summary** table, the chemical name is shown beside **Copy table**. This copies **only the chemical name and the summary table**, omitting the "Condition summary" section title and the detailed recipes. Browsers that support rich clipboard writes copy a bordered HTML table suitable for OneNote, with a tab-delimited fallback when rich clipboard access is unavailable. Full detailed documentation is still available with **Copy lab note**.
 
 The existing calculation-history page and saved records are unchanged. As before, browser-local storage does not automatically synchronize across computers; use JSON backup/export to preserve a durable copy.
+
+## Cross-device GitHub synchronization (optional)
+
+The GitHub Pages website can now keep **chemical inventory, preparation/dosing history, dosing templates, current plate draft, and saved plate layouts** in one JSON snapshot at:
+
+- Repository: [vubio/lab-chemical-manager](https://github.com/vubio/lab-chemical-manager)
+- Data-only branch: [labchem-data](https://github.com/vubio/lab-chemical-manager/tree/labchem-data)
+- Data file: `data/labchem.json`
+- Published website: https://vubio.github.io/lab-chemical-manager/
+
+**Important privacy limitation:** The repository is PUBLIC. Creating a separate data branch does not make the data private. All synchronized records may be viewed publicly, including reagent details, experiment notes and plate layouts. Do not publish patient, confidential, unpublished, or otherwise sensitive material.
+
+### One-time connection on each device
+
+1. Open the LabChem website and choose **GitHub sync settings** in the left sidebar.
+2. Create a [fine-grained GitHub personal access token](https://github.com/settings/personal-access-tokens/new) restricted to `vubio/lab-chemical-manager`, with **Contents: Read and write**. The ChatGPT GitHub connection cannot be reused by the static website.
+3. Paste your token into the dialog and click **Connect to GitHub**. The default is session-only token storage; optional "Remember token on this device" saves the token in that browser's local storage (less secure).
+4. Check the status at bottom-left. **GitHub saved** means the combined database was uploaded or safely retrieved; **Unsynced changes on this device** means data are not yet shared.
+5. **Save now · GitHub** forces an upload; **Refresh** checks for newer remote data. With an authorized token, the site also queues automatic saves after local edits.
+
+The browser retains its local copy if GitHub is unreachable. Cross-device updates are applied automatically only if the local copy has **no unsynced changes**.
+
+### Conflicts and backups
+
+The site uses GitHub's content SHA to detect whether another device has changed the data file before an upload. If both copies were edited independently, it **stops** rather than silently overwriting. Open **GitHub sync settings** to download the device backup, load the GitHub copy (with an automatic backup of this device), or explicitly publish this device instead (with an automatic backup of the remote copy). GitHub also retains normal commit history in the data branch.
+
+A newly connected browser that already contains research records will not silently discard those records. The first connected device can seed the empty cloud database with its own records. No personal access token is added to any repository file.
