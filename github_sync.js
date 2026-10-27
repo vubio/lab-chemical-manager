@@ -37,7 +37,7 @@ function hasContent(s){
  Object.keys(q.assignments||{}).length||q.selection?.length||Object.keys(q.rowNotes||{}).length||
  Object.keys(q.colNotes||{}).length||String(q.notes||'').trim()||
  (q.name&&q.name!=='New experiment')||q.generatedAt||
- (q.factors||[]).some((f,i)=>i>1&&String(f.values||'').trim())
+ Object.keys(q.counts||{}).length||q.fillOrder==='columns'||(q.factors||[]).some((f,i)=>String(f.name||'')!==['Dose','Cell density','',''][i]||String(f.values||'')!==['0 µM; 0.05 µM; 0.1 µM; 0.2 µM','','',''][i])
  ));
 }
 function digest(x){
