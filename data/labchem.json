@@ -1,14 +1,4980 @@
 {
   "schema": 1,
-  "updatedAt": null,
+  "updatedAt": "2026-10-27T23:25:51.781Z",
   "chemicals": {
     "version": 1,
-    "chemicals": [],
-    "history": [],
-    "templates": []
+    "chemicals": [
+      {
+        "id": "d1fcac6a-7868-4214-9a9c-28acdccfaedf",
+        "createdAt": "2026-10-27T22:23:09.647Z",
+        "updatedAt": "2026-10-27T22:23:09.647Z",
+        "name": "0.1% Triton X-100",
+        "maker": "",
+        "catalog": "",
+        "lot": "",
+        "cas": "",
+        "mw": "",
+        "stock": 0.1,
+        "stockUnit": "% v/v",
+        "solvent": "PBS",
+        "storage": "",
+        "prepdate": "2026-10-27",
+        "expiry": "",
+        "notes": "Prepared: 100 mL. History record: fb837e98-246b-4274-9fb3-a98cbbb0292e"
+      },
+      {
+        "id": "6b2ec589-0b47-42d3-aea7-6fbbe2d7c1c6",
+        "createdAt": "2026-10-21T20:03:59.682Z",
+        "updatedAt": "2026-10-21T20:03:59.682Z",
+        "name": "BSA",
+        "maker": "",
+        "catalog": "",
+        "lot": "",
+        "cas": "",
+        "mw": "",
+        "stock": 5,
+        "stockUnit": "% w/v",
+        "solvent": "PBS with 0.1% Saponin",
+        "storage": "",
+        "prepdate": "2026-10-21",
+        "expiry": "",
+        "notes": "Prepared: 10 mL. History record: faf7e415-82ea-4d39-97ff-d6e5715b1e12"
+      },
+      {
+        "id": "4c1d2a25-5688-47a1-8bd5-2e5175836705",
+        "createdAt": "2026-10-21T19:44:27.007Z",
+        "updatedAt": "2026-10-21T19:44:27.007Z",
+        "name": "Saponin",
+        "maker": "",
+        "catalog": "",
+        "lot": "",
+        "cas": "",
+        "mw": "",
+        "stock": 0.1,
+        "stockUnit": "% w/v",
+        "solvent": "PBS",
+        "storage": "",
+        "prepdate": "2026-10-21",
+        "expiry": "",
+        "notes": "Prepared: 50 mL. History record: 05bcf066-ec4e-48d7-9105-ae8e621315c6"
+      }
+    ],
+    "history": [
+      {
+        "id": "80af5ec8-fc78-4c07-9bdc-d76d20bf4a52",
+        "timestamp": "2026-10-27T22:50:09.244Z",
+        "kind": "dosing",
+        "name": "35-mm",
+        "chemicalName": "Erastin 2",
+        "catalog": "",
+        "lot": "",
+        "chemicalId": "",
+        "input": {
+          "dose-title": "35-mm",
+          "dose-chemical": "",
+          "dose-name": "Erastin 2",
+          "dose-stock": "10",
+          "dose-stock-unit": "mM",
+          "dose-mw": "",
+          "dose-solvent": "DMSO",
+          "dose-targets": "0, 0.05",
+          "dose-target-unit": "µM",
+          "dose-wells": "1",
+          "dose-well-volume": "2000",
+          "dose-volume-mode": "final",
+          "dose-add": "1",
+          "dose-minpip": "0.5",
+          "dose-prep-volume": "100",
+          "dose-overage": "20",
+          "dose-max-prep": "5000",
+          "dose-strategy": "shared",
+          "dose-notes": "",
+          "dose-wells-map": "{\"0\":\"1\",\"0.01\":\"1\",\"0.05\":\"1\",\"0.1\":\"1\"}"
+        },
+        "result": {
+          "stockInTargetUnit": 10000,
+          "stockValue": 10,
+          "totalVol": 2000,
+          "mediumBefore": 1999,
+          "vehiclePercent": 0.05,
+          "solvent": "DMSO",
+          "conditions": [
+            {
+              "target": 0.05,
+              "intermediate": 100,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 100,
+                  "transfer": 1,
+                  "solvent": 99,
+                  "volume": 100,
+                  "sourceType": "stock"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 2.4,
+              "wells": 1,
+              "extraWells": 1,
+              "basePrep": 100,
+              "parentTarget": null
+            },
+            {
+              "target": 0,
+              "intermediate": 0,
+              "steps": [],
+              "vehicle": true,
+              "prepVolume": 2.4,
+              "requiredVolume": 2.4,
+              "wells": 1,
+              "extraWells": 1
+            }
+          ],
+          "prepVol": 100,
+          "maxPrep": 5000,
+          "strategy": "shared",
+          "wells": 1,
+          "over": 20,
+          "warnings": [
+            "Preparing every intermediate in DMSO keeps the added DMSO volume matched but may cause solubility/precipitation problems. Check compound solubility."
+          ],
+          "minPip": 0.5,
+          "targetUnit": "µM",
+          "stockUnit": "mM",
+          "operations": 1,
+          "sharedCount": 0
+        },
+        "notes": ""
+      },
+      {
+        "id": "fb837e98-246b-4274-9fb3-a98cbbb0292e",
+        "timestamp": "2026-10-27T22:23:03.861Z",
+        "kind": "preparation",
+        "mode": "vv",
+        "name": "0.1% Triton X-100",
+        "catalog": "",
+        "lot": "",
+        "chemicalId": "",
+        "input": {
+          "mode": "vv",
+          "chemId": "",
+          "name": "0.1% Triton X-100",
+          "catalog": "",
+          "lot": "",
+          "f-start": "100",
+          "f-target": "0.1",
+          "f-volume": "100",
+          "f-volume-unit": "mL",
+          "f-solvent": "PBS"
+        },
+        "result": {
+          "primary": "100 µL starting stock",
+          "secondary": "Add 99.9 mL diluent to make 100 mL final",
+          "steps": [
+            "Transfer 100 µL of 100 % v/v starting stock.",
+            "Add PBS to a final volume of 100 mL (approximately 99.9 mL diluent).",
+            "Result: 0.1 % v/v."
+          ],
+          "stockValue": 0.1,
+          "stockUnit": "% v/v",
+          "solvent": "PBS",
+          "preparedVolume": "100 mL",
+          "warnings": []
+        },
+        "notes": ""
+      },
+      {
+        "id": "fc560d6e-1aa7-47bc-befb-7f5b7ed36ca0",
+        "timestamp": "2026-10-27T18:57:56.211Z",
+        "kind": "dosing",
+        "name": "35-mm",
+        "chemicalName": "Erastin 2",
+        "catalog": "",
+        "lot": "",
+        "chemicalId": "",
+        "input": {
+          "dose-title": "35-mm",
+          "dose-chemical": "",
+          "dose-name": "Erastin 2",
+          "dose-stock": "10",
+          "dose-stock-unit": "mM",
+          "dose-mw": "",
+          "dose-solvent": "DMSO",
+          "dose-targets": "0, 0.05",
+          "dose-target-unit": "µM",
+          "dose-wells": "1",
+          "dose-well-volume": "2000",
+          "dose-volume-mode": "final",
+          "dose-add": "1",
+          "dose-minpip": "0.5",
+          "dose-prep-volume": "100",
+          "dose-overage": "20",
+          "dose-max-prep": "5000",
+          "dose-strategy": "shared",
+          "dose-notes": "",
+          "dose-wells-map": "{\"0\":\"5\",\"0.01\":\"1\",\"0.05\":\"5\",\"0.1\":\"1\"}"
+        },
+        "result": {
+          "stockInTargetUnit": 10000,
+          "stockValue": 10,
+          "totalVol": 2000,
+          "mediumBefore": 1999,
+          "vehiclePercent": 0.05,
+          "solvent": "DMSO",
+          "conditions": [
+            {
+              "target": 0.05,
+              "intermediate": 100,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 100,
+                  "transfer": 1,
+                  "solvent": 99,
+                  "volume": 100,
+                  "sourceType": "stock"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 7.199999999999999,
+              "wells": 5,
+              "extraWells": 1,
+              "basePrep": 100,
+              "parentTarget": null
+            },
+            {
+              "target": 0,
+              "intermediate": 0,
+              "steps": [],
+              "vehicle": true,
+              "prepVolume": 7.199999999999999,
+              "requiredVolume": 7.199999999999999,
+              "wells": 5,
+              "extraWells": 1
+            }
+          ],
+          "prepVol": 100,
+          "maxPrep": 5000,
+          "strategy": "shared",
+          "wells": 5,
+          "over": 20,
+          "warnings": [
+            "Preparing every intermediate in DMSO keeps the added DMSO volume matched but may cause solubility/precipitation problems. Check compound solubility."
+          ],
+          "minPip": 0.5,
+          "targetUnit": "µM",
+          "stockUnit": "mM",
+          "operations": 1,
+          "sharedCount": 0
+        },
+        "notes": ""
+      },
+      {
+        "id": "e07d25dc-cbff-49a0-a933-b482eb85a032",
+        "timestamp": "2026-10-27T18:57:40.864Z",
+        "kind": "dosing",
+        "name": "35-mm",
+        "chemicalName": "Erastin 2",
+        "catalog": "",
+        "lot": "",
+        "chemicalId": "",
+        "input": {
+          "dose-title": "35-mm",
+          "dose-chemical": "",
+          "dose-name": "Erastin 2",
+          "dose-stock": "10",
+          "dose-stock-unit": "mM",
+          "dose-mw": "",
+          "dose-solvent": "DMSO",
+          "dose-targets": "0, 0.05",
+          "dose-target-unit": "µM",
+          "dose-wells": "1",
+          "dose-well-volume": "2000",
+          "dose-volume-mode": "final",
+          "dose-add": "1",
+          "dose-minpip": "0.5",
+          "dose-prep-volume": "100",
+          "dose-overage": "20",
+          "dose-max-prep": "5000",
+          "dose-strategy": "shared",
+          "dose-notes": "",
+          "dose-wells-map": "{\"0\":\"10\",\"0.01\":\"1\",\"0.05\":\"10\",\"0.1\":\"1\"}"
+        },
+        "result": {
+          "stockInTargetUnit": 10000,
+          "stockValue": 10,
+          "totalVol": 2000,
+          "mediumBefore": 1999,
+          "vehiclePercent": 0.05,
+          "solvent": "DMSO",
+          "conditions": [
+            {
+              "target": 0.05,
+              "intermediate": 100,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 100,
+                  "transfer": 1,
+                  "solvent": 99,
+                  "volume": 100,
+                  "sourceType": "stock"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 13.2,
+              "wells": 10,
+              "extraWells": 1,
+              "basePrep": 100,
+              "parentTarget": null
+            },
+            {
+              "target": 0,
+              "intermediate": 0,
+              "steps": [],
+              "vehicle": true,
+              "prepVolume": 13.2,
+              "requiredVolume": 13.2,
+              "wells": 10,
+              "extraWells": 1
+            }
+          ],
+          "prepVol": 100,
+          "maxPrep": 5000,
+          "strategy": "shared",
+          "wells": 10,
+          "over": 20,
+          "warnings": [
+            "Preparing every intermediate in DMSO keeps the added DMSO volume matched but may cause solubility/precipitation problems. Check compound solubility."
+          ],
+          "minPip": 0.5,
+          "targetUnit": "µM",
+          "stockUnit": "mM",
+          "operations": 1,
+          "sharedCount": 0
+        },
+        "notes": ""
+      },
+      {
+        "id": "87968cf3-6ff0-4b8e-ba39-9b60ea286355",
+        "timestamp": "2026-10-27T18:56:12.798Z",
+        "kind": "dosing",
+        "name": "35-mm",
+        "chemicalName": "Erastin 2",
+        "catalog": "",
+        "lot": "",
+        "chemicalId": "",
+        "input": {
+          "dose-title": "35-mm",
+          "dose-chemical": "",
+          "dose-name": "Erastin 2",
+          "dose-stock": "10",
+          "dose-stock-unit": "mM",
+          "dose-mw": "",
+          "dose-solvent": "DMSO",
+          "dose-targets": "0, 0.05",
+          "dose-target-unit": "µM",
+          "dose-wells": "1",
+          "dose-well-volume": "2000",
+          "dose-volume-mode": "final",
+          "dose-add": "1",
+          "dose-minpip": "0.5",
+          "dose-prep-volume": "100",
+          "dose-overage": "20",
+          "dose-max-prep": "5000",
+          "dose-strategy": "shared",
+          "dose-notes": "",
+          "dose-wells-map": "{\"0\":\"10\",\"0.01\":\"1\",\"0.05\":\"10\",\"0.1\":\"1\"}"
+        },
+        "result": {
+          "stockInTargetUnit": 10000,
+          "stockValue": 10,
+          "totalVol": 2000,
+          "mediumBefore": 1999,
+          "vehiclePercent": 0.05,
+          "solvent": "DMSO",
+          "conditions": [
+            {
+              "target": 0.05,
+              "intermediate": 100,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 100,
+                  "transfer": 1,
+                  "solvent": 99,
+                  "volume": 100,
+                  "sourceType": "stock"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 13.2,
+              "wells": 10,
+              "extraWells": 1,
+              "basePrep": 100,
+              "parentTarget": null
+            },
+            {
+              "target": 0,
+              "intermediate": 0,
+              "steps": [],
+              "vehicle": true,
+              "prepVolume": 13.2,
+              "requiredVolume": 13.2,
+              "wells": 10,
+              "extraWells": 1
+            }
+          ],
+          "prepVol": 100,
+          "maxPrep": 5000,
+          "strategy": "shared",
+          "wells": 10,
+          "over": 20,
+          "warnings": [
+            "Preparing every intermediate in DMSO keeps the added DMSO volume matched but may cause solubility/precipitation problems. Check compound solubility."
+          ],
+          "minPip": 0.5,
+          "targetUnit": "µM",
+          "stockUnit": "mM",
+          "operations": 1,
+          "sharedCount": 0
+        },
+        "notes": ""
+      },
+      {
+        "id": "f1bd0d38-a6d3-46d8-9612-299f614e3bc1",
+        "timestamp": "2026-10-26T15:14:46.680Z",
+        "kind": "preparation",
+        "mode": "powder-molar",
+        "name": "Retinol",
+        "catalog": "",
+        "lot": "",
+        "chemicalId": "",
+        "input": {
+          "mode": "powder-molar",
+          "chemId": "",
+          "name": "Retinol",
+          "catalog": "",
+          "lot": "",
+          "f-mw": "286.5",
+          "f-mass": "25",
+          "f-mass-unit": "mg",
+          "f-target": "10",
+          "f-target-unit": "mM",
+          "f-solvent": "DMSO"
+        },
+        "result": {
+          "primary": "8.726 mL final volume",
+          "secondary": "Using 25 mg powder to achieve 10 mM",
+          "steps": [
+            "Weigh 25 mg of Retinol.",
+            "Add DMSO; dissolve, then adjust to a final solution volume of 8.726 mL.",
+            "Label stock: 10 mM in DMSO."
+          ],
+          "stockValue": 10,
+          "stockUnit": "mM",
+          "solvent": "DMSO",
+          "preparedVolume": "8.726 mL",
+          "warnings": []
+        },
+        "notes": ""
+      },
+      {
+        "id": "faf7e415-82ea-4d39-97ff-d6e5715b1e12",
+        "timestamp": "2026-10-21T20:03:35.487Z",
+        "kind": "preparation",
+        "mode": "powder-wv",
+        "name": "BSA",
+        "catalog": "",
+        "lot": "",
+        "chemicalId": "",
+        "input": {
+          "mode": "powder-wv",
+          "chemId": "",
+          "name": "BSA",
+          "catalog": "",
+          "lot": "",
+          "f-mass": "0.5",
+          "f-mass-unit": "g",
+          "f-target": "5",
+          "f-target-unit": "% w/v",
+          "f-solvent": "PBS with 0.1% Saponin"
+        },
+        "result": {
+          "primary": "10 mL final volume",
+          "secondary": "Using 500 mg powder to achieve 5 % w/v",
+          "steps": [
+            "Weigh 500 mg of BSA.",
+            "Add PBS with 0.1% Saponin; dissolve, then adjust to a final solution volume of 10 mL.",
+            "Label stock: 5 % w/v in PBS with 0.1% Saponin."
+          ],
+          "stockValue": 5,
+          "stockUnit": "% w/v",
+          "solvent": "PBS with 0.1% Saponin",
+          "preparedVolume": "10 mL",
+          "warnings": []
+        },
+        "notes": ""
+      },
+      {
+        "id": "05bcf066-ec4e-48d7-9105-ae8e621315c6",
+        "timestamp": "2026-10-21T19:43:03.760Z",
+        "kind": "preparation",
+        "mode": "powder-wv",
+        "name": "Saponin",
+        "catalog": "",
+        "lot": "",
+        "chemicalId": "",
+        "input": {
+          "mode": "powder-wv",
+          "chemId": "",
+          "name": "Saponin",
+          "catalog": "",
+          "lot": "",
+          "f-mass": "50",
+          "f-mass-unit": "mg",
+          "f-target": "0.1",
+          "f-target-unit": "% w/v",
+          "f-solvent": "PBS"
+        },
+        "result": {
+          "primary": "50 mL final volume",
+          "secondary": "Using 50 mg powder to achieve 0.1 % w/v",
+          "steps": [
+            "Weigh 50 mg of Saponin.",
+            "Add PBS; dissolve, then adjust to a final solution volume of 50 mL.",
+            "Label stock: 0.1 % w/v in PBS."
+          ],
+          "stockValue": 0.1,
+          "stockUnit": "% w/v",
+          "solvent": "PBS",
+          "preparedVolume": "50 mL",
+          "warnings": []
+        },
+        "notes": ""
+      },
+      {
+        "id": "48dc38fc-f573-4a11-b8ef-7d1744499855",
+        "timestamp": "2026-10-21T19:42:50.212Z",
+        "kind": "preparation",
+        "mode": "powder-wv",
+        "name": "Saponin",
+        "catalog": "",
+        "lot": "",
+        "chemicalId": "",
+        "input": {
+          "mode": "powder-wv",
+          "chemId": "",
+          "name": "Saponin",
+          "catalog": "",
+          "lot": "",
+          "f-mass": "5",
+          "f-mass-unit": "g",
+          "f-target": "0.1",
+          "f-target-unit": "% w/v",
+          "f-solvent": "PBS"
+        },
+        "result": {
+          "primary": "5 L final volume",
+          "secondary": "Using 5 g powder to achieve 0.1 % w/v",
+          "steps": [
+            "Weigh 5 g of Saponin.",
+            "Add PBS; dissolve, then adjust to a final solution volume of 5 L.",
+            "Label stock: 0.1 % w/v in PBS.",
+            "Check practicality: this requires more than 1 L of final solution."
+          ],
+          "stockValue": 0.1,
+          "stockUnit": "% w/v",
+          "solvent": "PBS",
+          "preparedVolume": "5 L",
+          "warnings": [
+            "Check practicality: this requires more than 1 L of final solution."
+          ]
+        },
+        "notes": ""
+      },
+      {
+        "id": "fc7f8ea6-faf8-44a4-adc1-c14a34638ee1",
+        "timestamp": "2026-10-20T00:27:59.436Z",
+        "kind": "dosing",
+        "name": "96-well AA",
+        "chemicalName": "AA",
+        "catalog": "",
+        "lot": "",
+        "chemicalId": "",
+        "input": {
+          "dose-title": "96-well AA",
+          "dose-chemical": "",
+          "dose-name": "AA",
+          "dose-stock": "10",
+          "dose-stock-unit": "mM",
+          "dose-mw": "",
+          "dose-solvent": "10% BSA in 0.9% NaCl",
+          "dose-targets": "0, 5, 10, 25, 50, 100",
+          "dose-target-unit": "µM",
+          "dose-wells": "1",
+          "dose-well-volume": "100",
+          "dose-volume-mode": "final",
+          "dose-add": "1",
+          "dose-minpip": "0.5",
+          "dose-prep-volume": "100",
+          "dose-overage": "20",
+          "dose-max-prep": "5000",
+          "dose-strategy": "shared",
+          "dose-notes": "",
+          "dose-wells-map": "{\"0\":\"18\",\"1\":\"1\",\"2\":\"1\",\"5\":\"18\",\"10\":\"18\",\"25\":\"18\",\"50\":\"18\",\"100\":\"18\",\"0.01\":\"1\",\"0.05\":\"1\",\"0.1\":\"1\"}"
+        },
+        "result": {
+          "stockInTargetUnit": 10000,
+          "stockValue": 10,
+          "totalVol": 100,
+          "mediumBefore": 99,
+          "vehiclePercent": 1,
+          "solvent": "10% BSA in 0.9% NaCl",
+          "conditions": [
+            {
+              "target": 100,
+              "intermediate": 10000,
+              "steps": [],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 22.8,
+              "wells": 18,
+              "extraWells": 1,
+              "basePrep": 100,
+              "parentTarget": null
+            },
+            {
+              "target": 50,
+              "intermediate": 5000,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 5000,
+                  "transfer": 50,
+                  "solvent": 50,
+                  "volume": 100,
+                  "sourceType": "stock"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 22.8,
+              "wells": 18,
+              "extraWells": 1,
+              "basePrep": 100,
+              "parentTarget": null
+            },
+            {
+              "target": 25,
+              "intermediate": 2500,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 2500,
+                  "transfer": 25,
+                  "solvent": 75,
+                  "volume": 100,
+                  "sourceType": "stock"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 22.8,
+              "wells": 18,
+              "extraWells": 1,
+              "basePrep": 100,
+              "parentTarget": null
+            },
+            {
+              "target": 10,
+              "intermediate": 1000,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 1000,
+                  "transfer": 10,
+                  "solvent": 90,
+                  "volume": 100,
+                  "sourceType": "stock"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 22.8,
+              "wells": 18,
+              "extraWells": 1,
+              "basePrep": 100,
+              "parentTarget": null
+            },
+            {
+              "target": 5,
+              "intermediate": 500,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 500,
+                  "transfer": 5,
+                  "solvent": 95,
+                  "volume": 100,
+                  "sourceType": "stock"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 22.8,
+              "wells": 18,
+              "extraWells": 1,
+              "basePrep": 100,
+              "parentTarget": null
+            },
+            {
+              "target": 0,
+              "intermediate": 0,
+              "steps": [],
+              "vehicle": true,
+              "prepVolume": 22.8,
+              "requiredVolume": 22.8,
+              "wells": 18,
+              "extraWells": 1
+            }
+          ],
+          "prepVol": 100,
+          "maxPrep": 5000,
+          "strategy": "shared",
+          "wells": 18,
+          "over": 20,
+          "warnings": [
+            "Vehicle addition corresponds to 1% v/v 10% BSA in 0.9% NaCl (assuming stock/intermediates are entirely in that solvent). Assess vehicle tolerance for your model."
+          ],
+          "minPip": 0.5,
+          "targetUnit": "µM",
+          "stockUnit": "mM",
+          "operations": 4,
+          "sharedCount": 0
+        },
+        "notes": ""
+      },
+      {
+        "id": "f80048d9-ac3b-4857-9cca-219c0dc92dc9",
+        "timestamp": "2026-10-19T22:17:35.011Z",
+        "kind": "dosing",
+        "name": "96-well cell treatment",
+        "chemicalName": "Erastin 2",
+        "catalog": "",
+        "lot": "",
+        "chemicalId": "",
+        "input": {
+          "dose-title": "96-well cell treatment",
+          "dose-chemical": "",
+          "dose-name": "Erastin 2",
+          "dose-stock": "10",
+          "dose-stock-unit": "mM",
+          "dose-mw": "",
+          "dose-solvent": "DMSO",
+          "dose-targets": "0, 0.05, 0.1, 0.2, 0.5",
+          "dose-target-unit": "µM",
+          "dose-wells": "1",
+          "dose-well-volume": "100",
+          "dose-volume-mode": "final",
+          "dose-add": "1",
+          "dose-minpip": "0.5",
+          "dose-prep-volume": "100",
+          "dose-overage": "20",
+          "dose-max-prep": "5000",
+          "dose-strategy": "shared",
+          "dose-notes": "",
+          "dose-wells-map": "{\"0\":\"18\",\"0.01\":\"1\",\"0.05\":\"18\",\"0.1\":\"18\",\"0.5\":\"18\",\"0.02\":\"1\",\"0.2\":\"18\"}"
+        },
+        "result": {
+          "stockInTargetUnit": 10000,
+          "stockValue": 10,
+          "totalVol": 100,
+          "mediumBefore": 99,
+          "vehiclePercent": 1,
+          "solvent": "DMSO",
+          "conditions": [
+            {
+              "target": 0.5,
+              "intermediate": 50,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 50,
+                  "transfer": 0.5,
+                  "solvent": 99.5,
+                  "volume": 100,
+                  "sourceType": "stock"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 22.8,
+              "wells": 18,
+              "extraWells": 1,
+              "basePrep": 100,
+              "parentTarget": null
+            },
+            {
+              "target": 0.2,
+              "intermediate": 20,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 50,
+                  "to": 20,
+                  "transfer": 40,
+                  "solvent": 60,
+                  "volume": 100,
+                  "sourceType": "shared",
+                  "sourceTarget": 0.5
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 22.8,
+              "wells": 18,
+              "extraWells": 1,
+              "basePrep": 100,
+              "parentTarget": 0.5
+            },
+            {
+              "target": 0.1,
+              "intermediate": 10,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 50,
+                  "to": 10,
+                  "transfer": 20,
+                  "solvent": 80,
+                  "volume": 100,
+                  "sourceType": "shared",
+                  "sourceTarget": 0.5
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 22.8,
+              "wells": 18,
+              "extraWells": 1,
+              "basePrep": 100,
+              "parentTarget": 0.5
+            },
+            {
+              "target": 0.05,
+              "intermediate": 5,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 50,
+                  "to": 5,
+                  "transfer": 10,
+                  "solvent": 90,
+                  "volume": 100,
+                  "sourceType": "shared",
+                  "sourceTarget": 0.5
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 22.8,
+              "wells": 18,
+              "extraWells": 1,
+              "basePrep": 100,
+              "parentTarget": 0.5
+            },
+            {
+              "target": 0,
+              "intermediate": 0,
+              "steps": [],
+              "vehicle": true,
+              "prepVolume": 22.8,
+              "requiredVolume": 22.8,
+              "wells": 18,
+              "extraWells": 1
+            }
+          ],
+          "prepVol": 100,
+          "maxPrep": 5000,
+          "strategy": "shared",
+          "wells": 18,
+          "over": 20,
+          "warnings": [
+            "Vehicle addition corresponds to 1% v/v DMSO (assuming stock/intermediates are entirely in that solvent). Assess vehicle tolerance for your model.",
+            "Preparing every intermediate in DMSO keeps the added DMSO volume matched but may cause solubility/precipitation problems. Check compound solubility.",
+            "One or more transfers are at the configured minimum (0.5 µL); consider a higher threshold for improved accuracy."
+          ],
+          "minPip": 0.5,
+          "targetUnit": "µM",
+          "stockUnit": "mM",
+          "operations": 4,
+          "sharedCount": 3
+        },
+        "notes": ""
+      },
+      {
+        "id": "d154ccab-e137-4938-88e8-399378c116e0",
+        "timestamp": "2026-10-19T18:12:28.342Z",
+        "kind": "dosing",
+        "name": "24-well cell treatment",
+        "chemicalName": "Erastin 2",
+        "catalog": "",
+        "lot": "",
+        "chemicalId": "",
+        "input": {
+          "dose-title": "24-well cell treatment",
+          "dose-chemical": "",
+          "dose-name": "Erastin 2",
+          "dose-stock": "10",
+          "dose-stock-unit": "mM",
+          "dose-mw": "",
+          "dose-solvent": "DMSO",
+          "dose-targets": "0, 0.05, 0.1, 0.2",
+          "dose-target-unit": "µM",
+          "dose-wells": "4",
+          "dose-well-volume": "500",
+          "dose-volume-mode": "final",
+          "dose-add": "1",
+          "dose-minpip": "0.5",
+          "dose-prep-volume": "100",
+          "dose-overage": "20",
+          "dose-max-prep": "500",
+          "dose-strategy": "shared",
+          "dose-notes": "",
+          "dose-wells-map": "{\"0\":\"8\",\"0.01\":\"1\",\"0.05\":\"4\",\"0.1\":\"4\",\"0.2\":\"4\"}"
+        },
+        "result": {
+          "stockInTargetUnit": 10000,
+          "stockValue": 10,
+          "totalVol": 500,
+          "mediumBefore": 499,
+          "vehiclePercent": 0.2,
+          "solvent": "DMSO",
+          "conditions": [
+            {
+              "target": 0.2,
+              "intermediate": 100,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 100,
+                  "transfer": 1,
+                  "solvent": 99,
+                  "volume": 100,
+                  "sourceType": "stock"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 6,
+              "wells": 4,
+              "extraWells": 1,
+              "basePrep": 100,
+              "parentTarget": null
+            },
+            {
+              "target": 0.1,
+              "intermediate": 50,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 50,
+                  "transfer": 0.5,
+                  "solvent": 99.5,
+                  "volume": 100,
+                  "sourceType": "stock"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 6,
+              "wells": 4,
+              "extraWells": 1,
+              "basePrep": 100,
+              "parentTarget": null
+            },
+            {
+              "target": 0.05,
+              "intermediate": 25,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 100,
+                  "to": 25,
+                  "transfer": 25,
+                  "solvent": 75,
+                  "volume": 100,
+                  "sourceType": "shared",
+                  "sourceTarget": 0.2
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 6,
+              "wells": 4,
+              "extraWells": 1,
+              "basePrep": 100,
+              "parentTarget": 0.2
+            },
+            {
+              "target": 0,
+              "intermediate": 0,
+              "steps": [],
+              "vehicle": true,
+              "prepVolume": 10.799999999999999,
+              "requiredVolume": 10.799999999999999,
+              "wells": 8,
+              "extraWells": 1
+            }
+          ],
+          "prepVol": 100,
+          "maxPrep": 500,
+          "strategy": "shared",
+          "wells": null,
+          "over": 20,
+          "warnings": [
+            "Vehicle addition corresponds to 0.2% v/v DMSO (assuming stock/intermediates are entirely in that solvent). Assess vehicle tolerance for your model.",
+            "Preparing every intermediate in DMSO keeps the added DMSO volume matched but may cause solubility/precipitation problems. Check compound solubility.",
+            "One or more transfers are at the configured minimum (0.5 µL); consider a higher threshold for improved accuracy."
+          ],
+          "minPip": 0.5,
+          "targetUnit": "µM",
+          "stockUnit": "mM",
+          "operations": 3,
+          "sharedCount": 1
+        },
+        "notes": ""
+      },
+      {
+        "id": "4ceb2e58-a3b6-4ce7-a0a7-e554f4f8b84f",
+        "timestamp": "2026-10-19T18:12:26.100Z",
+        "kind": "dosing",
+        "name": "24-well cell treatment",
+        "chemicalName": "Erastin 2",
+        "catalog": "",
+        "lot": "",
+        "chemicalId": "",
+        "input": {
+          "dose-title": "24-well cell treatment",
+          "dose-chemical": "",
+          "dose-name": "Erastin 2",
+          "dose-stock": "10",
+          "dose-stock-unit": "mM",
+          "dose-mw": "",
+          "dose-solvent": "DMSO",
+          "dose-targets": "0, 0.05, 0.1, 0.2",
+          "dose-target-unit": "µM",
+          "dose-wells": "4",
+          "dose-well-volume": "500",
+          "dose-volume-mode": "final",
+          "dose-add": "1",
+          "dose-minpip": "0.5",
+          "dose-prep-volume": "100",
+          "dose-overage": "20",
+          "dose-max-prep": "500",
+          "dose-strategy": "smallest",
+          "dose-notes": "",
+          "dose-wells-map": "{\"0\":\"8\",\"0.01\":\"1\",\"0.05\":\"4\",\"0.1\":\"4\",\"0.2\":\"4\"}"
+        },
+        "result": {
+          "stockInTargetUnit": 10000,
+          "stockValue": 10,
+          "totalVol": 500,
+          "mediumBefore": 499,
+          "vehiclePercent": 0.2,
+          "solvent": "DMSO",
+          "conditions": [
+            {
+              "target": 0.2,
+              "intermediate": 100,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 100,
+                  "transfer": 1,
+                  "solvent": 99,
+                  "volume": 100,
+                  "sourceType": "stock"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 6,
+              "wells": 4,
+              "extraWells": 1,
+              "basePrep": 100,
+              "parentTarget": null
+            },
+            {
+              "target": 0.1,
+              "intermediate": 50,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 50,
+                  "transfer": 0.5,
+                  "solvent": 99.5,
+                  "volume": 100,
+                  "sourceType": "stock"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 6,
+              "wells": 4,
+              "extraWells": 1,
+              "basePrep": 100,
+              "parentTarget": null
+            },
+            {
+              "target": 0.05,
+              "intermediate": 25,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 500,
+                  "transfer": 5,
+                  "solvent": 95,
+                  "volume": 100,
+                  "sourceType": "stock"
+                },
+                {
+                  "stage": 2,
+                  "from": 500,
+                  "to": 25,
+                  "transfer": 5,
+                  "solvent": 95,
+                  "volume": 100,
+                  "sourceType": "stage"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 6,
+              "wells": 4,
+              "extraWells": 1,
+              "basePrep": 100,
+              "parentTarget": null
+            },
+            {
+              "target": 0,
+              "intermediate": 0,
+              "steps": [],
+              "vehicle": true,
+              "prepVolume": 10.799999999999999,
+              "requiredVolume": 10.799999999999999,
+              "wells": 8,
+              "extraWells": 1
+            }
+          ],
+          "prepVol": 100,
+          "maxPrep": 500,
+          "strategy": "smallest",
+          "wells": null,
+          "over": 20,
+          "warnings": [
+            "Vehicle addition corresponds to 0.2% v/v DMSO (assuming stock/intermediates are entirely in that solvent). Assess vehicle tolerance for your model.",
+            "Preparing every intermediate in DMSO keeps the added DMSO volume matched but may cause solubility/precipitation problems. Check compound solubility.",
+            "One or more transfers are at the configured minimum (0.5 µL); consider a higher threshold for improved accuracy."
+          ],
+          "minPip": 0.5,
+          "targetUnit": "µM",
+          "stockUnit": "mM",
+          "operations": 4,
+          "sharedCount": 0
+        },
+        "notes": ""
+      },
+      {
+        "id": "03ea8831-9344-4e57-a7e8-8587bd53b205",
+        "timestamp": "2026-10-19T18:12:11.040Z",
+        "kind": "dosing",
+        "name": "24-well cell treatment",
+        "chemicalName": "Erastin 2",
+        "catalog": "",
+        "lot": "",
+        "chemicalId": "",
+        "input": {
+          "dose-title": "24-well cell treatment",
+          "dose-chemical": "",
+          "dose-name": "Erastin 2",
+          "dose-stock": "10",
+          "dose-stock-unit": "mM",
+          "dose-mw": "",
+          "dose-solvent": "DMSO",
+          "dose-targets": "0, 0.05, 0.1, 0.2",
+          "dose-target-unit": "µM",
+          "dose-wells": "4",
+          "dose-well-volume": "500",
+          "dose-volume-mode": "final",
+          "dose-add": "1",
+          "dose-minpip": "0.5",
+          "dose-prep-volume": "100",
+          "dose-overage": "20",
+          "dose-max-prep": "500",
+          "dose-strategy": "fewest",
+          "dose-notes": "",
+          "dose-wells-map": "{\"0\":\"8\",\"0.01\":\"1\",\"0.05\":\"4\",\"0.1\":\"4\",\"0.2\":\"4\"}"
+        },
+        "result": {
+          "stockInTargetUnit": 10000,
+          "stockValue": 10,
+          "totalVol": 500,
+          "mediumBefore": 499,
+          "vehiclePercent": 0.2,
+          "solvent": "DMSO",
+          "conditions": [
+            {
+              "target": 0.2,
+              "intermediate": 100,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 100,
+                  "transfer": 1,
+                  "solvent": 99,
+                  "volume": 100,
+                  "sourceType": "stock"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 6,
+              "wells": 4,
+              "extraWells": 1,
+              "basePrep": 100,
+              "parentTarget": null
+            },
+            {
+              "target": 0.1,
+              "intermediate": 50,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 50,
+                  "transfer": 0.5,
+                  "solvent": 99.5,
+                  "volume": 100,
+                  "sourceType": "stock"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 6,
+              "wells": 4,
+              "extraWells": 1,
+              "basePrep": 100,
+              "parentTarget": null
+            },
+            {
+              "target": 0.05,
+              "intermediate": 25,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 25,
+                  "transfer": 0.5,
+                  "solvent": 199.5,
+                  "volume": 200,
+                  "sourceType": "stock"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 200,
+              "requiredVolume": 6,
+              "wells": 4,
+              "extraWells": 1,
+              "basePrep": 100,
+              "parentTarget": null
+            },
+            {
+              "target": 0,
+              "intermediate": 0,
+              "steps": [],
+              "vehicle": true,
+              "prepVolume": 10.799999999999999,
+              "requiredVolume": 10.799999999999999,
+              "wells": 8,
+              "extraWells": 1
+            }
+          ],
+          "prepVol": 100,
+          "maxPrep": 500,
+          "strategy": "fewest",
+          "wells": null,
+          "over": 20,
+          "warnings": [
+            "Vehicle addition corresponds to 0.2% v/v DMSO (assuming stock/intermediates are entirely in that solvent). Assess vehicle tolerance for your model.",
+            "Preparing every intermediate in DMSO keeps the added DMSO volume matched but may cause solubility/precipitation problems. Check compound solubility.",
+            "Some preparations use more than the minimum volume to meet pipetting requirements or supply downstream dilutions.",
+            "One or more transfers are at the configured minimum (0.5 µL); consider a higher threshold for improved accuracy."
+          ],
+          "minPip": 0.5,
+          "targetUnit": "µM",
+          "stockUnit": "mM",
+          "operations": 3,
+          "sharedCount": 0
+        },
+        "notes": ""
+      },
+      {
+        "id": "bd29e845-9515-4877-a090-49ab3c0dcf48",
+        "timestamp": "2026-10-19T18:12:05.762Z",
+        "kind": "dosing",
+        "name": "24-well cell treatment",
+        "chemicalName": "Erastin 2",
+        "catalog": "",
+        "lot": "",
+        "chemicalId": "",
+        "input": {
+          "dose-title": "24-well cell treatment",
+          "dose-chemical": "",
+          "dose-name": "Erastin 2",
+          "dose-stock": "10",
+          "dose-stock-unit": "mM",
+          "dose-mw": "",
+          "dose-solvent": "DMSO",
+          "dose-targets": "0, 0.05, 0.1, 0.2",
+          "dose-target-unit": "µM",
+          "dose-wells": "4",
+          "dose-well-volume": "500",
+          "dose-volume-mode": "final",
+          "dose-add": "1",
+          "dose-minpip": "0.5",
+          "dose-prep-volume": "100",
+          "dose-overage": "20",
+          "dose-max-prep": "500",
+          "dose-strategy": "shared",
+          "dose-notes": "",
+          "dose-wells-map": "{\"0\":\"8\",\"0.01\":\"1\",\"0.05\":\"4\",\"0.1\":\"4\",\"0.2\":\"4\"}"
+        },
+        "result": {
+          "stockInTargetUnit": 10000,
+          "stockValue": 10,
+          "totalVol": 500,
+          "mediumBefore": 499,
+          "vehiclePercent": 0.2,
+          "solvent": "DMSO",
+          "conditions": [
+            {
+              "target": 0.2,
+              "intermediate": 100,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 100,
+                  "transfer": 1,
+                  "solvent": 99,
+                  "volume": 100,
+                  "sourceType": "stock"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 6,
+              "wells": 4,
+              "extraWells": 1,
+              "basePrep": 100,
+              "parentTarget": null
+            },
+            {
+              "target": 0.1,
+              "intermediate": 50,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 50,
+                  "transfer": 0.5,
+                  "solvent": 99.5,
+                  "volume": 100,
+                  "sourceType": "stock"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 6,
+              "wells": 4,
+              "extraWells": 1,
+              "basePrep": 100,
+              "parentTarget": null
+            },
+            {
+              "target": 0.05,
+              "intermediate": 25,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 100,
+                  "to": 25,
+                  "transfer": 25,
+                  "solvent": 75,
+                  "volume": 100,
+                  "sourceType": "shared",
+                  "sourceTarget": 0.2
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 6,
+              "wells": 4,
+              "extraWells": 1,
+              "basePrep": 100,
+              "parentTarget": 0.2
+            },
+            {
+              "target": 0,
+              "intermediate": 0,
+              "steps": [],
+              "vehicle": true,
+              "prepVolume": 10.799999999999999,
+              "requiredVolume": 10.799999999999999,
+              "wells": 8,
+              "extraWells": 1
+            }
+          ],
+          "prepVol": 100,
+          "maxPrep": 500,
+          "strategy": "shared",
+          "wells": null,
+          "over": 20,
+          "warnings": [
+            "Vehicle addition corresponds to 0.2% v/v DMSO (assuming stock/intermediates are entirely in that solvent). Assess vehicle tolerance for your model.",
+            "Preparing every intermediate in DMSO keeps the added DMSO volume matched but may cause solubility/precipitation problems. Check compound solubility.",
+            "One or more transfers are at the configured minimum (0.5 µL); consider a higher threshold for improved accuracy."
+          ],
+          "minPip": 0.5,
+          "targetUnit": "µM",
+          "stockUnit": "mM",
+          "operations": 3,
+          "sharedCount": 1
+        },
+        "notes": ""
+      },
+      {
+        "id": "09e99ca8-3ea7-40d7-9632-a8aaa6cf6cc3",
+        "timestamp": "2026-10-19T17:33:14.753Z",
+        "kind": "dosing",
+        "name": "24-well cell treatment",
+        "chemicalName": "Erastin 2",
+        "catalog": "",
+        "lot": "",
+        "chemicalId": "",
+        "input": {
+          "dose-title": "24-well cell treatment",
+          "dose-chemical": "",
+          "dose-name": "Erastin 2",
+          "dose-stock": "10",
+          "dose-stock-unit": "mM",
+          "dose-mw": "",
+          "dose-solvent": "DMSO",
+          "dose-targets": "0, 0.05, 0.1, 0.2",
+          "dose-target-unit": "µM",
+          "dose-wells": "4",
+          "dose-well-volume": "500",
+          "dose-volume-mode": "final",
+          "dose-add": "1",
+          "dose-minpip": "0.5",
+          "dose-prep-volume": "100",
+          "dose-overage": "20",
+          "dose-max-prep": "500",
+          "dose-strategy": "shared",
+          "dose-notes": ""
+        },
+        "result": {
+          "stockInTargetUnit": 10000,
+          "stockValue": 10,
+          "totalVol": 500,
+          "mediumBefore": 499,
+          "vehiclePercent": 0.2,
+          "solvent": "DMSO",
+          "conditions": [
+            {
+              "target": 0.2,
+              "intermediate": 100,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 100,
+                  "transfer": 1,
+                  "solvent": 99,
+                  "volume": 100,
+                  "sourceType": "stock"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 4.8,
+              "parentTarget": null
+            },
+            {
+              "target": 0.1,
+              "intermediate": 50,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 50,
+                  "transfer": 0.5,
+                  "solvent": 99.5,
+                  "volume": 100,
+                  "sourceType": "stock"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 4.8,
+              "parentTarget": null
+            },
+            {
+              "target": 0.05,
+              "intermediate": 25,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 100,
+                  "to": 25,
+                  "transfer": 25,
+                  "solvent": 75,
+                  "volume": 100,
+                  "sourceType": "shared",
+                  "sourceTarget": 0.2
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 4.8,
+              "parentTarget": 0.2
+            },
+            {
+              "target": 0,
+              "intermediate": 0,
+              "steps": [],
+              "vehicle": true,
+              "prepVolume": 4.8,
+              "requiredVolume": 4.8
+            }
+          ],
+          "prepVol": 100,
+          "maxPrep": 500,
+          "strategy": "shared",
+          "wells": 4,
+          "over": 20,
+          "warnings": [
+            "Vehicle addition corresponds to 0.2% v/v DMSO (assuming stock/intermediates are entirely in that solvent). Assess vehicle tolerance for your model.",
+            "Preparing every intermediate in DMSO keeps the added DMSO volume matched but may cause solubility/precipitation problems. Check compound solubility.",
+            "One or more transfers are at the configured minimum (0.5 µL); consider a higher threshold for improved accuracy."
+          ],
+          "minPip": 0.5,
+          "targetUnit": "µM",
+          "stockUnit": "mM",
+          "operations": 3,
+          "sharedCount": 1
+        },
+        "notes": ""
+      },
+      {
+        "id": "ad697884-ef1c-4f13-83be-23d972bdcb1c",
+        "timestamp": "2026-10-19T17:33:05.423Z",
+        "kind": "dosing",
+        "name": "24-well cell treatment",
+        "chemicalName": "Erastin 2",
+        "catalog": "",
+        "lot": "",
+        "chemicalId": "",
+        "input": {
+          "dose-title": "24-well cell treatment",
+          "dose-chemical": "",
+          "dose-name": "Erastin 2",
+          "dose-stock": "10",
+          "dose-stock-unit": "mM",
+          "dose-mw": "",
+          "dose-solvent": "DMSO",
+          "dose-targets": "0, 0.05, 0.1, 0.2",
+          "dose-target-unit": "µM",
+          "dose-wells": "4",
+          "dose-well-volume": "500",
+          "dose-volume-mode": "final",
+          "dose-add": "1",
+          "dose-minpip": "0.5",
+          "dose-prep-volume": "100",
+          "dose-overage": "20",
+          "dose-max-prep": "500",
+          "dose-strategy": "smallest",
+          "dose-notes": ""
+        },
+        "result": {
+          "stockInTargetUnit": 10000,
+          "stockValue": 10,
+          "totalVol": 500,
+          "mediumBefore": 499,
+          "vehiclePercent": 0.2,
+          "solvent": "DMSO",
+          "conditions": [
+            {
+              "target": 0.2,
+              "intermediate": 100,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 100,
+                  "transfer": 1,
+                  "solvent": 99,
+                  "volume": 100,
+                  "sourceType": "stock"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 4.8,
+              "parentTarget": null
+            },
+            {
+              "target": 0.1,
+              "intermediate": 50,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 50,
+                  "transfer": 0.5,
+                  "solvent": 99.5,
+                  "volume": 100,
+                  "sourceType": "stock"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 4.8,
+              "parentTarget": null
+            },
+            {
+              "target": 0.05,
+              "intermediate": 25,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 500,
+                  "transfer": 5,
+                  "solvent": 95,
+                  "volume": 100,
+                  "sourceType": "stock"
+                },
+                {
+                  "stage": 2,
+                  "from": 500,
+                  "to": 25,
+                  "transfer": 5,
+                  "solvent": 95,
+                  "volume": 100,
+                  "sourceType": "stage"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 4.8,
+              "parentTarget": null
+            },
+            {
+              "target": 0,
+              "intermediate": 0,
+              "steps": [],
+              "vehicle": true,
+              "prepVolume": 4.8,
+              "requiredVolume": 4.8
+            }
+          ],
+          "prepVol": 100,
+          "maxPrep": 500,
+          "strategy": "smallest",
+          "wells": 4,
+          "over": 20,
+          "warnings": [
+            "Vehicle addition corresponds to 0.2% v/v DMSO (assuming stock/intermediates are entirely in that solvent). Assess vehicle tolerance for your model.",
+            "Preparing every intermediate in DMSO keeps the added DMSO volume matched but may cause solubility/precipitation problems. Check compound solubility.",
+            "One or more transfers are at the configured minimum (0.5 µL); consider a higher threshold for improved accuracy."
+          ],
+          "minPip": 0.5,
+          "targetUnit": "µM",
+          "stockUnit": "mM",
+          "operations": 4,
+          "sharedCount": 0
+        },
+        "notes": ""
+      },
+      {
+        "id": "3dc050c5-5d7e-4818-b759-b8ac103812a9",
+        "timestamp": "2026-10-19T17:33:01.907Z",
+        "kind": "dosing",
+        "name": "24-well cell treatment",
+        "chemicalName": "Erastin 2",
+        "catalog": "",
+        "lot": "",
+        "chemicalId": "",
+        "input": {
+          "dose-title": "24-well cell treatment",
+          "dose-chemical": "",
+          "dose-name": "Erastin 2",
+          "dose-stock": "10",
+          "dose-stock-unit": "mM",
+          "dose-mw": "",
+          "dose-solvent": "DMSO",
+          "dose-targets": "0, 0.05, 0.1, 0.2",
+          "dose-target-unit": "µM",
+          "dose-wells": "4",
+          "dose-well-volume": "500",
+          "dose-volume-mode": "final",
+          "dose-add": "1",
+          "dose-minpip": "0.5",
+          "dose-prep-volume": "100",
+          "dose-overage": "20",
+          "dose-max-prep": "500",
+          "dose-strategy": "fewest",
+          "dose-notes": ""
+        },
+        "result": {
+          "stockInTargetUnit": 10000,
+          "stockValue": 10,
+          "totalVol": 500,
+          "mediumBefore": 499,
+          "vehiclePercent": 0.2,
+          "solvent": "DMSO",
+          "conditions": [
+            {
+              "target": 0.2,
+              "intermediate": 100,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 100,
+                  "transfer": 1,
+                  "solvent": 99,
+                  "volume": 100,
+                  "sourceType": "stock"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 4.8,
+              "parentTarget": null
+            },
+            {
+              "target": 0.1,
+              "intermediate": 50,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 50,
+                  "transfer": 0.5,
+                  "solvent": 99.5,
+                  "volume": 100,
+                  "sourceType": "stock"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 4.8,
+              "parentTarget": null
+            },
+            {
+              "target": 0.05,
+              "intermediate": 25,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 25,
+                  "transfer": 0.5,
+                  "solvent": 199.5,
+                  "volume": 200,
+                  "sourceType": "stock"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 200,
+              "requiredVolume": 4.8,
+              "parentTarget": null
+            },
+            {
+              "target": 0,
+              "intermediate": 0,
+              "steps": [],
+              "vehicle": true,
+              "prepVolume": 4.8,
+              "requiredVolume": 4.8
+            }
+          ],
+          "prepVol": 100,
+          "maxPrep": 500,
+          "strategy": "fewest",
+          "wells": 4,
+          "over": 20,
+          "warnings": [
+            "Vehicle addition corresponds to 0.2% v/v DMSO (assuming stock/intermediates are entirely in that solvent). Assess vehicle tolerance for your model.",
+            "Preparing every intermediate in DMSO keeps the added DMSO volume matched but may cause solubility/precipitation problems. Check compound solubility.",
+            "Some preparations use more than the minimum volume to meet pipetting requirements or supply downstream dilutions.",
+            "One or more transfers are at the configured minimum (0.5 µL); consider a higher threshold for improved accuracy."
+          ],
+          "minPip": 0.5,
+          "targetUnit": "µM",
+          "stockUnit": "mM",
+          "operations": 3,
+          "sharedCount": 0
+        },
+        "notes": ""
+      },
+      {
+        "id": "8aa6d2c1-575b-4a9d-874f-ecb2fa607559",
+        "timestamp": "2026-10-19T17:32:53.894Z",
+        "kind": "dosing",
+        "name": "24-well cell treatment",
+        "chemicalName": "Erastin 2",
+        "catalog": "",
+        "lot": "",
+        "chemicalId": "",
+        "input": {
+          "dose-title": "24-well cell treatment",
+          "dose-chemical": "",
+          "dose-name": "Erastin 2",
+          "dose-stock": "10",
+          "dose-stock-unit": "mM",
+          "dose-mw": "",
+          "dose-solvent": "DMSO",
+          "dose-targets": "0, 0.05, 0.1, 0.2",
+          "dose-target-unit": "µM",
+          "dose-wells": "4",
+          "dose-well-volume": "500",
+          "dose-volume-mode": "final",
+          "dose-add": "1",
+          "dose-minpip": "0.5",
+          "dose-prep-volume": "100",
+          "dose-overage": "20",
+          "dose-max-prep": "500",
+          "dose-strategy": "shared",
+          "dose-notes": ""
+        },
+        "result": {
+          "stockInTargetUnit": 10000,
+          "stockValue": 10,
+          "totalVol": 500,
+          "mediumBefore": 499,
+          "vehiclePercent": 0.2,
+          "solvent": "DMSO",
+          "conditions": [
+            {
+              "target": 0.2,
+              "intermediate": 100,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 100,
+                  "transfer": 1,
+                  "solvent": 99,
+                  "volume": 100,
+                  "sourceType": "stock"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 4.8,
+              "parentTarget": null
+            },
+            {
+              "target": 0.1,
+              "intermediate": 50,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 50,
+                  "transfer": 0.5,
+                  "solvent": 99.5,
+                  "volume": 100,
+                  "sourceType": "stock"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 4.8,
+              "parentTarget": null
+            },
+            {
+              "target": 0.05,
+              "intermediate": 25,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 100,
+                  "to": 25,
+                  "transfer": 25,
+                  "solvent": 75,
+                  "volume": 100,
+                  "sourceType": "shared",
+                  "sourceTarget": 0.2
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 4.8,
+              "parentTarget": 0.2
+            },
+            {
+              "target": 0,
+              "intermediate": 0,
+              "steps": [],
+              "vehicle": true,
+              "prepVolume": 4.8,
+              "requiredVolume": 4.8
+            }
+          ],
+          "prepVol": 100,
+          "maxPrep": 500,
+          "strategy": "shared",
+          "wells": 4,
+          "over": 20,
+          "warnings": [
+            "Vehicle addition corresponds to 0.2% v/v DMSO (assuming stock/intermediates are entirely in that solvent). Assess vehicle tolerance for your model.",
+            "Preparing every intermediate in DMSO keeps the added DMSO volume matched but may cause solubility/precipitation problems. Check compound solubility.",
+            "One or more transfers are at the configured minimum (0.5 µL); consider a higher threshold for improved accuracy."
+          ],
+          "minPip": 0.5,
+          "targetUnit": "µM",
+          "stockUnit": "mM",
+          "operations": 3,
+          "sharedCount": 1
+        },
+        "notes": ""
+      },
+      {
+        "id": "ce318fb3-59bd-43e4-821c-01bb74841a8b",
+        "timestamp": "2026-10-19T17:01:36.420Z",
+        "kind": "dosing",
+        "name": "24-well cell treatment",
+        "chemicalName": "Erastin 2",
+        "catalog": "",
+        "lot": "",
+        "chemicalId": "",
+        "input": {
+          "dose-title": "24-well cell treatment",
+          "dose-chemical": "",
+          "dose-name": "Erastin 2",
+          "dose-stock": "10",
+          "dose-stock-unit": "mM",
+          "dose-mw": "",
+          "dose-solvent": "DMSO",
+          "dose-targets": "0, 0.01, 0.05, 0.1",
+          "dose-target-unit": "µM",
+          "dose-wells": "4",
+          "dose-well-volume": "500",
+          "dose-volume-mode": "final",
+          "dose-add": "1",
+          "dose-minpip": "0.5",
+          "dose-prep-volume": "100",
+          "dose-overage": "20",
+          "dose-max-prep": "5000",
+          "dose-strategy": "fewest",
+          "dose-notes": ""
+        },
+        "result": {
+          "stockInTargetUnit": 10000,
+          "totalVol": 500,
+          "mediumBefore": 499,
+          "vehiclePercent": 0.2,
+          "solvent": "DMSO",
+          "conditions": [
+            {
+              "target": 0,
+              "intermediate": 0,
+              "steps": [],
+              "vehicle": true,
+              "prepVolume": 100,
+              "requiredVolume": 4.8
+            },
+            {
+              "target": 0.01,
+              "intermediate": 5,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 5,
+                  "transfer": 0.5,
+                  "solvent": 999.5,
+                  "volume": 1000
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 1000,
+              "requiredVolume": 4.8
+            },
+            {
+              "target": 0.05,
+              "intermediate": 25,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 25,
+                  "transfer": 0.5,
+                  "solvent": 199.5,
+                  "volume": 200
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 200,
+              "requiredVolume": 4.8
+            },
+            {
+              "target": 0.1,
+              "intermediate": 50,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 50,
+                  "transfer": 0.5,
+                  "solvent": 99.5,
+                  "volume": 100
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 4.8
+            }
+          ],
+          "prepVol": 100,
+          "maxPrep": 5000,
+          "strategy": "fewest",
+          "wells": 4,
+          "over": 20,
+          "warnings": [
+            "Vehicle addition corresponds to 0.2% v/v DMSO (assuming stock/intermediates are entirely in that solvent). Assess vehicle tolerance for your model.",
+            "Preparing every intermediate in DMSO keeps the added DMSO volume matched but may cause solubility/precipitation problems. Check compound solubility.",
+            "Some single-step preparations use a larger volume to avoid extra dilution stages. Review the amount of reagent used.",
+            "One or more stock transfers are at the configured minimum (0.5 µL). Increase the minimum pipetting volume for greater accuracy."
+          ],
+          "minPip": 0.5,
+          "targetUnit": "µM",
+          "stockUnit": "mM"
+        },
+        "notes": ""
+      },
+      {
+        "id": "0438c235-aa72-48e4-a647-e7f93b9be8a2",
+        "timestamp": "2026-10-19T16:37:35.756Z",
+        "kind": "dosing",
+        "name": "24-well cell treatment",
+        "chemicalName": "Eras2",
+        "catalog": "",
+        "lot": "",
+        "chemicalId": "",
+        "input": {
+          "dose-title": "24-well cell treatment",
+          "dose-chemical": "",
+          "dose-name": "Eras2",
+          "dose-stock": "10",
+          "dose-stock-unit": "mM",
+          "dose-mw": "",
+          "dose-solvent": "DMSO",
+          "dose-targets": "0, 0.05, 0.1, 0.2",
+          "dose-target-unit": "µM",
+          "dose-wells": "2",
+          "dose-well-volume": "500",
+          "dose-volume-mode": "final",
+          "dose-add": "1",
+          "dose-minpip": "0.5",
+          "dose-prep-volume": "100",
+          "dose-overage": "20",
+          "dose-notes": ""
+        },
+        "result": {
+          "stockInTargetUnit": 10000,
+          "totalVol": 500,
+          "mediumBefore": 499,
+          "vehiclePercent": 0.2,
+          "solvent": "DMSO",
+          "conditions": [
+            {
+              "target": 0,
+              "intermediate": 0,
+              "steps": [],
+              "vehicle": true,
+              "prepVolume": 100,
+              "requiredVolume": 2.4
+            },
+            {
+              "target": 0.05,
+              "intermediate": 25,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 500,
+                  "transfer": 5,
+                  "solvent": 95,
+                  "volume": 100
+                },
+                {
+                  "stage": 2,
+                  "from": 500,
+                  "to": 25,
+                  "transfer": 5,
+                  "solvent": 95,
+                  "volume": 100
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 2.4
+            },
+            {
+              "target": 0.1,
+              "intermediate": 50,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 500,
+                  "transfer": 5,
+                  "solvent": 95,
+                  "volume": 100
+                },
+                {
+                  "stage": 2,
+                  "from": 500,
+                  "to": 50,
+                  "transfer": 10,
+                  "solvent": 90,
+                  "volume": 100
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 2.4
+            },
+            {
+              "target": 0.2,
+              "intermediate": 100,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 1000,
+                  "transfer": 10,
+                  "solvent": 90,
+                  "volume": 100
+                },
+                {
+                  "stage": 2,
+                  "from": 1000,
+                  "to": 100,
+                  "transfer": 10,
+                  "solvent": 90,
+                  "volume": 100
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 2.4
+            }
+          ],
+          "prepVol": 100,
+          "wells": 2,
+          "over": 20,
+          "warnings": [
+            "Vehicle addition corresponds to 0.2% v/v DMSO (assuming stock/intermediates are entirely in that solvent). Assess vehicle tolerance for your model.",
+            "Preparing every intermediate in DMSO keeps the added DMSO volume matched but may cause solubility/precipitation problems. Check compound solubility."
+          ],
+          "minPip": 0.5,
+          "targetUnit": "µM",
+          "stockUnit": "mM"
+        },
+        "notes": ""
+      }
+    ],
+    "templates": [
+      {
+        "id": "3da1ca91-404c-4c33-8cd2-cd9ca70e12b1",
+        "name": "24-well_Erastin 0, 0.05, 0.1, 0.2.",
+        "createdAt": "2026-10-19T18:19:16.856Z",
+        "inputs": {
+          "dose-title": "24-well cell treatment",
+          "dose-chemical": "",
+          "dose-name": "Erastin 2",
+          "dose-stock": "10",
+          "dose-stock-unit": "mM",
+          "dose-mw": "",
+          "dose-solvent": "DMSO",
+          "dose-targets": "0, 0.05, 0.1, 0.2",
+          "dose-target-unit": "µM",
+          "dose-wells": "4",
+          "dose-well-volume": "500",
+          "dose-volume-mode": "final",
+          "dose-add": "1",
+          "dose-minpip": "0.5",
+          "dose-prep-volume": "100",
+          "dose-overage": "20",
+          "dose-max-prep": "500",
+          "dose-strategy": "shared",
+          "dose-notes": "",
+          "dose-wells-map": "{\"0\":\"8\",\"0.01\":\"1\",\"0.05\":\"4\",\"0.1\":\"4\",\"0.2\":\"4\"}"
+        }
+      }
+    ]
   },
   "plates": {
-    "draft": null,
-    "saved": []
+    "draft": {
+      "id": "plate-1792455528868-hu05",
+      "name": "96-well_1k-5k-10k_Eras2",
+      "format": "96",
+      "selection": [],
+      "rowNotes": {},
+      "colNotes": {},
+      "fillOrder": "rows",
+      "mode": "move",
+      "factors": [
+        {
+          "id": "factor3",
+          "name": "Eras",
+          "values": "0, 0.05, 0.1"
+        },
+        {
+          "id": "factor1",
+          "name": "Time",
+          "values": "12, 14, 16, 18"
+        },
+        {
+          "id": "factor2",
+          "name": "",
+          "values": ""
+        },
+        {
+          "id": "factor4",
+          "name": "",
+          "values": ""
+        }
+      ],
+      "counts": {
+        "[[\"factor1\",\"0 µM\"],[\"factor2\",\"0\"]]": 2,
+        "[[\"factor1\",\"0 µM\"],[\"factor2\",\"100\"]]": 3,
+        "[[\"factor1\",\"0 µM\"],[\"factor2\",\"300\"]]": 1,
+        "[[\"factor1\",\"0 µM\"],[\"factor2\",\"400\"]]": 2,
+        "[[\"factor1\",\"0.05 µM\"],[\"factor2\",\"0\"]]": 2,
+        "[[\"factor1\",\"0.05 µM\"],[\"factor2\",\"100\"]]": 3,
+        "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"0\"]]": 2,
+        "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"0\"]]": 2,
+        "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"0\"]]": 2,
+        "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"1 µM AA\"]]": 2,
+        "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"1 µM AA\"]]": 2,
+        "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"1 µM AA\"]]": 2,
+        "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"2 µM AA\"]]": 2,
+        "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"2 µM AA\"]]": 2,
+        "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"2 µM AA\"]]": 2,
+        "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"0\"]]": 2,
+        "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"0\"]]": 2,
+        "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"0\"]]": 2,
+        "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"1 µM AA\"]]": 2,
+        "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"1 µM AA\"]]": 2,
+        "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"1 µM AA\"]]": 2,
+        "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"2 µM AA\"]]": 2,
+        "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"2 µM AA\"]]": 2,
+        "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"2 µM AA\"]]": 2,
+        "[[\"factor1\",\"0 µM E\"],[\"factor3\",\"0\"]]": 3,
+        "[[\"factor1\",\"0 µM E\"],[\"factor3\",\"1 µM AA\"]]": 3,
+        "[[\"factor1\",\"0 µM E\"],[\"factor3\",\"2 µM AA\"]]": 3,
+        "[[\"factor1\",\"0.05 µM E\"],[\"factor3\",\"0\"]]": 3,
+        "[[\"factor1\",\"0.05 µM E\"],[\"factor3\",\"1 µM AA\"]]": 3,
+        "[[\"factor1\",\"0.05 µM E\"],[\"factor3\",\"2 µM AA\"]]": 3,
+        "[[\"factor1\",\"0.01 µM E\"],[\"factor3\",\"0\"]]": 3,
+        "[[\"factor1\",\"0.01 µM E\"],[\"factor3\",\"1 µM AA\"]]": 3,
+        "[[\"factor1\",\"0.01 µM E\"],[\"factor3\",\"2 µM AA\"]]": 3,
+        "[[\"factor1\",\"1k\"],[\"factor3\",\"0\"]]": 3,
+        "[[\"factor1\",\"1k\"],[\"factor3\",\"0.05\"]]": 3,
+        "[[\"factor1\",\"1k\"],[\"factor3\",\"0.1\"]]": 3,
+        "[[\"factor1\",\"1k\"],[\"factor3\",\"0.2\"]]": 3,
+        "[[\"factor1\",\"5k\"],[\"factor3\",\"0\"]]": 3,
+        "[[\"factor1\",\"5k\"],[\"factor3\",\"0.05\"]]": 3,
+        "[[\"factor1\",\"5k\"],[\"factor3\",\"0.1\"]]": 3,
+        "[[\"factor1\",\"5k\"],[\"factor3\",\"0.2\"]]": 3,
+        "[[\"factor1\",\"10k\"],[\"factor3\",\"0\"]]": 3,
+        "[[\"factor1\",\"10k\"],[\"factor3\",\"0.05\"]]": 3,
+        "[[\"factor1\",\"10k\"],[\"factor3\",\"0.1\"]]": 3,
+        "[[\"factor1\",\"10k\"],[\"factor3\",\"0.2\"]]": 3,
+        "[[\"factor1\",\"1k\"],[\"factor3\",\"0.\"]]": 3,
+        "[[\"factor1\",\"5k\"],[\"factor3\",\"0.\"]]": 3,
+        "[[\"factor1\",\"10k\"],[\"factor3\",\"0.\"]]": 3,
+        "[[\"factor1\",\"1k\"],[\"factor3\",\"0.5\"]]": 3,
+        "[[\"factor1\",\"5k\"],[\"factor3\",\"0.5\"]]": 3,
+        "[[\"factor1\",\"10k\"],[\"factor3\",\"0.5\"]]": 3,
+        "[[\"factor1\",\"10\"],[\"factor3\",\"0\"]]": 1,
+        "[[\"factor1\",\"10\"],[\"factor3\",\"0.05\"]]": 3,
+        "[[\"factor1\",\"10\"],[\"factor3\",\"0.1\"]]": 3,
+        "[[\"factor1\",\"10\"],[\"factor3\",\"0.2\"]]": 3,
+        "[[\"factor1\",\"10\"],[\"factor3\",\"0.5\"]]": 3,
+        "[[\"factor1\",\"1\"],[\"factor3\",\"0\"]]": 3,
+        "[[\"factor1\",\"1\"],[\"factor3\",\"0.05\"]]": 3,
+        "[[\"factor1\",\"1\"],[\"factor3\",\"0.1\"]]": 3,
+        "[[\"factor1\",\"1\"],[\"factor3\",\"0.2\"]]": 3,
+        "[[\"factor1\",\"1\"],[\"factor3\",\"0.5\"]]": 3,
+        "[[\"factor1\",\"1k\"],[\"factor3\",\"5\"]]": 3,
+        "[[\"factor1\",\"5k\"],[\"factor3\",\"5\"]]": 3,
+        "[[\"factor1\",\"1k\"],[\"factor3\",\"1\"]]": 3,
+        "[[\"factor1\",\"5k\"],[\"factor3\",\"1\"]]": 3,
+        "[[\"factor1\",\"1k\"],[\"factor3\",\"10\"]]": 3,
+        "[[\"factor1\",\"5k\"],[\"factor3\",\"10\"]]": 3,
+        "[[\"factor1\",\"1k\"],[\"factor3\",\"50\"]]": 3,
+        "[[\"factor1\",\"5k\"],[\"factor3\",\"50\"]]": 3,
+        "[[\"factor1\",\"1k\"],[\"factor3\",\"100\"]]": 3,
+        "[[\"factor1\",\"5k\"],[\"factor3\",\"100\"]]": 3,
+        "[[\"factor1\",\"1k\"],[\"factor3\",\"2\"]]": 3,
+        "[[\"factor1\",\"5k\"],[\"factor3\",\"2\"]]": 3,
+        "[[\"factor1\",\"1k\"],[\"factor3\",\"20\"]]": 3,
+        "[[\"factor1\",\"5k\"],[\"factor3\",\"20\"]]": 3,
+        "[[\"factor1\",\"1k\"],[\"factor3\",\"200\"]]": 3,
+        "[[\"factor1\",\"5k\"],[\"factor3\",\"200\"]]": 3,
+        "[[\"factor1\",\"1k\"],[\"factor3\",\"1050\"]]": 3,
+        "[[\"factor1\",\"5k\"],[\"factor3\",\"1050\"]]": 3,
+        "[[\"factor1\",\"1k\"],[\"factor3\",\"150\"]]": 3,
+        "[[\"factor1\",\"5k\"],[\"factor3\",\"150\"]]": 3,
+        "[[\"factor1\",\"1k\"],[\"factor3\",\"25\"]]": 3,
+        "[[\"factor1\",\"5k\"],[\"factor3\",\"25\"]]": 3,
+        "[[\"factor1\",\"0\"],[\"factor3\",\"0\"]]": 1,
+        "[[\"factor1\",\"0\"],[\"factor3\",\"10\"]]": 1,
+        "[[\"factor1\",\"0\"],[\"factor3\",\"25\"]]": 1,
+        "[[\"factor1\",\"0\"],[\"factor3\",\"50\"]]": 1,
+        "[[\"factor1\",\"1\"],[\"factor3\",\"10\"]]": 3,
+        "[[\"factor1\",\"1\"],[\"factor3\",\"25\"]]": 3,
+        "[[\"factor1\",\"1\"],[\"factor3\",\"50\"]]": 3,
+        "[[\"factor1\",\"10\"],[\"factor3\",\"10\"]]": 1,
+        "[[\"factor1\",\"10\"],[\"factor3\",\"25\"]]": 1,
+        "[[\"factor1\",\"10\"],[\"factor3\",\"50\"]]": 1,
+        "[[\"factor1\",\"2\"],[\"factor3\",\"0\"]]": 3,
+        "[[\"factor1\",\"2\"],[\"factor3\",\"10\"]]": 3,
+        "[[\"factor1\",\"2\"],[\"factor3\",\"25\"]]": 3,
+        "[[\"factor1\",\"2\"],[\"factor3\",\"50\"]]": 3,
+        "[[\"factor1\",\"25\"],[\"factor3\",\"0\"]]": 1,
+        "[[\"factor1\",\"25\"],[\"factor3\",\"10\"]]": 1,
+        "[[\"factor1\",\"25\"],[\"factor3\",\"25\"]]": 1,
+        "[[\"factor1\",\"25\"],[\"factor3\",\"50\"]]": 1,
+        "[[\"factor1\",\"5\"],[\"factor3\",\"0\"]]": 3,
+        "[[\"factor1\",\"5\"],[\"factor3\",\"10\"]]": 3,
+        "[[\"factor1\",\"5\"],[\"factor3\",\"25\"]]": 3,
+        "[[\"factor1\",\"5\"],[\"factor3\",\"50\"]]": 3,
+        "[[\"factor1\",\"50\"],[\"factor3\",\"0\"]]": 1,
+        "[[\"factor1\",\"50\"],[\"factor3\",\"10\"]]": 1,
+        "[[\"factor1\",\"50\"],[\"factor3\",\"25\"]]": 1,
+        "[[\"factor1\",\"50\"],[\"factor3\",\"50\"]]": 1,
+        "[[\"factor1\",\"100\"],[\"factor3\",\"0\"]]": 1,
+        "[[\"factor1\",\"100\"],[\"factor3\",\"10\"]]": 1,
+        "[[\"factor1\",\"100\"],[\"factor3\",\"25\"]]": 1,
+        "[[\"factor1\",\"100\"],[\"factor3\",\"50\"]]": 1,
+        "[[\"factor1\",\"0\"],[\"factor3\",\"3\"]]": 1,
+        "[[\"factor1\",\"10\"],[\"factor3\",\"3\"]]": 1,
+        "[[\"factor1\",\"25\"],[\"factor3\",\"3\"]]": 1,
+        "[[\"factor1\",\"50\"],[\"factor3\",\"3\"]]": 1,
+        "[[\"factor1\",\"100\"],[\"factor3\",\"3\"]]": 1,
+        "[[\"factor1\",\"0\"],[\"factor3\",\"3k\"]]": 1,
+        "[[\"factor1\",\"10\"],[\"factor3\",\"3k\"]]": 1,
+        "[[\"factor1\",\"25\"],[\"factor3\",\"3k\"]]": 1,
+        "[[\"factor1\",\"50\"],[\"factor3\",\"3k\"]]": 1,
+        "[[\"factor1\",\"100\"],[\"factor3\",\"3k\"]]": 1,
+        "[[\"factor3\",\"0\"]]": 5,
+        "[[\"factor3\",\"0.05\"]]": 5,
+        "[[\"factor3\",\"0.1\"]]": 5,
+        "[[\"factor3\",\"0.2\"]]": 5,
+        "[[\"factor3\",\"1\"]]": 5,
+        "[[\"factor3\",\"1k\"]]": 5,
+        "[[\"factor3\",\"5\"]]": 5,
+        "[[\"factor3\",\"5k\"]]": 5,
+        "[[\"factor1\",\"0\"],[\"factor3\",\"1k\"]]": 3,
+        "[[\"factor1\",\"0\"],[\"factor3\",\"5k\"]]": 3,
+        "[[\"factor1\",\"5\"],[\"factor3\",\"1k\"]]": 5,
+        "[[\"factor1\",\"5\"],[\"factor3\",\"5k\"]]": 5,
+        "[[\"factor1\",\"50\"],[\"factor3\",\"1k\"]]": 3,
+        "[[\"factor1\",\"50\"],[\"factor3\",\"5k\"]]": 3,
+        "[[\"factor1\",\"1\"],[\"factor3\",\"1k\"]]": 5,
+        "[[\"factor1\",\"1\"],[\"factor3\",\"5k\"]]": 5,
+        "[[\"factor1\",\"10\"],[\"factor3\",\"1k\"]]": 5,
+        "[[\"factor1\",\"10\"],[\"factor3\",\"5k\"]]": 5,
+        "[[\"factor1\",\"100\"],[\"factor3\",\"1k\"]]": 3,
+        "[[\"factor1\",\"100\"],[\"factor3\",\"5k\"]]": 3,
+        "[[\"factor1\",\"2\"],[\"factor3\",\"1k\"]]": 5,
+        "[[\"factor1\",\"2\"],[\"factor3\",\"5k\"]]": 5,
+        "[[\"factor1\",\"20\"],[\"factor3\",\"1k\"]]": 5,
+        "[[\"factor1\",\"20\"],[\"factor3\",\"5k\"]]": 5,
+        "[[\"factor1\",\"200\"],[\"factor3\",\"1k\"]]": 3,
+        "[[\"factor1\",\"200\"],[\"factor3\",\"5k\"]]": 3,
+        "[[\"factor1\",\"200\"],[\"factor3\",\"0\"]]": 3,
+        "[[\"factor1\",\"0\"],[\"factor3\",\"0.\"]]": 1,
+        "[[\"factor1\",\"50\"],[\"factor3\",\"0.\"]]": 1,
+        "[[\"factor1\",\"100\"],[\"factor3\",\"0.\"]]": 1,
+        "[[\"factor1\",\"200\"],[\"factor3\",\"0.\"]]": 3,
+        "[[\"factor1\",\"0\"],[\"factor3\",\"0.0\"]]": 1,
+        "[[\"factor1\",\"50\"],[\"factor3\",\"0.0\"]]": 1,
+        "[[\"factor1\",\"100\"],[\"factor3\",\"0.0\"]]": 1,
+        "[[\"factor1\",\"200\"],[\"factor3\",\"0.0\"]]": 3,
+        "[[\"factor1\",\"0\"],[\"factor3\",\"0.05\"]]": 1,
+        "[[\"factor1\",\"50\"],[\"factor3\",\"0.05\"]]": 1,
+        "[[\"factor1\",\"100\"],[\"factor3\",\"0.05\"]]": 1,
+        "[[\"factor1\",\"200\"],[\"factor3\",\"0.05\"]]": 3,
+        "[[\"factor1\",\"0\"],[\"factor3\",\"01\"]]": 1,
+        "[[\"factor1\",\"50\"],[\"factor3\",\"01\"]]": 1,
+        "[[\"factor1\",\"100\"],[\"factor3\",\"01\"]]": 1,
+        "[[\"factor1\",\"200\"],[\"factor3\",\"01\"]]": 3,
+        "[[\"factor1\",\"0\"],[\"factor3\",\"0.1\"]]": 1,
+        "[[\"factor1\",\"50\"],[\"factor3\",\"0.1\"]]": 1,
+        "[[\"factor1\",\"100\"],[\"factor3\",\"0.1\"]]": 1,
+        "[[\"factor1\",\"200\"],[\"factor3\",\"0.1\"]]": 3,
+        "[[\"factor1\",\"12\"],[\"factor3\",\"0\"]]": 1,
+        "[[\"factor1\",\"12\"],[\"factor3\",\"0.05\"]]": 1,
+        "[[\"factor1\",\"12\"],[\"factor3\",\"0.1\"]]": 1,
+        "[[\"factor1\",\"14\"],[\"factor3\",\"0\"]]": 1,
+        "[[\"factor1\",\"14\"],[\"factor3\",\"0.05\"]]": 1,
+        "[[\"factor1\",\"14\"],[\"factor3\",\"0.1\"]]": 1,
+        "[[\"factor1\",\"16\"],[\"factor3\",\"0\"]]": 1,
+        "[[\"factor1\",\"16\"],[\"factor3\",\"0.05\"]]": 1,
+        "[[\"factor1\",\"16\"],[\"factor3\",\"0.1\"]]": 1,
+        "[[\"factor1\",\"18\"],[\"factor3\",\"0\"]]": 1,
+        "[[\"factor1\",\"18\"],[\"factor3\",\"0.05\"]]": 1,
+        "[[\"factor1\",\"18\"],[\"factor3\",\"0.1\"]]": 1
+      },
+      "assignments": {},
+      "notes": "",
+      "generatedAt": "2026-10-23T14:46:23.103Z",
+      "manualLayoutChanges": false,
+      "factorDraftStale": false,
+      "savedAt": "2026-10-20T00:18:48.868Z"
+    },
+    "saved": [
+      {
+        "id": "plate-1792592157896-ojcp",
+        "name": "96-well_1k-5k-10k_AA",
+        "format": "96",
+        "selection": [
+          "G8"
+        ],
+        "rowNotes": {
+          "A": "1k",
+          "C": "5k",
+          "E": "10k"
+        },
+        "colNotes": {},
+        "fillOrder": "rows",
+        "mode": "select",
+        "factors": [
+          {
+            "id": "factor1",
+            "name": "Cell Density",
+            "values": "1k, 5k, 10k"
+          },
+          {
+            "id": "factor3",
+            "name": "AA (µM)",
+            "values": "0, 5, 10, 25, 50, 100"
+          },
+          {
+            "id": "factor2",
+            "name": "",
+            "values": ""
+          },
+          {
+            "id": "factor4",
+            "name": "",
+            "values": ""
+          }
+        ],
+        "counts": {
+          "[[\"factor1\",\"0 µM\"],[\"factor2\",\"0\"]]": 2,
+          "[[\"factor1\",\"0 µM\"],[\"factor2\",\"100\"]]": 3,
+          "[[\"factor1\",\"0 µM\"],[\"factor2\",\"300\"]]": 1,
+          "[[\"factor1\",\"0 µM\"],[\"factor2\",\"400\"]]": 2,
+          "[[\"factor1\",\"0.05 µM\"],[\"factor2\",\"0\"]]": 2,
+          "[[\"factor1\",\"0.05 µM\"],[\"factor2\",\"100\"]]": 3,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"0\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"0\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"0\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"1 µM AA\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"1 µM AA\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"1 µM AA\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"2 µM AA\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"2 µM AA\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"2 µM AA\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"0\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"0\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"0\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"1 µM AA\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"1 µM AA\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"1 µM AA\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"2 µM AA\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"2 µM AA\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"2 µM AA\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor3\",\"0\"]]": 3,
+          "[[\"factor1\",\"0 µM E\"],[\"factor3\",\"1 µM AA\"]]": 3,
+          "[[\"factor1\",\"0 µM E\"],[\"factor3\",\"2 µM AA\"]]": 3,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor3\",\"0\"]]": 3,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor3\",\"1 µM AA\"]]": 3,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor3\",\"2 µM AA\"]]": 3,
+          "[[\"factor1\",\"0.01 µM E\"],[\"factor3\",\"0\"]]": 3,
+          "[[\"factor1\",\"0.01 µM E\"],[\"factor3\",\"1 µM AA\"]]": 3,
+          "[[\"factor1\",\"0.01 µM E\"],[\"factor3\",\"2 µM AA\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"0\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"0.05\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"0.1\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"0.2\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"0\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"0.05\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"0.1\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"0.2\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"0\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"0.05\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"0.1\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"0.2\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"0.\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"0.\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"0.\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"0.5\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"0.5\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"0.5\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"1\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"1\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"1\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"10\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"10\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"10\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"100\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"100\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"100\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"5\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"5\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"5\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"50\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"50\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"50\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"510\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"510\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"510\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"2\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"2\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"2\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"20\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"20\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"20\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"250\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"250\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"250\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"25\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"25\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"25\"]]": 3
+        },
+        "assignments": {
+          "A1": {
+            "labels": [
+              "1k",
+              "0"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0\"]]"
+          },
+          "A5": {
+            "labels": [
+              "1k",
+              "5"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"5\"]]"
+          },
+          "A6": {
+            "labels": [
+              "1k",
+              "5"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"5\"]]"
+          },
+          "A7": {
+            "labels": [
+              "1k",
+              "10"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"10\"]]"
+          },
+          "A9": {
+            "labels": [
+              "1k",
+              "10"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"10\"]]"
+          },
+          "A10": {
+            "labels": [
+              "1k",
+              "25"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"25\"]]"
+          },
+          "A11": {
+            "labels": [
+              "1k",
+              "25"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"25\"]]"
+          },
+          "A12": {
+            "labels": [
+              "1k",
+              "25"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"25\"]]"
+          },
+          "B1": {
+            "labels": [
+              "1k",
+              "50"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"50\"]]"
+          },
+          "B5": {
+            "labels": [
+              "1k",
+              "100"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"100\"]]"
+          },
+          "B6": {
+            "labels": [
+              "1k",
+              "100"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"100\"]]"
+          },
+          "C1": {
+            "labels": [
+              "5k",
+              "0"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0\"]]"
+          },
+          "C5": {
+            "labels": [
+              "5k",
+              "5"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"5\"]]"
+          },
+          "C6": {
+            "labels": [
+              "5k",
+              "5"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"5\"]]"
+          },
+          "C7": {
+            "labels": [
+              "5k",
+              "10"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"10\"]]"
+          },
+          "C8": {
+            "labels": [
+              "5k",
+              "10"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"10\"]]"
+          },
+          "C9": {
+            "labels": [
+              "5k",
+              "10"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"10\"]]"
+          },
+          "C10": {
+            "labels": [
+              "5k",
+              "25"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"25\"]]"
+          },
+          "C11": {
+            "labels": [
+              "5k",
+              "25"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"25\"]]"
+          },
+          "C12": {
+            "labels": [
+              "5k",
+              "25"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"25\"]]"
+          },
+          "D1": {
+            "labels": [
+              "5k",
+              "50"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"50\"]]"
+          },
+          "D5": {
+            "labels": [
+              "5k",
+              "100"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"100\"]]"
+          },
+          "D6": {
+            "labels": [
+              "5k",
+              "100"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"100\"]]"
+          },
+          "E1": {
+            "labels": [
+              "10k",
+              "0"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0\"]]"
+          },
+          "E5": {
+            "labels": [
+              "10k",
+              "5"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"5\"]]"
+          },
+          "E6": {
+            "labels": [
+              "10k",
+              "5"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"5\"]]"
+          },
+          "E7": {
+            "labels": [
+              "10k",
+              "10"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"10\"]]"
+          },
+          "E8": {
+            "labels": [
+              "10k",
+              "10"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"10\"]]"
+          },
+          "E9": {
+            "labels": [
+              "10k",
+              "10"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"10\"]]"
+          },
+          "E10": {
+            "labels": [
+              "10k",
+              "25"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"25\"]]"
+          },
+          "E11": {
+            "labels": [
+              "10k",
+              "25"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"25\"]]"
+          },
+          "E12": {
+            "labels": [
+              "10k",
+              "25"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"25\"]]"
+          },
+          "F1": {
+            "labels": [
+              "10k",
+              "50"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"50\"]]"
+          },
+          "F5": {
+            "labels": [
+              "10k",
+              "100"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"100\"]]"
+          },
+          "F6": {
+            "labels": [
+              "10k",
+              "100"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"100\"]]"
+          },
+          "G1": {
+            "labels": [
+              "Media only"
+            ],
+            "factorNames": [
+              "Control"
+            ],
+            "group": "manual",
+            "kind": "special",
+            "controlName": "Media only"
+          }
+        },
+        "notes": "",
+        "generatedAt": "2026-10-20T00:24:24.459Z",
+        "manualLayoutChanges": true,
+        "factorDraftStale": false,
+        "savedAt": "2026-10-21T14:15:57.896Z"
+      },
+      {
+        "id": "plate-1792552725428-u0tu",
+        "name": "96-well_1k-5k-10k_AA",
+        "format": "96",
+        "selection": [
+          "G3"
+        ],
+        "rowNotes": {
+          "A": "1k",
+          "C": "5k",
+          "E": "10k"
+        },
+        "colNotes": {},
+        "fillOrder": "rows",
+        "mode": "move",
+        "factors": [
+          {
+            "id": "factor1",
+            "name": "Cell Density",
+            "values": "1k, 5k, 10k"
+          },
+          {
+            "id": "factor3",
+            "name": "AA (µM)",
+            "values": "0, 5, 10, 25, 50, 100"
+          },
+          {
+            "id": "factor2",
+            "name": "",
+            "values": ""
+          },
+          {
+            "id": "factor4",
+            "name": "",
+            "values": ""
+          }
+        ],
+        "counts": {
+          "[[\"factor1\",\"0 µM\"],[\"factor2\",\"0\"]]": 2,
+          "[[\"factor1\",\"0 µM\"],[\"factor2\",\"100\"]]": 3,
+          "[[\"factor1\",\"0 µM\"],[\"factor2\",\"300\"]]": 1,
+          "[[\"factor1\",\"0 µM\"],[\"factor2\",\"400\"]]": 2,
+          "[[\"factor1\",\"0.05 µM\"],[\"factor2\",\"0\"]]": 2,
+          "[[\"factor1\",\"0.05 µM\"],[\"factor2\",\"100\"]]": 3,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"0\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"0\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"0\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"1 µM AA\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"1 µM AA\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"1 µM AA\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"2 µM AA\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"2 µM AA\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"2 µM AA\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"0\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"0\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"0\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"1 µM AA\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"1 µM AA\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"1 µM AA\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"2 µM AA\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"2 µM AA\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"2 µM AA\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor3\",\"0\"]]": 3,
+          "[[\"factor1\",\"0 µM E\"],[\"factor3\",\"1 µM AA\"]]": 3,
+          "[[\"factor1\",\"0 µM E\"],[\"factor3\",\"2 µM AA\"]]": 3,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor3\",\"0\"]]": 3,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor3\",\"1 µM AA\"]]": 3,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor3\",\"2 µM AA\"]]": 3,
+          "[[\"factor1\",\"0.01 µM E\"],[\"factor3\",\"0\"]]": 3,
+          "[[\"factor1\",\"0.01 µM E\"],[\"factor3\",\"1 µM AA\"]]": 3,
+          "[[\"factor1\",\"0.01 µM E\"],[\"factor3\",\"2 µM AA\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"0\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"0.05\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"0.1\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"0.2\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"0\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"0.05\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"0.1\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"0.2\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"0\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"0.05\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"0.1\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"0.2\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"0.\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"0.\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"0.\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"0.5\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"0.5\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"0.5\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"1\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"1\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"1\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"10\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"10\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"10\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"100\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"100\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"100\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"5\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"5\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"5\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"50\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"50\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"50\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"510\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"510\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"510\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"2\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"2\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"2\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"20\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"20\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"20\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"250\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"250\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"250\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"25\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"25\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"25\"]]": 3
+        },
+        "assignments": {
+          "A1": {
+            "labels": [
+              "1k",
+              "0"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0\"]]"
+          },
+          "A2": {
+            "labels": [
+              "1k",
+              "0"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0\"]]"
+          },
+          "A3": {
+            "labels": [
+              "1k",
+              "0"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0\"]]"
+          },
+          "A4": {
+            "labels": [
+              "1k",
+              "5"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"5\"]]"
+          },
+          "A5": {
+            "labels": [
+              "1k",
+              "5"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"5\"]]"
+          },
+          "A6": {
+            "labels": [
+              "1k",
+              "5"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"5\"]]"
+          },
+          "A7": {
+            "labels": [
+              "1k",
+              "10"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"10\"]]"
+          },
+          "A8": {
+            "labels": [
+              "1k",
+              "10"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"10\"]]"
+          },
+          "A9": {
+            "labels": [
+              "1k",
+              "10"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"10\"]]"
+          },
+          "A10": {
+            "labels": [
+              "1k",
+              "25"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"25\"]]"
+          },
+          "A11": {
+            "labels": [
+              "1k",
+              "25"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"25\"]]"
+          },
+          "A12": {
+            "labels": [
+              "1k",
+              "25"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"25\"]]"
+          },
+          "B1": {
+            "labels": [
+              "1k",
+              "50"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"50\"]]"
+          },
+          "B2": {
+            "labels": [
+              "1k",
+              "50"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"50\"]]"
+          },
+          "B3": {
+            "labels": [
+              "1k",
+              "50"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"50\"]]"
+          },
+          "B4": {
+            "labels": [
+              "1k",
+              "100"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"100\"]]"
+          },
+          "B5": {
+            "labels": [
+              "1k",
+              "100"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"100\"]]"
+          },
+          "B6": {
+            "labels": [
+              "1k",
+              "100"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"100\"]]"
+          },
+          "C1": {
+            "labels": [
+              "5k",
+              "0"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0\"]]"
+          },
+          "C2": {
+            "labels": [
+              "5k",
+              "0"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0\"]]"
+          },
+          "C3": {
+            "labels": [
+              "5k",
+              "0"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0\"]]"
+          },
+          "C4": {
+            "labels": [
+              "5k",
+              "5"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"5\"]]"
+          },
+          "C5": {
+            "labels": [
+              "5k",
+              "5"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"5\"]]"
+          },
+          "C6": {
+            "labels": [
+              "5k",
+              "5"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"5\"]]"
+          },
+          "C7": {
+            "labels": [
+              "5k",
+              "10"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"10\"]]"
+          },
+          "C8": {
+            "labels": [
+              "5k",
+              "10"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"10\"]]"
+          },
+          "C9": {
+            "labels": [
+              "5k",
+              "10"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"10\"]]"
+          },
+          "C10": {
+            "labels": [
+              "5k",
+              "25"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"25\"]]"
+          },
+          "C11": {
+            "labels": [
+              "5k",
+              "25"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"25\"]]"
+          },
+          "C12": {
+            "labels": [
+              "5k",
+              "25"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"25\"]]"
+          },
+          "D1": {
+            "labels": [
+              "5k",
+              "50"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"50\"]]"
+          },
+          "D2": {
+            "labels": [
+              "5k",
+              "50"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"50\"]]"
+          },
+          "D3": {
+            "labels": [
+              "5k",
+              "50"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"50\"]]"
+          },
+          "D4": {
+            "labels": [
+              "5k",
+              "100"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"100\"]]"
+          },
+          "D5": {
+            "labels": [
+              "5k",
+              "100"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"100\"]]"
+          },
+          "D6": {
+            "labels": [
+              "5k",
+              "100"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"100\"]]"
+          },
+          "E1": {
+            "labels": [
+              "10k",
+              "0"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0\"]]"
+          },
+          "E2": {
+            "labels": [
+              "10k",
+              "0"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0\"]]"
+          },
+          "E3": {
+            "labels": [
+              "10k",
+              "0"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0\"]]"
+          },
+          "E4": {
+            "labels": [
+              "10k",
+              "5"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"5\"]]"
+          },
+          "E5": {
+            "labels": [
+              "10k",
+              "5"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"5\"]]"
+          },
+          "E6": {
+            "labels": [
+              "10k",
+              "5"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"5\"]]"
+          },
+          "E7": {
+            "labels": [
+              "10k",
+              "10"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"10\"]]"
+          },
+          "E8": {
+            "labels": [
+              "10k",
+              "10"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"10\"]]"
+          },
+          "E9": {
+            "labels": [
+              "10k",
+              "10"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"10\"]]"
+          },
+          "E10": {
+            "labels": [
+              "10k",
+              "25"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"25\"]]"
+          },
+          "E11": {
+            "labels": [
+              "10k",
+              "25"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"25\"]]"
+          },
+          "E12": {
+            "labels": [
+              "10k",
+              "25"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"25\"]]"
+          },
+          "F1": {
+            "labels": [
+              "10k",
+              "50"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"50\"]]"
+          },
+          "F2": {
+            "labels": [
+              "10k",
+              "50"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"50\"]]"
+          },
+          "F3": {
+            "labels": [
+              "10k",
+              "50"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"50\"]]"
+          },
+          "F4": {
+            "labels": [
+              "10k",
+              "100"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"100\"]]"
+          },
+          "F5": {
+            "labels": [
+              "10k",
+              "100"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"100\"]]"
+          },
+          "F6": {
+            "labels": [
+              "10k",
+              "100"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "AA (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"100\"]]"
+          },
+          "G1": {
+            "labels": [
+              "Media only"
+            ],
+            "factorNames": [
+              "Control"
+            ],
+            "group": "manual",
+            "kind": "special",
+            "controlName": "Media only"
+          },
+          "G2": {
+            "labels": [
+              "Media only"
+            ],
+            "factorNames": [
+              "Control"
+            ],
+            "group": "manual",
+            "kind": "special",
+            "controlName": "Media only"
+          },
+          "G3": {
+            "labels": [
+              "Media only"
+            ],
+            "factorNames": [
+              "Control"
+            ],
+            "group": "manual",
+            "kind": "special",
+            "controlName": "Media only"
+          }
+        },
+        "notes": "",
+        "generatedAt": "2026-10-20T00:24:24.459Z",
+        "manualLayoutChanges": true,
+        "factorDraftStale": false,
+        "savedAt": "2026-10-21T03:18:45.428Z"
+      },
+      {
+        "id": "plate-1792455528868-hu05",
+        "name": "96-well_1k-5k-10k_Eras2",
+        "format": "96",
+        "selection": [
+          "G1",
+          "G2",
+          "G3"
+        ],
+        "rowNotes": {
+          "A": "1k",
+          "C": "5k",
+          "E": "10k"
+        },
+        "colNotes": {},
+        "fillOrder": "rows",
+        "mode": "move",
+        "factors": [
+          {
+            "id": "factor1",
+            "name": "Cell Density",
+            "values": "1k, 5k, 10k"
+          },
+          {
+            "id": "factor3",
+            "name": "Erastin2 (µM)",
+            "values": "0, 0.05, 0.1, 0.2, 0.5"
+          },
+          {
+            "id": "factor2",
+            "name": "",
+            "values": ""
+          },
+          {
+            "id": "factor4",
+            "name": "",
+            "values": ""
+          }
+        ],
+        "counts": {
+          "[[\"factor1\",\"0 µM\"],[\"factor2\",\"0\"]]": 2,
+          "[[\"factor1\",\"0 µM\"],[\"factor2\",\"100\"]]": 3,
+          "[[\"factor1\",\"0 µM\"],[\"factor2\",\"300\"]]": 1,
+          "[[\"factor1\",\"0 µM\"],[\"factor2\",\"400\"]]": 2,
+          "[[\"factor1\",\"0.05 µM\"],[\"factor2\",\"0\"]]": 2,
+          "[[\"factor1\",\"0.05 µM\"],[\"factor2\",\"100\"]]": 3,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"0\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"0\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"0\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"1 µM AA\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"1 µM AA\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"1 µM AA\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"2 µM AA\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"2 µM AA\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"2 µM AA\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"0\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"0\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"0\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"1 µM AA\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"1 µM AA\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"1 µM AA\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"2 µM AA\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"2 µM AA\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"2 µM AA\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor3\",\"0\"]]": 3,
+          "[[\"factor1\",\"0 µM E\"],[\"factor3\",\"1 µM AA\"]]": 3,
+          "[[\"factor1\",\"0 µM E\"],[\"factor3\",\"2 µM AA\"]]": 3,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor3\",\"0\"]]": 3,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor3\",\"1 µM AA\"]]": 3,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor3\",\"2 µM AA\"]]": 3,
+          "[[\"factor1\",\"0.01 µM E\"],[\"factor3\",\"0\"]]": 3,
+          "[[\"factor1\",\"0.01 µM E\"],[\"factor3\",\"1 µM AA\"]]": 3,
+          "[[\"factor1\",\"0.01 µM E\"],[\"factor3\",\"2 µM AA\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"0\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"0.05\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"0.1\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"0.2\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"0\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"0.05\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"0.1\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"0.2\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"0\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"0.05\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"0.1\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"0.2\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"0.\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"0.\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"0.\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"0.5\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"0.5\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"0.5\"]]": 3
+        },
+        "assignments": {
+          "A1": {
+            "labels": [
+              "1k",
+              "0"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0\"]]"
+          },
+          "A2": {
+            "labels": [
+              "1k",
+              "0"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0\"]]"
+          },
+          "A3": {
+            "labels": [
+              "1k",
+              "0"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0\"]]"
+          },
+          "A4": {
+            "labels": [
+              "1k",
+              "0.05"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.05\"]]"
+          },
+          "A5": {
+            "labels": [
+              "1k",
+              "0.05"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.05\"]]"
+          },
+          "A6": {
+            "labels": [
+              "1k",
+              "0.05"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.05\"]]"
+          },
+          "A7": {
+            "labels": [
+              "1k",
+              "0.1"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.1\"]]"
+          },
+          "A8": {
+            "labels": [
+              "1k",
+              "0.1"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.1\"]]"
+          },
+          "A9": {
+            "labels": [
+              "1k",
+              "0.1"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.1\"]]"
+          },
+          "A10": {
+            "labels": [
+              "1k",
+              "0.2"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.2\"]]"
+          },
+          "A11": {
+            "labels": [
+              "1k",
+              "0.2"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.2\"]]"
+          },
+          "A12": {
+            "labels": [
+              "1k",
+              "0.2"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.2\"]]"
+          },
+          "B1": {
+            "labels": [
+              "1k",
+              "0.5"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.5\"]]"
+          },
+          "B2": {
+            "labels": [
+              "1k",
+              "0.5"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.5\"]]"
+          },
+          "B3": {
+            "labels": [
+              "1k",
+              "0.5"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.5\"]]"
+          },
+          "C1": {
+            "labels": [
+              "5k",
+              "0"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0\"]]"
+          },
+          "C2": {
+            "labels": [
+              "5k",
+              "0"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0\"]]"
+          },
+          "C3": {
+            "labels": [
+              "5k",
+              "0"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0\"]]"
+          },
+          "C4": {
+            "labels": [
+              "5k",
+              "0.05"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.05\"]]"
+          },
+          "C5": {
+            "labels": [
+              "5k",
+              "0.05"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.05\"]]"
+          },
+          "C6": {
+            "labels": [
+              "5k",
+              "0.05"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.05\"]]"
+          },
+          "C7": {
+            "labels": [
+              "5k",
+              "0.1"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.1\"]]"
+          },
+          "C8": {
+            "labels": [
+              "5k",
+              "0.1"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.1\"]]"
+          },
+          "C9": {
+            "labels": [
+              "5k",
+              "0.1"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.1\"]]"
+          },
+          "C10": {
+            "labels": [
+              "5k",
+              "0.2"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.2\"]]"
+          },
+          "C11": {
+            "labels": [
+              "5k",
+              "0.2"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.2\"]]"
+          },
+          "C12": {
+            "labels": [
+              "5k",
+              "0.2"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.2\"]]"
+          },
+          "D1": {
+            "labels": [
+              "5k",
+              "0.5"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.5\"]]"
+          },
+          "D2": {
+            "labels": [
+              "5k",
+              "0.5"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.5\"]]"
+          },
+          "D3": {
+            "labels": [
+              "5k",
+              "0.5"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.5\"]]"
+          },
+          "E1": {
+            "labels": [
+              "10k",
+              "0"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0\"]]"
+          },
+          "E2": {
+            "labels": [
+              "10k",
+              "0"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0\"]]"
+          },
+          "E3": {
+            "labels": [
+              "10k",
+              "0"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0\"]]"
+          },
+          "E4": {
+            "labels": [
+              "10k",
+              "0.05"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.05\"]]"
+          },
+          "E5": {
+            "labels": [
+              "10k",
+              "0.05"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.05\"]]"
+          },
+          "E6": {
+            "labels": [
+              "10k",
+              "0.05"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.05\"]]"
+          },
+          "E7": {
+            "labels": [
+              "10k",
+              "0.1"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.1\"]]"
+          },
+          "E8": {
+            "labels": [
+              "10k",
+              "0.1"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.1\"]]"
+          },
+          "E9": {
+            "labels": [
+              "10k",
+              "0.1"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.1\"]]"
+          },
+          "E10": {
+            "labels": [
+              "10k",
+              "0.2"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.2\"]]"
+          },
+          "E11": {
+            "labels": [
+              "10k",
+              "0.2"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.2\"]]"
+          },
+          "E12": {
+            "labels": [
+              "10k",
+              "0.2"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.2\"]]"
+          },
+          "F1": {
+            "labels": [
+              "10k",
+              "0.5"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.5\"]]"
+          },
+          "F2": {
+            "labels": [
+              "10k",
+              "0.5"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.5\"]]"
+          },
+          "F3": {
+            "labels": [
+              "10k",
+              "0.5"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.5\"]]"
+          },
+          "G1": {
+            "labels": [
+              "Media Only"
+            ],
+            "factorNames": [
+              "Control"
+            ],
+            "group": "manual",
+            "kind": "special",
+            "controlName": "Media Only"
+          },
+          "G2": {
+            "labels": [
+              "Media Only"
+            ],
+            "factorNames": [
+              "Control"
+            ],
+            "group": "manual",
+            "kind": "special",
+            "controlName": "Media Only"
+          },
+          "G3": {
+            "labels": [
+              "Media Only"
+            ],
+            "factorNames": [
+              "Control"
+            ],
+            "group": "manual",
+            "kind": "special",
+            "controlName": "Media Only"
+          }
+        },
+        "notes": "",
+        "generatedAt": "2026-10-19T21:33:10.628Z",
+        "manualLayoutChanges": true,
+        "factorDraftStale": false,
+        "savedAt": "2026-10-20T00:18:48.868Z"
+      },
+      {
+        "id": "plate-1792448106616-28as",
+        "name": "New experiment",
+        "format": "96",
+        "selection": [
+          "B4"
+        ],
+        "rowNotes": {
+          "A": "1k",
+          "C": "5k",
+          "E": "10k"
+        },
+        "colNotes": {},
+        "fillOrder": "rows",
+        "mode": "move",
+        "factors": [
+          {
+            "id": "factor1",
+            "name": "Cell Density",
+            "values": "1k, 5k, 10k"
+          },
+          {
+            "id": "factor3",
+            "name": "Erastin2 (µM)",
+            "values": "0, 0.05, 0.1, 0.2, 0.5"
+          },
+          {
+            "id": "factor2",
+            "name": "",
+            "values": ""
+          },
+          {
+            "id": "factor4",
+            "name": "",
+            "values": ""
+          }
+        ],
+        "counts": {
+          "[[\"factor1\",\"0 µM\"],[\"factor2\",\"0\"]]": 2,
+          "[[\"factor1\",\"0 µM\"],[\"factor2\",\"100\"]]": 3,
+          "[[\"factor1\",\"0 µM\"],[\"factor2\",\"300\"]]": 1,
+          "[[\"factor1\",\"0 µM\"],[\"factor2\",\"400\"]]": 2,
+          "[[\"factor1\",\"0.05 µM\"],[\"factor2\",\"0\"]]": 2,
+          "[[\"factor1\",\"0.05 µM\"],[\"factor2\",\"100\"]]": 3,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"0\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"0\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"0\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"1 µM AA\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"1 µM AA\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"1 µM AA\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"2 µM AA\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"2 µM AA\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"2 µM AA\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"0\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"0\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"0\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"1 µM AA\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"1 µM AA\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"1 µM AA\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"2 µM AA\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"2 µM AA\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"2 µM AA\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor3\",\"0\"]]": 3,
+          "[[\"factor1\",\"0 µM E\"],[\"factor3\",\"1 µM AA\"]]": 3,
+          "[[\"factor1\",\"0 µM E\"],[\"factor3\",\"2 µM AA\"]]": 3,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor3\",\"0\"]]": 3,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor3\",\"1 µM AA\"]]": 3,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor3\",\"2 µM AA\"]]": 3,
+          "[[\"factor1\",\"0.01 µM E\"],[\"factor3\",\"0\"]]": 3,
+          "[[\"factor1\",\"0.01 µM E\"],[\"factor3\",\"1 µM AA\"]]": 3,
+          "[[\"factor1\",\"0.01 µM E\"],[\"factor3\",\"2 µM AA\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"0\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"0.05\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"0.1\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"0.2\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"0\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"0.05\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"0.1\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"0.2\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"0\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"0.05\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"0.1\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"0.2\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"0.\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"0.\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"0.\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"0.5\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"0.5\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"0.5\"]]": 3
+        },
+        "assignments": {
+          "A1": {
+            "labels": [
+              "1k",
+              "0"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0\"]]"
+          },
+          "A2": {
+            "labels": [
+              "1k",
+              "0"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0\"]]"
+          },
+          "A3": {
+            "labels": [
+              "1k",
+              "0"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0\"]]"
+          },
+          "A4": {
+            "labels": [
+              "1k",
+              "0.05"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.05\"]]"
+          },
+          "A5": {
+            "labels": [
+              "1k",
+              "0.05"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.05\"]]"
+          },
+          "A6": {
+            "labels": [
+              "1k",
+              "0.05"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.05\"]]"
+          },
+          "A7": {
+            "labels": [
+              "1k",
+              "0.1"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.1\"]]"
+          },
+          "A8": {
+            "labels": [
+              "1k",
+              "0.1"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.1\"]]"
+          },
+          "A9": {
+            "labels": [
+              "1k",
+              "0.1"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.1\"]]"
+          },
+          "A10": {
+            "labels": [
+              "1k",
+              "0.2"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.2\"]]"
+          },
+          "A11": {
+            "labels": [
+              "1k",
+              "0.2"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.2\"]]"
+          },
+          "A12": {
+            "labels": [
+              "1k",
+              "0.2"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.2\"]]"
+          },
+          "B1": {
+            "labels": [
+              "1k",
+              "0.5"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.5\"]]"
+          },
+          "B2": {
+            "labels": [
+              "1k",
+              "0.5"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.5\"]]"
+          },
+          "B3": {
+            "labels": [
+              "1k",
+              "0.5"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.5\"]]"
+          },
+          "C1": {
+            "labels": [
+              "5k",
+              "0"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0\"]]"
+          },
+          "C2": {
+            "labels": [
+              "5k",
+              "0"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0\"]]"
+          },
+          "C3": {
+            "labels": [
+              "5k",
+              "0"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0\"]]"
+          },
+          "C4": {
+            "labels": [
+              "5k",
+              "0.05"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.05\"]]"
+          },
+          "C5": {
+            "labels": [
+              "5k",
+              "0.05"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.05\"]]"
+          },
+          "C6": {
+            "labels": [
+              "5k",
+              "0.05"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.05\"]]"
+          },
+          "C7": {
+            "labels": [
+              "5k",
+              "0.1"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.1\"]]"
+          },
+          "C8": {
+            "labels": [
+              "5k",
+              "0.1"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.1\"]]"
+          },
+          "C9": {
+            "labels": [
+              "5k",
+              "0.1"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.1\"]]"
+          },
+          "C10": {
+            "labels": [
+              "5k",
+              "0.2"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.2\"]]"
+          },
+          "C11": {
+            "labels": [
+              "5k",
+              "0.2"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.2\"]]"
+          },
+          "C12": {
+            "labels": [
+              "5k",
+              "0.2"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.2\"]]"
+          },
+          "D1": {
+            "labels": [
+              "5k",
+              "0.5"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.5\"]]"
+          },
+          "D2": {
+            "labels": [
+              "5k",
+              "0.5"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.5\"]]"
+          },
+          "D3": {
+            "labels": [
+              "5k",
+              "0.5"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.5\"]]"
+          },
+          "E1": {
+            "labels": [
+              "10k",
+              "0"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0\"]]"
+          },
+          "E2": {
+            "labels": [
+              "10k",
+              "0"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0\"]]"
+          },
+          "E3": {
+            "labels": [
+              "10k",
+              "0"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0\"]]"
+          },
+          "E4": {
+            "labels": [
+              "10k",
+              "0.05"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.05\"]]"
+          },
+          "E5": {
+            "labels": [
+              "10k",
+              "0.05"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.05\"]]"
+          },
+          "E6": {
+            "labels": [
+              "10k",
+              "0.05"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.05\"]]"
+          },
+          "E7": {
+            "labels": [
+              "10k",
+              "0.1"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.1\"]]"
+          },
+          "E8": {
+            "labels": [
+              "10k",
+              "0.1"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.1\"]]"
+          },
+          "E9": {
+            "labels": [
+              "10k",
+              "0.1"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.1\"]]"
+          },
+          "E10": {
+            "labels": [
+              "10k",
+              "0.2"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.2\"]]"
+          },
+          "E11": {
+            "labels": [
+              "10k",
+              "0.2"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.2\"]]"
+          },
+          "E12": {
+            "labels": [
+              "10k",
+              "0.2"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.2\"]]"
+          },
+          "F1": {
+            "labels": [
+              "10k",
+              "0.5"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.5\"]]"
+          },
+          "F2": {
+            "labels": [
+              "10k",
+              "0.5"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.5\"]]"
+          },
+          "F3": {
+            "labels": [
+              "10k",
+              "0.5"
+            ],
+            "factorNames": [
+              "Cell Density",
+              "Erastin2 (µM)"
+            ],
+            "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.5\"]]"
+          }
+        },
+        "notes": "",
+        "generatedAt": "2026-10-19T21:33:10.628Z",
+        "manualLayoutChanges": true,
+        "factorDraftStale": false,
+        "savedAt": "2026-10-19T22:15:06.616Z"
+      }
+    ]
   }
 }
