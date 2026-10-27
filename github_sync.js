@@ -14,7 +14,7 @@ const emptyChem=()=>({version:1,chemicals:[],history:[],templates:[]});
 const emptyPlates=()=>({draft:null,saved:[]});
 const safeParse=(s,fallback)=>{try{return JSON.parse(s)}catch{return fallback}};
 let token=typeof sessionStorage!=='undefined'?(sessionStorage.getItem(SESSION_TOKEN)||localStorage.getItem(SAVED_TOKEN)||''):'';
-let meta=typeof localStorage!=='undefined'?safeParse(localStorage.getItem(META_KEY),{}):{};
+let meta=(typeof localStorage!=='undefined'?safeParse(localStorage.getItem(META_KEY),{}):{})||{};
 let baseSha=meta.baseSha||null,baseDigest=meta.baseDigest||null,dirty=!!meta.dirty,revision=0;
 let ready=false,busy=false,applying=false,conflict=false,error='',remoteCached=null,remoteSha=null,lastSaved=null,timer=null;
 function current(){return {chemicals:root.LabChemCloud.getSnapshot(),plates:root.PlateLayoutCloud.getSnapshot()}}
