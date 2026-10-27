@@ -10,6 +10,7 @@
   <script src="app.js?v=dosing-history-summary-20261027" defer></script>
   <script src="plate.js?v=toggle-axis-notes-20261023-1" defer></script>
   <script src="plate_reader.js?v=special-controls-20261019-1" defer></script>
+  <script src="github_sync.js?v=20261027-1" defer></script>
 </head>
 <body>
   <div class="app-shell">
@@ -25,7 +26,11 @@
         <button data-page="history" class="nav-link"><span>◷</span> Calculation history</button>
         <button data-page="templates" class="nav-link"><span>▧</span> Saved templates</button>
       </nav>
-      <div class="sidebar-foot"><div class="storage-dot"></div> Saved in this browser<br/><small>Export backups for safekeeping</small></div>
+      <div class="sidebar-foot sync-sidebar" aria-live="polite">
+        <div class="sync-indicator"><span id="sync-dot" class="storage-dot"></span><span><strong id="sync-status-label">Saved on this device</strong><small id="sync-status-detail">Checking GitHub data...</small></span></div>
+        <div class="sync-actions"><button type="button" id="sync-save-now" class="sync-mini-btn">Save now · GitHub</button><button type="button" id="sync-check-now" class="sync-mini-btn">Refresh</button></div>
+        <button type="button" id="sync-open" class="sync-settings-btn">GitHub sync settings</button>
+      </div>
     </aside>
     <main class="main">
       <header class="topbar"><div class="breadcrumb">LAB WORKSPACE <span> / </span> <strong id="page-label">Overview</strong></div><div class="top-actions"><span id="now-date"></span><button class="btn btn-quiet small" id="export-backup-top">↓ Backup JSON</button></div></header>
@@ -96,6 +101,23 @@
       </div>
       <div id="toast" class="toast" role="status" aria-live="polite"></div>
     </main>
+  </div>
+  <div id="sync-modal" class="sync-overlay" hidden>
+    <section class="sync-dialog" role="dialog" aria-modal="true" aria-labelledby="sync-heading">
+      <div class="sync-dialog-top"><h2 id="sync-heading">GitHub data synchronization</h2><button type="button" id="sync-close" class="btn small">Close ×</button></div>
+      <p>Synchronize your chemical inventory, preparation/dosing history, templates, and plate layouts through <strong>vubio/lab-chemical-manager</strong> on the separate <code>labchem-data</code> branch.</p>
+      <div class="sync-warning"><strong>Public GitHub repository.</strong> Anything uploaded here, including reagent lists, experimental plans and notes, can be viewed publicly. Do not sync confidential, unpublished, patient-related, or sensitive research information to this repository.</div>
+      <p class="tiny">On GitHub, <a href="https://github.com/settings/personal-access-tokens/new" rel="noopener noreferrer" target="_blank">create a fine-grained personal access token</a>, restricted to <strong>vubio/lab-chemical-manager</strong> with <strong>Contents: Read and write</strong>. This token remains in your browser and is never uploaded in your data file.</p>
+      <label class="field"><span>GitHub access token</span><input type="password" id="sync-token" autocomplete="off" spellcheck="false" placeholder="github_pat_..." /></label>
+      <label class="sync-remember"><input type="checkbox" id="sync-remember" /> Remember token on this device (less secure; otherwise session only)</label>
+      <div class="action-row"><button type="button" class="btn btn-primary" id="sync-connect">Connect to GitHub</button><button type="button" class="btn" id="sync-forget">Forget token</button></div>
+      <p id="sync-message" class="sync-message" role="status" aria-live="polite"></p>
+      <div class="sync-reconcile" id="sync-reconcile" hidden>
+        <h3>Choose which copy to keep</h3><p id="sync-conflict-info">This device and the GitHub version differ. Neither has been overwritten.</p>
+        <div class="action-row"><button type="button" class="btn" id="sync-load-cloud">Load GitHub version</button><button type="button" class="btn" id="sync-publish-device">Publish this device instead</button><button type="button" class="btn" id="sync-download-device">Download this device backup</button></div>
+        <p class="tiny muted">Loading will replace this device’s records; publishing will replace the remote file. Both actions require confirmation and create a downloadable backup of the replaced data.</p>
+      </div>
+    </section>
   </div>
 </body>
 </html>
