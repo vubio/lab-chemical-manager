@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "updatedAt": null,
+  "chemicals": {
+    "version": 1,
+    "chemicals": [],
+    "history": [],
+    "templates": []
+  },
+  "plates": {
+    "draft": null,
+    "saved": []
+  }
+}
