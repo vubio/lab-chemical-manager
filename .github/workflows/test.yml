@@ -18,9 +18,12 @@ jobs:
           node --check app.js
           node --check plate.js
           node --check plate_reader.js
+          node --check github_sync.js
       - name: Test dosing calculations
         run: node tests/dosing.test.js
       - name: Test plate layouts
         run: node tests/plate.test.js
       - name: Test plate-reader data matching and exports
         run: node tests/plate_reader.test.js
+      - name: Test GitHub data synchronization and conflict safety
+        run: node tests/github_sync.test.js
