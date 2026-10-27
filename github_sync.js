@@ -139,13 +139,14 @@ async function refresh(options={}){
   const local=current();
   const policy=decision(local,remote.snapshot,{baseSha,baseDigest,dirty},remote.sha);
   if(policy==='load'){
-   if(hasContent(local)&&!options.replace){makeConflict(remote)}
-   else{applyCloud(remote.snapshot,remote.sha);tell('Latest GitHub version loaded.')}
+   applyCloud(remote.snapshot,remote.sha);
+   tell('Latest GitHub version loaded.');
   }else if(policy==='conflict')makeConflict(remote);
   else if(policy==='synced'){
    baseSha=remote.sha;baseDigest=digest(local);dirty=false;conflict=false;remember();
    tell('GitHub data checked; this device is current.');
   }else{
+   if(!baseSha&&!hasContent(remote.snapshot))baseSha=remote.sha;
    dirty=true;conflict=false;remember();
    tell(token?'Local records are ready for upload.':'Local records are safe. Connect GitHub to upload.');
   }
