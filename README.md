@@ -99,3 +99,11 @@ Manual controls are stored as independent well assignments (`kind: "special"`) w
 **Match reader values** keeps these readings separate from the Density × Erastin2 factor combinations. Its **Special controls** selector defaults to **Separate table**, with optional **Append above** or **Append below** for long-format exports, or **Exclude controls**. All formats keep the plate coordinates; Prism and wide layouts always use a separate controls table instead of inventing factor values. A separate **Download controls CSV** button saves control data; the Excel file includes a **Special controls** sheet (when controls are included), along with the regular analysis sheet and plate matrix. The raw plate matrix retains the original readings regardless of control selection.
 
 A gray control label like `Media only` represents an experimental control, not a measured zero and not a treatment replicate. Verify the labeling and instrument-grid orientation before analysis.
+
+## Dosing history on the planner page
+
+The Dosing Planner has a collapsible **Recent dosing history** panel above the experiment setup, reading from the same browser-local history database as **Calculation history**. You can search by chemical or experiment, see recent records, expand to all, and use **View result**, **Reuse inputs**, or **Copy note**. Viewing a saved result does not create a new calculation; reusing inputs requires Generate to save a new timestamped plan.
+
+Above every result's **Condition summary** table, the chemical name is shown beside **Copy table**. This copies **only the chemical name and the summary table**, omitting the "Condition summary" section title and the detailed recipes. Browsers that support rich clipboard writes copy a bordered HTML table suitable for OneNote, with a tab-delimited fallback when rich clipboard access is unavailable. Full detailed documentation is still available with **Copy lab note**.
+
+The existing calculation-history page and saved records are unchanged. As before, browser-local storage does not automatically synchronize across computers; use JSON backup/export to preserve a durable copy.
