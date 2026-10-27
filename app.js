@@ -19,7 +19,7 @@ const WEIGHT_UNITS=['g','mg','µg'];
 const VOL_UNITS=['µL','mL','L'];
 const DEFAULT_DB=()=>({version:1,chemicals:[],history:[],templates:[]});
 let db=loadDB();
-let latestPrep=null,latestDose=null,currentPage='home';
+let latestPrep=null,latestDose=null,currentPage='home',doseHistoryExpanded=false;
 let timer;
 
 function byId(id){return document.getElementById(id)}
@@ -35,7 +35,7 @@ function num(id,label,allowZero=false){return numeric(byId(id).value,label,allow
 function val(id){return clean(byId(id).value)}
 function setVal(id,v){if(byId(id))byId(id).value=(v===undefined||v===null?'':v)}
 function loadDB(){try{const parsed=JSON.parse(localStorage.getItem(STORE_KEY));if(parsed&&Array.isArray(parsed.chemicals)&&Array.isArray(parsed.history)&&Array.isArray(parsed.templates))return {...DEFAULT_DB(),...parsed}}catch(e){console.warn('Could not load saved data',e)}return DEFAULT_DB()}
-function store(){try{localStorage.setItem(STORE_KEY,JSON.stringify(db))}catch(e){toast('Unable to save: browser storage may be full or restricted.',true);throw e}updateCounts()}
+function store(){try{localStorage.setItem(STORE_KEY,JSON.stringify(db))}catch(e){toast('Unable to save: browser storage may be full or restricted.',true);throw e}updateCounts();if(byId('dose-history-list'))renderDosingHistory()}
 function toast(msg,error=false){const el=byId('toast');el.textContent=msg;el.style.background=error?'#a34038':'#1c3441';el.classList.add('show');clearTimeout(timer);timer=setTimeout(()=>el.classList.remove('show'),3700)}
 function errorMessage(id,msg){byId(id).innerHTML=`<div class="small-note warning">${escapeHTML(msg)}</div>`}
 function options(items,selected){return items.map(v=>`<option value="${escapeHTML(v)}" ${selected===v?'selected':''}>${escapeHTML(v)}</option>`).join('')}
@@ -54,7 +54,7 @@ function fmtMassMG(mg){if(mg>=1000)return `${fmt(mg/1000)} g`;if(mg>=1)return `$
 function getChem(id){return db.chemicals.find(x=>x.id===id)}
 function autoHistory(rec){const entry={id:uid(),timestamp:isoNow(),...rec};db.history.unshift(entry);store();return entry}
 function updateCounts(){byId('stat-chem').textContent=db.chemicals.length;byId('stat-history').textContent=db.history.length;byId('stat-templates').textContent=db.templates.length}
-function showPage(page){currentPage=page;document.querySelectorAll('.page').forEach(el=>el.classList.toggle('active',el.id==='page-'+page));document.querySelectorAll('.nav-link').forEach(el=>el.classList.toggle('active',el.dataset.page===page));const names={home:'Overview',calculator:'Preparation calculator',dosing:'Dosing planner',plate:'Plate layout',library:'Chemical library',history:'Calculation history',templates:'Saved templates'};byId('page-label').textContent=names[page]||page;if(page==='library')renderLibrary();if(page==='history')renderHistory();if(page==='templates')renderTemplates();window.scrollTo({top:0,behavior:'instant'})}
+function showPage(page){currentPage=page;document.querySelectorAll('.page').forEach(el=>el.classList.toggle('active',el.id==='page-'+page));document.querySelectorAll('.nav-link').forEach(el=>el.classList.toggle('active',el.dataset.page===page));const names={home:'Overview',calculator:'Preparation calculator',dosing:'Dosing planner',plate:'Plate layout',library:'Chemical library',history:'Calculation history',templates:'Saved templates'};byId('page-label').textContent=names[page]||page;if(page==='library')renderLibrary();if(page==='history')renderHistory();if(page==='templates')renderTemplates();if(page==='dosing')renderDosingHistory();window.scrollTo({top:0,behavior:'instant'})}
 function renderChemicalOptions(){const rows=db.chemicals.slice().sort((a,b)=>a.name.localeCompare(b.name));const o=rows.map(r=>`<option value="${escapeHTML(r.id)}">${escapeHTML(r.name)}${r.lot?' · lot '+escapeHTML(r.lot):''}${r.stock?' · '+fmt(r.stock)+' '+escapeHTML(r.stockUnit):''}</option>`).join('');['calc-chemical','dose-chemical'].forEach(id=>{const el=byId(id),keep=el.value;el.innerHTML=`<option value="">${id==='calc-chemical'?'Enter new chemical details':'Manual stock entry'}</option>${o}`;el.value=rows.some(r=>r.id===keep)?keep:''})}
 
 /* ---- Preparation calculator ---- */
@@ -332,11 +332,63 @@ function renderDosingResult(rec){
  }).join('');
  const numberOfOps=r.operations??r.conditions.reduce((a,c)=>a+c.steps.length,0),numberOfShared=r.sharedCount??r.conditions.filter(c=>c.parentTarget!==null&&c.parentTarget!==undefined).length;
  byId('dose-result').className='';
- byId('dose-result').innerHTML=`<div class="result-highlight"><label>FIXED DOSE / VEHICLE PLAN</label><strong>${dose} µL per well</strong><div class="result-sub">${fmt(r.mediumBefore)} µL medium + ${dose} µL treatment = ${fmt(r.totalVol)} µL final. Vehicle: ${fmt(r.vehiclePercent)}% v/v (if homogeneous solvent).</div></div>${switcher}<div class="result-section-title">Condition summary · highest dose first</div><div class="table-scroll"><table class="data-table dose-summary"><thead><tr><th>Final target</th><th>Intermediate</th><th>Prepare from</th><th>Dilution</th><th>Recipe (source + diluent)</th><th>Prep</th><th>Add/well</th><th># wells</th><th>For actual wells</th><th>Including +1 well</th></tr></thead><tbody>${rows}</tbody></table></div><div class="small-note">${r.conditions.filter(c=>!c.vehicle).length} working concentrations · ${numberOfOps} preparation operation${numberOfOps===1?'':'s'} · ${numberOfShared} reused intermediate${numberOfShared===1?'':'s'}. Minimum ${fmt(r.prepVol)} µL/preparation; downstream withdrawals are included where intermediates are shared. One additional well per condition is included when estimating intermediate requirements, followed by ${fmt(r.over)}% optional overage. Solutions and vehicle should use the same solvent.</div>${r.warnings.map(w=>`<div class="small-note warning">${escapeHTML(w)}</div>`).join('')}<div class="result-section-title">Intermediate preparation recipes · highest first</div>${details}<div class="result-section-title">Copy-ready note</div><div class="doc-preview">${escapeHTML(treatmentNote(rec))}</div>`;
+ byId('dose-result').innerHTML=`<div class="result-highlight"><label>FIXED DOSE / VEHICLE PLAN</label><strong>${dose} µL per well</strong><div class="result-sub">${fmt(r.mediumBefore)} µL medium + ${dose} µL treatment = ${fmt(r.totalVol)} µL final. Vehicle: ${fmt(r.vehiclePercent)}% v/v (if homogeneous solvent).</div></div>${switcher}<div class="result-section-title">Condition summary · highest dose first</div><div class="dose-summary-toolbar"><strong class="dose-summary-chemical">${escapeHTML(clean(rec.chemicalName||rec.input['dose-name'])||'Chemical not specified')}</strong><button type="button" class="btn small" data-dose-copy-summary>Copy table</button></div><div class="table-scroll"><table class="data-table dose-summary"><thead><tr><th>Final target</th><th>Intermediate</th><th>Prepare from</th><th>Dilution</th><th>Recipe (source + diluent)</th><th>Prep</th><th>Add/well</th><th># wells</th><th>For actual wells</th><th>Including +1 well</th></tr></thead><tbody>${rows}</tbody></table></div><div class="small-note">${r.conditions.filter(c=>!c.vehicle).length} working concentrations · ${numberOfOps} preparation operation${numberOfOps===1?'':'s'} · ${numberOfShared} reused intermediate${numberOfShared===1?'':'s'}. Minimum ${fmt(r.prepVol)} µL/preparation; downstream withdrawals are included where intermediates are shared. One additional well per condition is included when estimating intermediate requirements, followed by ${fmt(r.over)}% optional overage. Solutions and vehicle should use the same solvent.</div>${r.warnings.map(w=>`<div class="small-note warning">${escapeHTML(w)}</div>`).join('')}<div class="result-section-title">Intermediate preparation recipes · highest first</div>${details}<div class="result-section-title">Copy-ready note</div><div class="doc-preview">${escapeHTML(treatmentNote(rec))}</div>`;
  byId('dose-actions').classList.remove('hidden');byId('dose-status').className='tag success';byId('dose-status').textContent='SAVED';
 }
 function saveTemplate(){if(!latestDose)return;const label=prompt('Name this reusable dosing template:',latestDose.name);if(label===null)return;if(!clean(label))return toast('Template name cannot be empty.',true);db.templates.unshift({id:uid(),name:clean(label),createdAt:isoNow(),inputs:{...latestDose.input}});store();toast('Dosing template saved. Open Templates to reuse it.')}
 function loadTemplate(id){const t=db.templates.find(x=>x.id===id);if(!t)return;showPage('dosing');applyDosingInputs(t.inputs);latestDose=null;byId('dose-result').className='empty-result';byId('dose-result').textContent='Template loaded. Modify any field, then generate a new timestamped record.';byId('dose-actions').classList.add('hidden');byId('dose-status').className='tag';byId('dose-status').textContent='TEMPLATE LOADED';toast('Template loaded. Review inputs before recalculating.')}
+
+
+/* Dosing history stays inside the dosing planner; the database remains shared. */
+function dosingHistoryItems(records,query=''){
+ const q=clean(query).toLowerCase();
+ return records.filter(r=>r.kind==='dosing'&&(!q||[r.name,r.chemicalName,r.catalog,r.lot,r.timestamp,r.notes].join(' ').toLowerCase().includes(q)));
+}
+function renderDosingHistory(){
+ const host=byId('dose-history-list');if(!host)return;
+ const all=db.history.filter(r=>r.kind==='dosing');
+ const hits=dosingHistoryItems(all,val('dose-history-search'));
+ const display=doseHistoryExpanded?hits:hits.slice(0,8);
+ byId('dose-history-count').textContent=all.length+' saved plan'+(all.length===1?'':'s');
+ const toggle=byId('dose-history-all');toggle.hidden=hits.length<=8;toggle.textContent=doseHistoryExpanded?'Show recent 8':'Show all '+hits.length;
+ host.innerHTML=display.length?display.map(rec=>{
+  const concentrations=rec.result?.conditions?.map(c=>fmt(c.target)).join(', ')||'—';
+  return `<div class="dose-history-item"><div class="dose-history-details"><strong>${escapeHTML(rec.chemicalName||rec.input?.['dose-name']||'Unnamed chemical')}</strong><div class="record-meta">${escapeHTML(rec.name||'Experiment')} · ${escapeHTML(dt(rec.timestamp))}</div><div class="tiny muted">Targets: ${escapeHTML(concentrations)} ${escapeHTML(rec.result?.targetUnit||rec.input?.['dose-target-unit']||'')} · ${rec.result?.conditions?.length||0} conditions</div></div><div class="dose-history-actions"><button class="btn small" data-dose-view="${escapeHTML(rec.id)}">View result</button><button class="btn small" data-dose-reuse="${escapeHTML(rec.id)}">Reuse inputs</button><button class="btn small" data-dose-note="${escapeHTML(rec.id)}">Copy note</button></div></div>`;
+ }).join(''):'<p class="tiny muted">No dosing records match. Successful plans are saved here automatically.</p>';
+}
+function showHistoricalDose(id){
+ const rec=db.history.find(r=>r.id===id&&r.kind==='dosing');
+ if(!rec)return toast('Dosing record not found.',true);
+ applyDosingInputs(rec.input);latestDose=rec;renderDosingResult(rec);
+ byId('dose-status').textContent='HISTORY';byId('dose-status').className='tag';
+ byId('dose-result').scrollIntoView({behavior:'smooth',block:'start'});
+ toast('Loaded saved dosing result from '+dt(rec.timestamp)+'. No new calculation was created.');
+}
+function doseSummaryCopyPayload(rec,table){
+ if(!rec||!table)throw Error('Generate or open a dosing result first.');
+ const chemical=clean(rec.chemicalName||rec.input?.['dose-name'])||'Chemical not specified';
+ const rows=Array.from(table.rows).map(row=>Array.from(row.cells).map(cell=>String(cell.innerText||cell.textContent||'').replace(/\s+/g,' ').trim()));
+ const plain=chemical+'\n'+rows.map(row=>row.join('\t')).join('\n');
+ const cloned=table.cloneNode(true);cloned.removeAttribute('class');
+ cloned.style.cssText='border-collapse:collapse;border:1px solid #8695a1;font:10pt Arial,Helvetica,sans-serif;color:#21394a;background:#fff;';
+ cloned.querySelectorAll('th,td').forEach(cell=>{
+  cell.style.cssText='border:1px solid #a8b5bf;padding:6px 8px;vertical-align:top;text-align:left;white-space:normal;background:'+(cell.tagName==='TH'?'#edf2f5':'#ffffff')+';font-size:'+(cell.tagName==='TH'?'9pt':'10pt')+';';
+ });
+ const html='<div style="font-family:Arial,Helvetica,sans-serif;background:#fff;color:#21394a"><p style="font-size:12pt;font-weight:700;margin:0 0 8px">'+escapeHTML(chemical)+'</p>'+cloned.outerHTML+'</div>';
+ return {html,plain};
+}
+async function copyDosingSummary(){
+ if(!latestDose)return toast('Calculate or open a dosing result first.',true);
+ const table=byId('dose-result')?.querySelector('.dose-summary');
+ if(!table)return toast('The dosing summary table is not available.',true);
+ try{
+  const copied=doseSummaryCopyPayload(latestDose,table);
+  if(navigator.clipboard?.write&&typeof ClipboardItem!=='undefined'){
+   await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([copied.html],{type:'text/html'}),'text/plain':new Blob([copied.plain],{type:'text/plain'})})]);
+   toast('Chemical name and formatted dosing table copied for OneNote.');
+  }else await copyText(copied.plain);
+ }catch(e){toast('Could not copy the table. Check clipboard permissions or use Copy lab note.',true)}
+}
 
 /* ---- Library ---- */
 const LIB_FIELDS=['name','maker','catalog','lot','cas','mw','stock','stockUnit','solvent','storage','prepdate','expiry','notes'];
@@ -350,7 +402,7 @@ function renderHistory(){const q=val('history-search').toLowerCase(),filter=val(
 function recordNote(rec){return rec.kind==='dosing'?treatmentNote(rec):preparationNote(rec)}
 function editHistoryMetadata(id){const x=db.history.find(r=>r.id===id);if(!x)return;const container=byId('meta-'+id);if(container.classList.contains('editing')){container.classList.remove('editing');container.innerHTML='';return}container.classList.add('editing');container.innerHTML=`<div class="edit-meta"><div class="form-grid"><label class="field"><span>Catalog number</span><input data-meta="catalog" value="${escapeHTML(x.catalog||'')}"></label><label class="field"><span>Lot number</span><input data-meta="lot" value="${escapeHTML(x.lot||'')}"></label><label class="field full"><span>Notes</span><textarea data-meta="notes" rows="3">${escapeHTML(x.notes||'')}</textarea></label></div><button class="btn btn-primary" data-metasave="${x.id}">Save metadata</button> <span class="tiny muted">Original calculation and timestamp remain unchanged.</span></div>`}
 function saveHistoryMetadata(id){const x=db.history.find(r=>r.id===id);if(!x)return;byId('meta-'+id).querySelectorAll('[data-meta]').forEach(el=>x[el.dataset.meta]=el.value);store();renderHistory();toast('Metadata updated. Calculated values unchanged.')}
-function reuseHistory(id){const x=db.history.find(r=>r.id===id);if(!x)return;if(x.kind==='dosing'){showPage('dosing');applyDosingInputs(x.input);byId('dose-actions').classList.add('hidden');byId('dose-result').className='empty-result';byId('dose-result').textContent='Previous values loaded. Edit as needed, then calculate to create a NEW history record.'}else{showPage('calculator');setVal('calc-mode',x.input.mode);renderCalcMode();setVal('calc-chemical',getChem(x.input.chemId)?x.input.chemId:'');setVal('calc-name',x.input.name);setVal('calc-catalog',x.catalog);setVal('calc-lot',x.lot);Object.keys(x.input).filter(k=>k.startsWith('f-')).forEach(k=>setVal(k,x.input[k]));byId('calc-result').className='empty-result';byId('calc-result').textContent='Previous values loaded. Edit as needed, then calculate to create a NEW history record.'}toast('Inputs loaded. Historical calculation preserved.')}
+function reuseHistory(id){const x=db.history.find(r=>r.id===id);if(!x)return;if(x.kind==='dosing'){showPage('dosing');applyDosingInputs(x.input);latestDose=null;byId('dose-actions').classList.add('hidden');byId('dose-status').textContent='INPUTS LOADED';byId('dose-status').className='tag';byId('dose-result').className='empty-result';byId('dose-result').textContent='Previous values loaded. Edit as needed, then calculate to create a NEW history record.'}else{showPage('calculator');setVal('calc-mode',x.input.mode);renderCalcMode();setVal('calc-chemical',getChem(x.input.chemId)?x.input.chemId:'');setVal('calc-name',x.input.name);setVal('calc-catalog',x.catalog);setVal('calc-lot',x.lot);Object.keys(x.input).filter(k=>k.startsWith('f-')).forEach(k=>setVal(k,x.input[k]));byId('calc-result').className='empty-result';byId('calc-result').textContent='Previous values loaded. Edit as needed, then calculate to create a NEW history record.'}toast('Inputs loaded. Historical calculation preserved.')}
 
 /* ---- Templates & portability ---- */
 function renderTemplates(){byId('template-list').innerHTML=db.templates.length?db.templates.map(t=>`<div class="record"><div class="record-top"><strong>${escapeHTML(t.name)}</strong><span class="inline-badge">DOSING</span></div><div class="record-meta">Saved ${escapeHTML(dt(t.createdAt))}</div><div class="record-desc">${escapeHTML(t.inputs['dose-name'])||'Reagent not entered'} · Targets: ${escapeHTML(t.inputs['dose-targets'])} ${escapeHTML(t.inputs['dose-target-unit'])}</div><div class="record-actions"><button class="btn btn-primary" data-templateload="${t.id}">Load & modify</button><button class="btn danger" data-templatedelete="${t.id}">Delete</button></div></div>`).join(''):'<div class="empty-result">No saved templates yet. Generate a dosing plan and select “Save template”.</div>'}
@@ -366,7 +418,7 @@ async function copyText(s){try{if(navigator.clipboard?.writeText){await navigato
 function init(){
  byId('now-date').textContent=new Date().toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric',year:'numeric'});
  byId('dose-stock-unit').innerHTML=options(CONC_UNITS,'mM');byId('dose-target-unit').innerHTML=options(CONC_UNITS,'µM');byId('lib-stock-unit').innerHTML=options(CONC_UNITS,'mM');
- renderChemicalOptions();renderCalcMode();updateCounts();
+ renderChemicalOptions();renderCalcMode();updateCounts();renderDosingHistory();
  byId('nav').addEventListener('click',e=>{const b=e.target.closest('[data-page]');if(b)showPage(b.dataset.page)});
  document.querySelectorAll('[data-goto]').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.goto)));
  byId('calc-mode').addEventListener('change',renderCalcMode);byId('calc-chemical').addEventListener('change',applyCalcChemical);
@@ -380,8 +432,18 @@ function init(){
  byId('dose-wells-list').addEventListener('input',e=>{if(e.target.matches('[data-dose-well]'))doseWellCounts[e.target.dataset.doseWell]=e.target.value;});
  renderDoseWellInputs();
  byId('calculate-dose').addEventListener('click',calculateDose);
- byId('dose-result').addEventListener('click',e=>{const btn=e.target.closest('[data-dose-plan]');if(!btn)return;if(btn.dataset.dosePlan===val('dose-strategy'))return;setVal('dose-strategy',btn.dataset.dosePlan);calculateDose();});
+ byId('dose-result').addEventListener('click',e=>{const copy=e.target.closest('[data-dose-copy-summary]');if(copy){copyDosingSummary();return}const btn=e.target.closest('[data-dose-plan]');if(!btn)return;if(btn.dataset.dosePlan===val('dose-strategy'))return;setVal('dose-strategy',btn.dataset.dosePlan);calculateDose();});
  byId('copy-dose').addEventListener('click',()=>latestDose&&copyText(treatmentNote(latestDose)));
+
+ byId('dose-history-search').addEventListener('input',()=>{doseHistoryExpanded=false;renderDosingHistory()});
+ byId('dose-history-all').addEventListener('click',()=>{doseHistoryExpanded=!doseHistoryExpanded;renderDosingHistory()});
+ byId('dose-history-list').addEventListener('click',e=>{
+  const btn=e.target.closest('button');if(!btn)return;
+  const id=btn.dataset.doseView||btn.dataset.doseReuse||btn.dataset.doseNote;
+  if(btn.dataset.doseView)showHistoricalDose(id);
+  else if(btn.dataset.doseReuse)reuseHistory(id);
+  else if(btn.dataset.doseNote){const rec=db.history.find(r=>r.id===id&&r.kind==='dosing');if(rec)copyText(treatmentNote(rec))}
+ });
  byId('save-dose-template').addEventListener('click',saveTemplate);
  byId('download-dose').addEventListener('click',()=>latestDose&&downloadRecord(latestDose));
  byId('library-new').addEventListener('click',resetLib);byId('library-reset').addEventListener('click',resetLib);byId('library-save').addEventListener('click',saveLib);byId('library-search').addEventListener('input',renderLibrary);
@@ -392,4 +454,5 @@ function init(){
  byId('export-backup-top').addEventListener('click',exportBackup);byId('backup-export').addEventListener('click',exportBackup);byId('backup-import').addEventListener('change',e=>importBackup(e.target.files[0]));
 }
 window.LabChemMath={computePrep,calculateDosing,convertConc,massMg,toML,fmt};
+window.LabChemDosingUI={dosingHistoryItems,doseSummaryCopyPayload};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
