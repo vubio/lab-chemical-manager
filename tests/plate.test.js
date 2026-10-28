@@ -76,4 +76,25 @@ assert(editableAxis('column',5,'').includes('placeholder="Note"'));
 const escapedNote=editableAxis('column',3,'A < B & C');
 assert(escapedNote.includes('A &lt; B &amp; C'));
 
+
+const levelCore=sandbox.window.PlateLayoutCore;
+const baseLabels={A1:{labels:['0 µM','AA 0'],group:'generated',kind:'normal'},A2:{labels:['0 µM','AA 25'],group:'generated',kind:'normal'},B1:{labels:['Media only'],kind:'special',group:'manual'}};
+const afterLevelOne=levelCore.assignManualLevels(baseLabels,['A1','A2','A2'],0,'1k');
+assert.deepEqual(Array.from(levelCore.effectiveLabels(afterLevelOne.A1)),['1k','AA 0']);
+assert.deepEqual(Array.from(levelCore.effectiveLabels(afterLevelOne.A2)),['1k','AA 25']);
+assert.equal(baseLabels.A1.labels[0],'0 µM','manual override does not mutate original assignments');
+const afterLevelTwo=levelCore.assignManualLevels(afterLevelOne,['A1'],1,'50 µM');
+assert.deepEqual(Array.from(levelCore.effectiveLabels(afterLevelTwo.A1)),['1k','50 µM']);
+assert.deepEqual(Array.from(levelCore.effectiveLabels(afterLevelTwo.A2)),['1k','AA 25']);
+const clearedLevel=levelCore.assignManualLevels(afterLevelTwo,['A1'],0,'');
+assert.deepEqual(Array.from(levelCore.effectiveLabels(clearedLevel.A1)),['0 µM','50 µM']);
+const firstManual=levelCore.assignManualLevels({},['D1','D2'],0,'5k');
+assert.deepEqual(Array.from(levelCore.effectiveLabels(firstManual.D1)),['5k']);
+const manualAndSecondary=levelCore.assignManualLevels(firstManual,['D1'],1,'100');
+assert.deepEqual(Array.from(levelCore.effectiveLabels(manualAndSecondary.D1)),['5k','100']);
+assert.equal(manualAndSecondary.D1.kind,'normal');
+assert.equal(levelCore.effectiveLabels(baseLabels.B1)[0],'Media only');
+assert.deepEqual(Array.from(levelCore.manualLevelUsage(manualAndSecondary)),[true,true,false]);
+assert.equal(levelCore.assignManualLevels(manualAndSecondary,['D2'],0,'').D2,undefined,'empty manual-only wells removed when level cleared');
+
 console.log('Plate layout allocation and selection tests passed');
