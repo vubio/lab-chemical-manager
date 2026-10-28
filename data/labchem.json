@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updatedAt": "2026-10-28T12:51:11.689Z",
+  "updatedAt": "2026-10-28T13:03:35.839Z",
   "chemicals": {
     "version": 1,
     "chemicals": [
@@ -2263,6 +2263,11 @@
       ],
       "rowNotes": {},
       "colNotes": {},
+      "manualLevelNames": [
+        "Level 1",
+        "Level 2",
+        "Level 3"
+      ],
       "fillOrder": "rows",
       "mode": "select",
       "factors": [
@@ -2742,6 +2747,11 @@
           "E": "10k"
         },
         "colNotes": {},
+        "manualLevelNames": [
+          "Level 1",
+          "Level 2",
+          "Level 3"
+        ],
         "fillOrder": "rows",
         "mode": "select",
         "factors": [
@@ -3266,6 +3276,11 @@
           "E": "10k"
         },
         "colNotes": {},
+        "manualLevelNames": [
+          "Level 1",
+          "Level 2",
+          "Level 3"
+        ],
         "fillOrder": "rows",
         "mode": "move",
         "factors": [
@@ -4023,6 +4038,11 @@
           "E": "10k"
         },
         "colNotes": {},
+        "manualLevelNames": [
+          "Level 1",
+          "Level 2",
+          "Level 3"
+        ],
         "fillOrder": "rows",
         "mode": "move",
         "factors": [
@@ -4649,6 +4669,11 @@
           "E": "10k"
         },
         "colNotes": {},
+        "manualLevelNames": [
+          "Level 1",
+          "Level 2",
+          "Level 3"
+        ],
         "fillOrder": "rows",
         "mode": "move",
         "factors": [
