@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updatedAt": "2026-10-28T15:41:26.458Z",
+  "updatedAt": "2026-10-28T15:44:29.479Z",
   "chemicals": {
     "version": 1,
     "chemicals": [
@@ -60,6 +60,185 @@
       }
     ],
     "history": [
+      {
+        "id": "fea89e9f-2d33-4882-ae31-3874fa213285",
+        "timestamp": "2026-10-28T15:44:23.231Z",
+        "kind": "dosing",
+        "name": "96",
+        "chemicalName": "Retinol",
+        "catalog": "",
+        "lot": "",
+        "chemicalId": "",
+        "input": {
+          "dose-title": "96",
+          "dose-chemical": "",
+          "dose-name": "Retinol",
+          "dose-stock": "10",
+          "dose-stock-unit": "mM",
+          "dose-mw": "",
+          "dose-solvent": "DMSO",
+          "dose-targets": "0, 1, 5, 10, 25, 50",
+          "dose-target-unit": "µM",
+          "dose-wells": "1",
+          "dose-well-volume": "500",
+          "dose-volume-mode": "final",
+          "dose-add": "10",
+          "dose-minpip": "0.5",
+          "dose-prep-volume": "48",
+          "dose-overage": "20",
+          "dose-max-prep": "4999",
+          "dose-strategy": "shared",
+          "dose-notes": "",
+          "dose-wells-map": "{\"0\":\"4\",\"1\":\"4\",\"2\":\"1\",\"5\":\"4\",\"10\":\"4\",\"20\":\"1\",\"25\":\"4\",\"50\":\"4\",\"100\":\"12\",\"200\":\"12\",\"0.01\":\"1\",\"0.05\":\"1\",\"0.1\":\"1\"}"
+        },
+        "result": {
+          "stockInTargetUnit": 10000,
+          "stockValue": 10,
+          "totalVol": 500,
+          "mediumBefore": 490,
+          "vehiclePercent": 2,
+          "solvent": "DMSO",
+          "conditions": [
+            {
+              "target": 50,
+              "intermediate": 2500,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 2500,
+                  "transfer": 15.5,
+                  "solvent": 46.5,
+                  "volume": 62,
+                  "sourceType": "stock"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 62,
+              "requiredVolume": 60,
+              "wells": 4,
+              "extraWells": 1,
+              "basePrep": 60,
+              "parentTarget": null
+            },
+            {
+              "target": 25,
+              "intermediate": 1250,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 1250,
+                  "transfer": 7.5,
+                  "solvent": 52.5,
+                  "volume": 60,
+                  "sourceType": "stock"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 60,
+              "requiredVolume": 60,
+              "wells": 4,
+              "extraWells": 1,
+              "basePrep": 60,
+              "parentTarget": null
+            },
+            {
+              "target": 10,
+              "intermediate": 500,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 500,
+                  "transfer": 3,
+                  "solvent": 57,
+                  "volume": 60,
+                  "sourceType": "stock"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 60,
+              "requiredVolume": 60,
+              "wells": 4,
+              "extraWells": 1,
+              "basePrep": 60,
+              "parentTarget": null
+            },
+            {
+              "target": 5,
+              "intermediate": 250,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 250,
+                  "transfer": 1.5,
+                  "solvent": 58.5,
+                  "volume": 60,
+                  "sourceType": "stock"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 60,
+              "requiredVolume": 60,
+              "wells": 4,
+              "extraWells": 1,
+              "basePrep": 60,
+              "parentTarget": null
+            },
+            {
+              "target": 1,
+              "intermediate": 50,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 2500,
+                  "to": 50,
+                  "transfer": 1.2,
+                  "solvent": 58.8,
+                  "volume": 60,
+                  "sourceType": "shared",
+                  "sourceTarget": 50
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 60,
+              "requiredVolume": 60,
+              "wells": 4,
+              "extraWells": 1,
+              "basePrep": 60,
+              "parentTarget": 50
+            },
+            {
+              "target": 0,
+              "intermediate": 0,
+              "steps": [],
+              "vehicle": true,
+              "prepVolume": 60,
+              "requiredVolume": 60,
+              "wells": 4,
+              "extraWells": 1
+            }
+          ],
+          "prepVol": 48,
+          "maxPrep": 4999,
+          "strategy": "shared",
+          "wells": 4,
+          "over": 20,
+          "warnings": [
+            "Vehicle addition corresponds to 2% v/v DMSO (assuming stock/intermediates are entirely in that solvent). Assess vehicle tolerance for your model.",
+            "Preparing every intermediate in DMSO keeps the added DMSO volume matched but may cause solubility/precipitation problems. Check compound solubility.",
+            "Some preparations use more than the minimum volume to meet pipetting requirements or supply downstream dilutions."
+          ],
+          "minPip": 0.5,
+          "targetUnit": "µM",
+          "stockUnit": "mM",
+          "operations": 5,
+          "sharedCount": 1
+        },
+        "notes": ""
+      },
       {
         "id": "3ac0b7b8-83f6-4e22-adeb-95938cbc004d",
         "timestamp": "2026-10-28T13:22:42.345Z",
