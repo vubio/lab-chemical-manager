@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updatedAt": "2026-10-28T15:55:14.007Z",
+  "updatedAt": "2026-10-28T16:09:32.596Z",
   "chemicals": {
     "version": 1,
     "chemicals": [
@@ -60,6 +60,150 @@
       }
     ],
     "history": [
+      {
+        "id": "a8fbb064-dab1-4865-ac8a-4d3d22456a84",
+        "timestamp": "2026-10-28T16:09:26.070Z",
+        "kind": "dosing",
+        "name": "96",
+        "chemicalName": "AA",
+        "catalog": "",
+        "lot": "",
+        "chemicalId": "",
+        "input": {
+          "dose-title": "96",
+          "dose-chemical": "",
+          "dose-name": "AA",
+          "dose-stock": "10",
+          "dose-stock-unit": "mM",
+          "dose-mw": "",
+          "dose-solvent": "10% BSA in 0.9% NaCl",
+          "dose-targets": "0, 25, 50, 100, 200",
+          "dose-target-unit": "µM",
+          "dose-wells": "1",
+          "dose-well-volume": "200",
+          "dose-volume-mode": "final",
+          "dose-add": "4",
+          "dose-minpip": "0.5",
+          "dose-prep-volume": "100",
+          "dose-overage": "20",
+          "dose-max-prep": "5000",
+          "dose-strategy": "shared",
+          "dose-notes": "",
+          "dose-wells-map": "{\"0\":\"4\",\"1\":\"4\",\"2\":\"1\",\"5\":\"4\",\"10\":\"4\",\"20\":\"1\",\"25\":\"12\",\"40\":\"1\",\"50\":\"12\",\"100\":\"12\",\"200\":\"12\",\"0.01\":\"1\",\"0.05\":\"1\",\"0.1\":\"1\"}"
+        },
+        "result": {
+          "stockInTargetUnit": 10000,
+          "stockValue": 10,
+          "totalVol": 200,
+          "mediumBefore": 196,
+          "vehiclePercent": 2,
+          "solvent": "10% BSA in 0.9% NaCl",
+          "conditions": [
+            {
+              "target": 200,
+              "intermediate": 10000,
+              "steps": [],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 62.4,
+              "wells": 12,
+              "extraWells": 1,
+              "basePrep": 100,
+              "parentTarget": null
+            },
+            {
+              "target": 100,
+              "intermediate": 5000,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 5000,
+                  "transfer": 50,
+                  "solvent": 50,
+                  "volume": 100,
+                  "sourceType": "stock"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 62.4,
+              "wells": 12,
+              "extraWells": 1,
+              "basePrep": 100,
+              "parentTarget": null
+            },
+            {
+              "target": 50,
+              "intermediate": 2500,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 2500,
+                  "transfer": 25,
+                  "solvent": 75,
+                  "volume": 100,
+                  "sourceType": "stock"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 62.4,
+              "wells": 12,
+              "extraWells": 1,
+              "basePrep": 100,
+              "parentTarget": null
+            },
+            {
+              "target": 25,
+              "intermediate": 1250,
+              "steps": [
+                {
+                  "stage": 1,
+                  "from": 10000,
+                  "to": 1250,
+                  "transfer": 12.5,
+                  "solvent": 87.5,
+                  "volume": 100,
+                  "sourceType": "stock"
+                }
+              ],
+              "vehicle": false,
+              "prepVolume": 100,
+              "requiredVolume": 62.4,
+              "wells": 12,
+              "extraWells": 1,
+              "basePrep": 100,
+              "parentTarget": null
+            },
+            {
+              "target": 0,
+              "intermediate": 0,
+              "steps": [],
+              "vehicle": true,
+              "prepVolume": 24,
+              "requiredVolume": 24,
+              "wells": 4,
+              "extraWells": 1
+            }
+          ],
+          "prepVol": 100,
+          "maxPrep": 5000,
+          "strategy": "shared",
+          "wells": null,
+          "over": 20,
+          "warnings": [
+            "Vehicle addition corresponds to 2% v/v 10% BSA in 0.9% NaCl (assuming stock/intermediates are entirely in that solvent). Assess vehicle tolerance for your model."
+          ],
+          "minPip": 0.5,
+          "targetUnit": "µM",
+          "stockUnit": "mM",
+          "operations": 3,
+          "sharedCount": 0
+        },
+        "notes": ""
+      },
       {
         "id": "703355b5-3040-4734-8dd1-18fea55fdc03",
         "timestamp": "2026-10-28T15:48:18.288Z",
