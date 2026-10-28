@@ -148,3 +148,14 @@ The independent Plate Layout module supports both **automatic factor-based filli
 Manual values can be layered on already generated factor assignments without immediately destroying their underlying values. When a manual override is cleared, the original generated value (if any) returns. Generating a brand-new automatic plate is different: that replaces all current assignments after confirmation.
 
 **Plate-reader matching:** Manual levels are interpreted as experimental factor values and names in long/wide/Prism exports. Manually designated **Special control / extra well** labels (e.g. Media only) remain separately classified and are not silently included as treatment replicates. The existing GitHub sync stores these additional manual-level settings as part of the complete plate data snapshot.
+
+### Manual-level plate reader matching and copy
+
+**Two matching buttons** appear beside the plate:
+
+- **Match reader values** — the existing workflow, using the plate's displayed generated/assigned labels and their normal factor definitions.
+- **Match manual labels** — uses only the values explicitly assigned with the right-click **Level 1 / Level 2 / Level 3** commands, and uses the editable manual legend's names (for example, Cell density, Erastin2, Time) as the exported factor columns. Wells labeled only by the automatic generator are excluded from manual statistics. Special-control wells (such as Media only) remain in a separate control table.
+
+Both buttons open the same paste-and-match interface and use the same physical well coordinates and full raw plate grid (6, 12, 24, 48, 96, or 384 wells). Both support long/jamovi, long + well, Prism grouped (two factors), wide, plate-matrix, Copy, CSV, and Excel exports. Manual files include `manual_` in the downloaded name to distinguish the exports. The manual matcher warns when wells have blank values in one of the levels used by the plate; it leaves those columns blank rather than silently borrowing automatically generated values.
+
+**Copy plate table / Copy plate note** copies the labels *currently displayed* in the plate, including manual Level 1–3 overrides, priority text colors, and renamed legend headings, even if automatic factor inputs were subsequently edited. It does not replace or regenerate the current plate. The old Copy condition table remains tied to the automatic conditions calculator.
