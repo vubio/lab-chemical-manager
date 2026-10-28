@@ -4,7 +4,7 @@ const $=id=>document.getElementById(id);
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const shapes={6:[2,3],12:[3,4],24:[4,6],48:[6,8],96:[8,12],384:[16,24]};
 const well=(r,c)=>String.fromCharCode(65+r)+(c+1);
-let matched=null,view=null;
+let matched=null,view=null,matchingMode='standard';
 const formats={long:'Long · jamovi / Python',long_well:'Long + well position',prism:'Prism grouped',wide:'Wide · conditions × replicates',matrix:'Plate matrix · raw values'};
 function parseDelimited(text){
  const raw=String(text||'').replace(/\r\n?/g,'\n').replace(/^\uFEFF/,'').replace(/\n+$/,'');
@@ -82,6 +82,40 @@ function matchReadings(state,input){
  }
  return {data,controls,missing,unassigned,factors,plate:input.plate,rows,cols,format:state.format,stateName:state.name};
 }
+
+/* Manual-only matching deliberately ignores generated factor labels.
+   Match by physical well coordinates. Special controls are included separately. */
+function matchManualReadings(state,input){
+ const assignments=state.assignments||{},shape=shapes[state.format];
+ if(!shape)throw Error('Choose a valid plate format.');
+ const active=Object.entries(assignments).filter(([pos,record])=>
+   record?.kind!=='special'&&Array.isArray(record?.manualLevels)&&
+   record.manualLevels.some(v=>String(v??'').trim()));
+ if(!active.length)throw Error('No manual Level 1–3 labels found. Right-click wells and assign at least one manual level first.');
+ const used=Array.from({length:3},(_,i)=>i).filter(i=>active.some(([,record])=>String(record.manualLevels[i]??'').trim()));
+ const factors=used.map(i=>String(state.manualLevelNames?.[i]||'').trim()||'Level '+(i+1));
+ const [rows,cols]=shape,data=[],controls=[],missing=[],unassigned=[],incomplete=[],groups={},specialGroups={};
+ const manualPositions=new Set(active.map(([pos])=>pos));
+ for(let r=0;r<rows;r++)for(let col=0;col<cols;col++){
+  const pos=well(r,col),record=assignments[pos],reading=input.plate[pos];
+  const isSpecial=record?.kind==='special';
+  if(!isSpecial&&!manualPositions.has(pos)){if(reading!==null)unassigned.push(pos);continue}
+  const labels=isSpecial?[]:used.map(i=>String(record.manualLevels?.[i]??'').trim());
+  if(!isSpecial&&labels.some(v=>!v))incomplete.push(pos);
+  if(reading===null){missing.push(pos);continue}
+  if(isSpecial){
+   const label=String(record.controlName||record.labels?.[0]||'Special control').trim();
+   specialGroups[label]=(specialGroups[label]||0)+1;
+   controls.push({well:pos,label,replicate:'R'+specialGroups[label],reading});
+  }else{
+   const key=JSON.stringify(labels);groups[key]=(groups[key]||0)+1;
+   data.push({well:pos,labels,replicate:'R'+groups[key],reading});
+  }
+ }
+ return {data,controls,missing,unassigned,incomplete,factors,usedLevels:used,
+   plate:input.plate,rows,cols,format:state.format,stateName:state.name,matchingMode:'manual'};
+}
+
 function controlTable(m){
  return {headers:['Well','Control label','Replicate','Read value'],rows:(m.controls||[]).map(x=>[x.well,x.label,x.replicate,x.reading]),description:'Special control wells, separate from experimental factors'};
 }
@@ -149,7 +183,7 @@ function makeXlsx(sheets){
 }
 function download(content,name,type){const b=new Blob([content],{type}),url=URL.createObjectURL(b),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);}
 const format=()=>$('pr-format').value;
-const name=()=>String(matched.stateName||'plate').replace(/[^a-z0-9_-]+/gi,'_').slice(0,55)+'_'+matched.format+'well_'+format();
+const name=()=>String(matched.stateName||'plate').replace(/[^a-z0-9_-]+/gi,'_').slice(0,55)+'_'+matched.format+'well_'+(matched.matchingMode==='manual'?'manual_':'')+format();
 function tablePreview(t){
  return `<div class="pr-table-wrap"><table class="pr-table"><thead><tr>${t.headers.map(x=>`<th>${esc(x)}</th>`).join('')}</tr></thead><tbody>${t.rows.slice(0,70).map(r=>`<tr>${r.map(x=>`<td>${esc(x)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
 }
@@ -174,9 +208,11 @@ function match(){
  const state=window.PlateLayoutCore.getSnapshot(),shape=shapes[state.format];
  try{
   const parsed=normalizeGrid(parseDelimited($('pr-paste').value),shape[0],shape[1],$('pr-order').value);
-  matched=matchReadings(state,parsed);
-  $('pr-summary').textContent=`${matched.data.length} experimental readings · ${matched.controls.length} special controls · ${matched.missing.length} labeled wells missing readings · ${matched.unassigned.length} readings in unlabeled wells.`;
-  $('pr-warning').textContent=(matched.missing.length?'Missing labeled wells: '+matched.missing.slice(0,22).join(', ')+'. ':'')+(matched.unassigned.length?matched.unassigned.length+' readings from unlabeled wells will be excluded from analysis (retained in plate-matrix export).':'');
+  matched=matchingMode==='manual'?matchManualReadings(state,parsed):matchReadings(state,parsed);
+  $('pr-summary').textContent=(matchingMode==='manual'?'Manual levels · ':'')+`${matched.data.length} experimental readings · ${matched.controls.length} special controls · ${matched.missing.length} labeled wells missing readings · ${matched.unassigned.length} readings outside ${matchingMode==='manual'?'manual labels':'assigned wells'}.`;
+  $('pr-warning').textContent=(matched.missing.length?'Missing labeled wells: '+matched.missing.slice(0,22).join(', ')+'. ':'')+
+ (matched.incomplete?.length?'Incomplete manual level assignments at '+matched.incomplete.slice(0,16).join(', ')+'. Missing levels appear as blank factors; review before statistics. ':'')+
+ (matched.unassigned.length?matched.unassigned.length+(matchingMode==='manual'?' readings outside manually labeled wells':' readings from unlabeled wells')+' excluded from analysis (retained in the plate-matrix export).':'');
   render();
  }catch(e){matched=null;view=null;$('pr-export').hidden=true;$('pr-preview').innerHTML='';$('pr-summary').textContent='';$('pr-warning').textContent='';$('pr-error').textContent=e.message;}
 }
@@ -186,7 +222,7 @@ function excel(){
  if(format()!=='long')sheets.push({name:'Long data',table:outputTable(matched,'long',{controlPlacement:controlPlacement()})});
  if(matched.controls.length&&controlPlacement()!=='omit')sheets.push({name:'Special controls',table:controlTable(matched)});
  if(format()!=='matrix')sheets.push({name:'Plate readings',table:outputTable(matched,'matrix')});
- sheets.push({name:'Metadata',table:{headers:['Field','Value'],rows:[['Experiment',matched.stateName],['Plate format',matched.format+' wells'],['Exported at',new Date().toLocaleString()],['Experimental readings',matched.data.length],['Special-control readings',matched.controls.length],['Special control handling',controlPlacement()],['Missing labeled well values',matched.missing.length],['Readings in unlabeled wells',matched.unassigned.length],['Factors',matched.factors.join(' / ')]]}});
+ sheets.push({name:'Metadata',table:{headers:['Field','Value'],rows:[['Experiment',matched.stateName],['Plate format',matched.format+' wells'],['Exported at',new Date().toLocaleString()],['Experimental readings',matched.data.length],['Special-control readings',matched.controls.length],['Special control handling',controlPlacement()],['Missing labeled well values',matched.missing.length],['Readings in unlabeled wells',matched.unassigned.length],['Factors',matched.factors.join(' / ')],['Matching mode',matched.matchingMode==='manual'?'Manual levels only':'Existing plate labels']]}});
  download(makeXlsx(sheets),name()+'.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 }
 
@@ -202,8 +238,9 @@ async function copy(){
 function init(){
  const actions=document.querySelector('#page-plate .plate-grid-actions');if(!actions||!window.PlateLayoutCore)return;
  const btn=document.createElement('button');btn.type='button';btn.className='btn';btn.id='pr-open';btn.textContent='Match reader values';actions.appendChild(btn);
+ const manualBtn=document.createElement('button');manualBtn.type='button';manualBtn.className='btn';manualBtn.id='pr-manual-open';manualBtn.textContent='Match manual labels';manualBtn.title='Match reader data using only the manually assigned Level 1–3 values';actions.appendChild(manualBtn);
  const overlay=document.createElement('div');overlay.id='pr-dialog';overlay.className='pr-overlay';overlay.hidden=true;
- overlay.innerHTML=`<section class="pr-modal" role="dialog" aria-modal="true" aria-labelledby="pr-title"><div class="pr-modal-head"><div><h2 id="pr-title">Match plate-reader values</h2><p>Paste the complete plate grid. Measurements are matched to labeled wells by their positions.</p></div><button class="btn" type="button" id="pr-close">Close ×</button></div>
+ overlay.innerHTML=`<section class="pr-modal" role="dialog" aria-modal="true" aria-labelledby="pr-title"><div class="pr-modal-head"><div><h2 id="pr-title">Match plate-reader values</h2><p id="pr-intro">Paste the complete plate grid. Measurements are matched to labeled wells by their positions.</p></div><button class="btn" type="button" id="pr-close">Close ×</button></div>
  <div class="pr-inputs"><label class="field"><span>Source order</span><select id="pr-order"><option value="rows">Rows A–H (8 × 12 for a 96-well plate)</option><option value="columns">Columns 1–12 (12 × 8 for a 96-well plate)</option></select></label><label class="field"><span>Special controls</span><select id="pr-control-placement"><option value="separate">Separate table (recommended)</option><option value="bottom">Append below (long format)</option><option value="top">Append above (long format)</option><option value="omit">Exclude controls from output</option></select></label><label class="field"><span>Output format</span><select id="pr-format">${Object.entries(formats).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></label></div>
  <label class="field"><span>Paste readings copied from Excel, CSV, or your plate-reader software</span><textarea id="pr-paste" spellcheck="false" rows="7" placeholder="Paste the 8 × 12 grid (or a one-column list of all 96 values)."></textarea></label>
  <div class="pr-run"><button class="btn btn-primary" id="pr-match">Match values</button><label class="pr-file">Or open a .csv/.tsv file<input type="file" id="pr-file" accept=".csv,.tsv,.txt,text/csv"/></label></div>
@@ -212,7 +249,17 @@ function init(){
  </section>`;
  document.body.appendChild(overlay);
  const close=()=>{overlay.hidden=true;document.body.classList.remove('pr-open')};
- btn.addEventListener('click',()=>{matched=null;view=null;overlay.hidden=false;document.body.classList.add('pr-open');$('pr-preview').innerHTML='';$('pr-export').hidden=true;$('pr-summary').textContent='';$('pr-warning').textContent='';$('pr-error').textContent='';$('pr-paste').focus()});
+ function openMatcher(mode){
+  matchingMode=mode;
+  matched=null;view=null;overlay.hidden=false;document.body.classList.add('pr-open');
+  $('pr-title').textContent=mode==='manual'?'Match manual level labels':'Match plate-reader values';
+  $('pr-intro').textContent=mode==='manual'
+   ?'Uses only manually assigned Level 1–3 values, with the editable legend names as factor columns. Other generated labels are ignored; special controls stay separate.'
+   :'Paste the complete plate grid. Measurements are matched to labeled wells by their positions.';
+  $('pr-preview').innerHTML='';$('pr-export').hidden=true;$('pr-summary').textContent='';$('pr-warning').textContent='';$('pr-error').textContent='';$('pr-paste').focus();
+ }
+ btn.addEventListener('click',()=>openMatcher('standard'));
+ manualBtn.addEventListener('click',()=>openMatcher('manual'));
  $('pr-close').addEventListener('click',close);overlay.addEventListener('mousedown',e=>{if(e.target===overlay)close()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!overlay.hidden)close()});
  $('pr-match').addEventListener('click',match);$('pr-format').addEventListener('change',render);$('pr-control-placement').addEventListener('change',render);
  $('pr-paste').addEventListener('input',()=>{matched=null;view=null;$('pr-export').hidden=true;$('pr-preview').innerHTML='';$('pr-summary').textContent=''});
@@ -223,6 +270,6 @@ function init(){
  $('pr-controls-csv').addEventListener('click',()=>{if(matched?.controls?.length)download(makeCSV(controlTable(matched)),name()+'_special_controls.csv','text/csv;charset=utf-8')});
  $('pr-xlsx').addEventListener('click',excel);
 }
-window.PlateReadoutCore={parseDelimited,normalizeGrid,matchFactorNames,matchedRecordLabels,matchReadings,outputTable,controlTable,makeCSV,makeXlsx};
+window.PlateReadoutCore={parseDelimited,normalizeGrid,matchFactorNames,matchedRecordLabels,matchReadings,matchManualReadings,outputTable,controlTable,makeCSV,makeXlsx};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
