@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updatedAt": "2026-10-28T13:17:01.429Z",
+  "updatedAt": "2026-10-28T13:17:18.284Z",
   "chemicals": {
     "version": 1,
     "chemicals": [
@@ -2257,12 +2257,12 @@
       "name": "96-well_1k-5k_AA",
       "format": "96",
       "selection": [
-        "A4",
-        "B4",
-        "C4",
-        "D4",
-        "E4",
-        "F4"
+        "A5",
+        "B5",
+        "C5",
+        "D5",
+        "E5",
+        "F5"
       ],
       "rowNotes": {},
       "colNotes": {},
@@ -2435,7 +2435,7 @@
           "kind": "normal",
           "manualLevels": [
             "1k",
-            "75",
+            "100",
             null
           ]
         },
@@ -2445,7 +2445,7 @@
           "kind": "normal",
           "manualLevels": [
             "1k",
-            "100",
+            "200",
             null
           ]
         },
@@ -2485,7 +2485,7 @@
           "kind": "normal",
           "manualLevels": [
             "1k",
-            "75",
+            "100",
             null
           ]
         },
@@ -2495,7 +2495,7 @@
           "kind": "normal",
           "manualLevels": [
             "1k",
-            "100",
+            "200",
             null
           ]
         },
@@ -2535,7 +2535,7 @@
           "kind": "normal",
           "manualLevels": [
             "1k",
-            "75",
+            "100",
             null
           ]
         },
@@ -2545,7 +2545,7 @@
           "kind": "normal",
           "manualLevels": [
             "1k",
-            "100",
+            "200",
             null
           ]
         },
@@ -2585,7 +2585,7 @@
           "kind": "normal",
           "manualLevels": [
             "5k",
-            "75",
+            "100",
             null
           ]
         },
@@ -2595,7 +2595,7 @@
           "kind": "normal",
           "manualLevels": [
             "5k",
-            "100",
+            "200",
             null
           ]
         },
@@ -2635,7 +2635,7 @@
           "kind": "normal",
           "manualLevels": [
             "5k",
-            "75",
+            "100",
             null
           ]
         },
@@ -2645,7 +2645,7 @@
           "kind": "normal",
           "manualLevels": [
             "5k",
-            "100",
+            "200",
             null
           ]
         },
@@ -2685,7 +2685,7 @@
           "kind": "normal",
           "manualLevels": [
             "5k",
-            "75",
+            "100",
             null
           ]
         },
@@ -2695,7 +2695,7 @@
           "kind": "normal",
           "manualLevels": [
             "5k",
-            "100",
+            "200",
             null
           ]
         }
