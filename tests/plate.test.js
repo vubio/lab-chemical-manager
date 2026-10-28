@@ -97,4 +97,13 @@ assert.equal(levelCore.effectiveLabels(baseLabels.B1)[0],'Media only');
 assert.deepEqual(Array.from(levelCore.manualLevelUsage(manualAndSecondary)),[true,true,false]);
 assert.equal(levelCore.assignManualLevels(manualAndSecondary,['D2'],0,'').D2,undefined,'empty manual-only wells removed when level cleared');
 
+
+const manualClipboardLabel=levelCore.labelsHTML({labels:['Old Dose','Old Drug'],kind:'normal',manualLevels:['1k','25 µM']});
+assert(manualClipboardLabel.includes('1k'));
+assert(manualClipboardLabel.includes('25 µM'));
+assert(manualClipboardLabel.includes('#A41E22'));
+assert(manualClipboardLabel.includes('#1E5196'));
+assert(!manualClipboardLabel.includes('Old Dose'));
+assert(!manualClipboardLabel.includes('Old Drug'));
+
 console.log('Plate layout allocation and selection tests passed');
