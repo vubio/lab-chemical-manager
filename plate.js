@@ -11,15 +11,50 @@ const splitValues=s=>String(s||'').split(/[,;\n]+/).map(x=>x.trim()).filter(Bool
 // Clear, accessible priority colors on white paper; meaning is always stated in text.
 const FACTOR_COLORS=['#A41E22','#1E5196','#216A45','#68428B'];
 const FACTOR_RANKS=['Primary','Secondary','Third','Fourth'];
+const DEFAULT_LEVEL_NAMES=['Level 1','Level 2','Level 3'];
+function effectiveLabels(record){
+ if(!record)return [];
+ const labels=Array.isArray(record.labels)?[...record.labels]:[];
+ if(record.kind==='special')return labels;
+ const manual=Array.isArray(record.manualLevels)?record.manualLevels:[];
+ for(let i=0;i<Math.min(3,manual.length);i++)if(manual[i]!==null&&manual[i]!==undefined&&String(manual[i]).trim())labels[i]=String(manual[i]).trim();
+ return labels;
+}
+function manualLevelUsage(assignments){
+ const present=[false,false,false];
+ for(const record of Object.values(assignments||{})){
+  if(record?.kind==='special')continue;
+  for(let i=0;i<3;i++)if(String(record?.manualLevels?.[i]??'').trim())present[i]=true;
+ }
+ return present;
+}
+function manualLevelLabel(names,index){return String(names?.[index]||'').trim()||DEFAULT_LEVEL_NAMES[index]}
+function assignManualLevels(assignments,wells,level,value){
+ if(!Number.isInteger(level)||level<0||level>2)throw Error('Level must be 1, 2 or 3');
+ const text=String(value??'').trim(),next={...assignments};
+ for(const well of new Set(wells)){
+  const old=next[well],item=old?.kind==='special'?{labels:[],group:'manual',kind:'normal'}:{...(old||{labels:[],group:'manual',kind:'normal'})};
+  const arr=Array.isArray(item.manualLevels)?[...item.manualLevels]:[null,null,null];
+  arr[level]=text||null;
+  if(!text&&!old)continue;
+  item.manualLevels=arr;item.group='manual';item.kind='normal';
+  if(!effectiveLabels(item).some(x=>String(x||'').trim()))delete next[well];
+  else next[well]=item;
+ }
+ return next;
+}
 function legendEntries(source='plate'){
  // Factor identity comes from the live editor, not old well assignments.
  // Keep an unnamed fallback for manually entered third/fourth labels.
  const current=activeFactors().map(x=>x.name.trim());
- let count=current.length;
+ const manual=manualLevelUsage(state.assignments);
+ const generated=Object.values(state.assignments).some(record=>record?.group!=='manual'&&record?.kind!=='special');
+ let count=generated?current.length:manual.some(Boolean)?0:current.length;
+ for(let i=0;i<3;i++)if(manual[i])count=Math.max(count,i+1);
  if(source==='plate')for(const r of Object.values(state.assignments)){
   if(r.group==='manual')for(let i=0;i<Math.min(4,(r.labels||[]).length);i++)if(String(r.labels[i]||'').trim())count=Math.max(count,i+1);
  }
- return Array.from({length:Math.min(4,count)},(_,i)=>({name:current[i]||state.factors[i]?.name.trim()||`Factor ${i+1}`,rank:FACTOR_RANKS[i],color:FACTOR_COLORS[i]}));
+ return Array.from({length:Math.min(4,count)},(_,i)=>({name:manual[i]?manualLevelLabel(state.manualLevelNames,i):(current[i]||state.factors[i]?.name.trim()||`Factor ${i+1}`),rank:FACTOR_RANKS[i],color:FACTOR_COLORS[i]}));
 }
 function factorLegendHTML(source='plate'){
  const items=legendEntries(source);
@@ -32,9 +67,9 @@ function factorLegendPlain(source='plate'){
 }
 function renderFactorLegend(){const el=$('pl-factor-legend');if(el)el.innerHTML=factorLegendHTML('plate')}
 
-const defaults=()=>({id:null,name:'New experiment',format:'96',selection:[],rowNotes:{},colNotes:{},fillOrder:'rows',mode:'select',factors:[{id:'factor1',name:'Dose',values:'0 µM; 0.05 µM; 0.1 µM; 0.2 µM'},{id:'factor2',name:'Cell density',values:''},{id:'factor3',name:'',values:''},{id:'factor4',name:'',values:''}],counts:{},assignments:{},notes:'',generatedAt:null,manualLayoutChanges:false,factorDraftStale:false});
+const defaults=()=>({id:null,name:'New experiment',format:'96',selection:[],rowNotes:{},colNotes:{},manualLevelNames:[...DEFAULT_LEVEL_NAMES],fillOrder:'rows',mode:'select',factors:[{id:'factor1',name:'Dose',values:'0 µM; 0.05 µM; 0.1 µM; 0.2 µM'},{id:'factor2',name:'Cell density',values:''},{id:'factor3',name:'',values:''},{id:'factor4',name:'',values:''}],counts:{},assignments:{},notes:'',generatedAt:null,manualLayoutChanges:false,factorDraftStale:false});
 let state=defaults(),saved=[],activeCell=null,drag=null,suppressClick=false,selectionAnchor=null,checkedCombinations=new Set(),factorUpdateTimer=null,lastWellPointer=null,labelDialogTargets=[],notesVisible=false;
-function normalize(s){const d=defaults();if(!s||typeof s!=='object')return d;return {...d,...s, format:SHAPES[String(s.format)]?String(s.format):'96',selection:Array.isArray(s.selection)?s.selection:[],rowNotes:s.rowNotes&&typeof s.rowNotes==='object'?s.rowNotes:{},colNotes:s.colNotes&&typeof s.colNotes==='object'?s.colNotes:{},fillOrder:s.fillOrder==='columns'?'columns':'rows', factors:Array.isArray(s.factors)&&s.factors.length?s.factors.slice(0,4).map((f,i)=>({id:String(f.id||'factor'+(i+1)),name:String(f.name||''),values:String(f.values||'')})):d.factors,counts:s.counts&&typeof s.counts==='object'?s.counts:{},assignments:s.assignments&&typeof s.assignments==='object'?s.assignments:{},manualLayoutChanges:!!s.manualLayoutChanges,factorDraftStale:!!s.factorDraftStale}}
+function normalize(s){const d=defaults();if(!s||typeof s!=='object')return d;return {...d,...s, format:SHAPES[String(s.format)]?String(s.format):'96',selection:Array.isArray(s.selection)?s.selection:[],rowNotes:s.rowNotes&&typeof s.rowNotes==='object'?s.rowNotes:{},colNotes:s.colNotes&&typeof s.colNotes==='object'?s.colNotes:{},manualLevelNames:Array.from({length:3},(_,i)=>manualLevelLabel(s.manualLevelNames,i)),fillOrder:s.fillOrder==='columns'?'columns':'rows', factors:Array.isArray(s.factors)&&s.factors.length?s.factors.slice(0,4).map((f,i)=>({id:String(f.id||'factor'+(i+1)),name:String(f.name||''),values:String(f.values||'')})):d.factors,counts:s.counts&&typeof s.counts==='object'?s.counts:{},assignments:s.assignments&&typeof s.assignments==='object'?s.assignments:{},manualLayoutChanges:!!s.manualLayoutChanges,factorDraftStale:!!s.factorDraftStale}}
 function dimensions(){return SHAPES[state.format]}
 function allCoords(){let [rows,cols]=dimensions(),arr=[];for(let r=0;r<rows;r++)for(let c=0;c<cols;c++)arr.push(cellName(r,c));return arr}
 function available(){const all=allCoords(),chosen=new Set(state.selection);return chosen.size?all.filter(x=>chosen.has(x)):all}
@@ -167,7 +202,7 @@ function renderPlate(){
   for(let c=0;c<cols;c++){
    const pos=cellName(r,c),record=assignments[pos],disabled=!isMove&&hasSelected&&!selected.has(pos),selectedHere=selected.has(pos);
    const classes='pl-well'+(record?' pl-assigned':'')+(selectedHere?' pl-selected':'')+(disabled?' pl-unselected':'')+(activeCell===pos?' pl-focus':'')+(record?.kind==='special'?' pl-special':'')+(sourceSet.has(pos)?' pl-move-origin':'')+(targetSet.has(pos)?' pl-drop-target':'')+(changedSet.has(pos)?' pl-ripple':'')+(drag?.invalid===pos?' pl-drop-invalid':'');
-   const labels=record?.labels||[],labelText=labels.filter(Boolean).map(x=>String(x)).join(' | ');
+   const labels=effectiveLabels(record),labelText=labels.filter(Boolean).map(x=>String(x)).join(' | ');
    h+=`<button type="button" class="${classes}" data-well="${pos}" role="gridcell" title="${esc(pos+(labelText?' — '+labelText:''))}" aria-label="${esc(pos+(labelText?' '+labelText:''))}" aria-selected="${selectedHere?'true':'false'}"><span class="pl-coord">${pos}</span><span class="pl-labels"><span class="pl-primary">${esc(labels[0]||'')}</span>${labels.length>1?`<span class="pl-secondary">${esc(labels[1])}</span>`:''}${labels[2]?`<span class="pl-tertiary">${esc(labels[2])}</span>`:''}${labels[3]?`<span class="pl-quaternary">${esc(labels[3])}</span>`:''}</span></button>`;
   }
  }
@@ -217,13 +252,13 @@ function applyBatchReplicates(){
 }
 function updateEditorFields(){if(!activeCell)return;let vals=[...Array(4)].map((_,i)=>$('pl-edit-'+i)?.value?.trim()||'');state.assignments[activeCell]={labels:vals,factorNames:state.factors.map(x=>x.name),group:'manual',kind:'normal'};state.manualLayoutChanges=true;if(!vals.some(Boolean))delete state.assignments[activeCell];renderPlate();updateNote()}
 function renderEditor(){const record=activeCell?state.assignments[activeCell]:null;const active=Boolean(activeCell);$('pl-save-label').disabled=!active;$('pl-remove-label').disabled=!active;
- $('pl-label-fields').innerHTML=Array.from({length:4},(_,i)=>`<label class="field"><span>${i===0?'Primary':i===1?'Secondary':i===2?'Third':'Fourth'} text</span><input id="pl-edit-${i}" ${active?'':'disabled'} value="${esc(record?.labels?.[i]||'')}" placeholder="${esc(state.factors[i]?.name||'Optional label')}"/></label>`).join('');
+ $('pl-label-fields').innerHTML=Array.from({length:4},(_,i)=>`<label class="field"><span>${i===0?'Primary':i===1?'Secondary':i===2?'Third':'Fourth'} text</span><input id="pl-edit-${i}" ${active?'':'disabled'} value="${esc(effectiveLabels(record)[i]||'')}" placeholder="${esc(state.factors[i]?.name||'Optional label')}"/></label>`).join('');
 }
 function updateNote(){const note=makeNote();$('pl-note-preview').textContent=note}
 function axisTitle(label,note){return note?`${label} (${note})`:String(label)}
 function plateTable(){const [rows,cols]=dimensions();return [
  ['Row / column',...Array.from({length:cols},(_,i)=>axisTitle(i+1,state.colNotes[i+1]||''))],
- ...Array.from({length:rows},(_,r)=>{const row=String.fromCharCode(65+r);return [axisTitle(row,state.rowNotes[row]||''),...Array.from({length:cols},(_,c)=>state.assignments[cellName(r,c)]?.labels?.filter(Boolean).join(' / ')||'')]})
+ ...Array.from({length:rows},(_,r)=>{const row=String.fromCharCode(65+r);return [axisTitle(row,state.rowNotes[row]||''),...Array.from({length:cols},(_,c)=>effectiveLabels(state.assignments[cellName(r,c)]).filter(Boolean).join(' / ')||'')]})
 ]}
 function makeNote(){let lines=['[PLATE LAYOUT]',`Title: ${state.name}`,`Plate format: ${state.format} wells`,`Fill preference: ${state.fillOrder==='columns'?'Columns first':'Rows first'}`,`Mapped: ${Object.keys(state.assignments).length} wells`,`Available area: ${state.selection.length?state.selection.slice().sort().join(', '):'Entire plate'}`,''];
  if(state.notes.trim())lines.push(`Notes: ${state.notes.trim()}`,'');
@@ -233,7 +268,7 @@ function conditionTable(){return desired().map(c=>[c.parts.map(p=>`${p.name}: ${
 const tdStyle='border:1px solid #8797a6;padding:7px 8px;text-align:left;vertical-align:top;';
 function axisHTML(label,note){return `<span style="display:block;font-size:12px;font-weight:700;color:#263d4d">${esc(label)}</span>${note?`<span style="display:block;font-size:10px;font-weight:400;color:#53687a;margin-top:3px">${esc(note)}</span>`:''}`}
 function labelsHTML(record){if(!record||!Array.isArray(record.labels))return '';
- const vals=record.labels;
+ const vals=effectiveLabels(record);
  if(record.kind==='special')return `<div style="font:700 12px/1.3 Arial,sans-serif;color:#495562">${esc(record.controlName||vals[0]||'Control')} <span style="font-size:9px;color:#64748b">(control)</span></div>`;
  return vals.map((value,i)=>!String(value||'').trim()?'':`<div style="display:block;line-height:1.25;margin-bottom:${i===0?'3':'2'}px;font-family:Arial,Helvetica,sans-serif;font-size:${i===0?13:i===1?11:10}px;font-weight:${i===0?'700':i===1?'600':'400'};font-style:${i>=2?'italic':'normal'};color:${FACTOR_COLORS[i]||'#344054'}">${esc(value)}</div>`).join('');
 }
@@ -582,6 +617,6 @@ window.PlateLayoutCloud={
   persist();refreshAll();
  }
 };
-window.PlateLayoutCore={SHAPES,clearSelectedAssignments,axisHeaderHTML,axisInlineHeaderHTML,plateAxisGridStart,place,moveBlock,transposeMap,combinations,splitValues,cellName,applySelection,selectionRect,contiguous,linearRange,plateHTML,plateTable,conditionHTML,conditionTable,labelsHTML,legendEntries,factorLegendHTML,factorLegendPlain,getSnapshot:()=>structuredClone(state)};
+window.PlateLayoutCore={SHAPES,effectiveLabels,assignManualLevels,manualLevelUsage,clearSelectedAssignments,axisHeaderHTML,axisInlineHeaderHTML,plateAxisGridStart,place,moveBlock,transposeMap,combinations,splitValues,cellName,applySelection,selectionRect,contiguous,linearRange,plateHTML,plateTable,conditionHTML,conditionTable,labelsHTML,legendEntries,factorLegendHTML,factorLegendPlain,getSnapshot:()=>structuredClone(state)};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
