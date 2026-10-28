@@ -134,3 +134,17 @@ The browser retains its local copy if GitHub is unreachable. Cross-device update
 The site uses GitHub's content SHA to detect whether another device has changed the data file before an upload. If both copies were edited independently, it **stops** rather than silently overwriting. Open **GitHub sync settings** to download the device backup, load the GitHub copy (with an automatic backup of this device), or explicitly publish this device instead (with an automatic backup of the remote copy). GitHub also retains normal commit history in the data branch.
 
 A newly connected browser that already contains research records will not silently discard those records. The first connected device can seed the empty cloud database with its own records. No personal access token is added to any repository file.
+
+## Manual plate labeling with priority levels
+
+The independent Plate Layout module supports both **automatic factor-based filling** and **manual Level 1 / Level 2 / Level 3 labels**. The manual levels use the same white-background-friendly priority colors as automatic factors: Level 1 dark red (large and bold), Level 2 dark blue, and Level 3 green.
+
+1. Select wells by dragging across a rectangular region, Shift-clicking a consecutive range, or Ctrl/⌘-clicking several wells.
+2. **Right-click any selected well**. Choose **Add / edit Level 1**, **Level 2**, or **Level 3**.
+3. Enter a shared value such as `1k`, `5k`, `0.05 µM`, or `24 h`, and select **Apply to wells**. This modifies only that level across the selected wells; other levels are not cleared. **Clear this level** removes that level's manual override from the selected wells.
+4. In the small **Manual label levels** legend beside the plate, rename the levels to e.g. **Cell density**, **Erastin2**, **Time**. These names, colors, and cell values are saved in the plate draft/layout and included in copied OneNote tables.
+5. To edit a saved label, repeat the right-click procedure. The existing double-click individual-well editor and automatic Generate workflow remain available.
+
+Manual values can be layered on already generated factor assignments without immediately destroying their underlying values. When a manual override is cleared, the original generated value (if any) returns. Generating a brand-new automatic plate is different: that replaces all current assignments after confirmation.
+
+**Plate-reader matching:** Manual levels are interpreted as experimental factor values and names in long/wide/Prism exports. Manually designated **Special control / extra well** labels (e.g. Media only) remain separately classified and are not silently included as treatment replicates. The existing GitHub sync stores these additional manual-level settings as part of the complete plate data snapshot.
