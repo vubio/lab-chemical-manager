@@ -294,7 +294,7 @@ async function copyRich(html,plain,success){
  }catch(e){notify('Clipboard access was blocked. Try opening the site over HTTPS and allow clipboard access.',true)}
 }
 function copyConditionsTable(){const rows=[['Condition','Replicates'],...conditionTable()];return copyRich(factorLegendHTML('conditions')+conditionHTML(),[factorLegendPlain('conditions'),'',...rows.map(r=>r.join('\t'))].join('\n'),'Condition table copied.')}
-function copyPlateTable(){if(state.factorDraftStale)return notify('Plate labels still reflect the previous factors. Click Apply factors to plate before copying.',true);const rows=plateTable();return copyRich(factorLegendHTML('plate')+plateHTML(),[factorLegendPlain('plate'),'',...rows.map(r=>r.join('\t'))].join('\n'),'Plate table copied, including color legend and axis notes.')}
+function copyPlateTable(){const rows=plateTable();return copyRich(factorLegendHTML('plate')+plateHTML(),[factorLegendPlain('plate'),'',...rows.map(r=>r.join('\t'))].join('\n'),'Plate table copied as displayed, including manual labels, color legend, and axis notes.')}
 function persist(){try{localStorage.setItem(STORAGE,JSON.stringify({draft:state,saved}))}catch(e){notify('Could not save plate layout: browser storage full or unavailable.',true)}if(typeof window.dispatchEvent==='function'&&typeof CustomEvent!=='undefined')window.dispatchEvent(new CustomEvent('labchem:data-changed',{detail:{section:'plates'}}))}
 function bootStored(){try{const data=JSON.parse(localStorage.getItem(STORAGE)||'null');if(data){state=normalize(data.draft);saved=Array.isArray(data.saved)?data.saved.map(normalize):[]}}catch(e){state=defaults();saved=[]}}
 function syncMeta(){state.name=$('pl-title').value;state.notes=$('pl-notes').value;state.mode=$('pl-mode').value;persist();updateNote()}
@@ -625,7 +625,7 @@ function syncFactors(){
 }
 function fileDownload(text,name,type='text/plain'){const blob=new Blob([text],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),2000)}
 function downloadTSV(){const safe=(state.name||'plate').replace(/[^\w-]+/g,'_').slice(0,50);fileDownload(plateTable().map(row=>row.map(x=>String(x).replace(/\n/g,' / ')).join('\t')).join('\n'),safe+'-plate.tsv','text/tab-separated-values')}
-async function copyNote(){if(state.factorDraftStale)return notify('Plate labels still reflect the previous factors. Click Apply factors to plate before copying.',true);const title=`<p style="font-family:Arial,sans-serif"><b>${esc(state.name)}</b> · ${esc(state.format)}-well plate</p>`;
+async function copyNote(){const title=`<p style="font-family:Arial,sans-serif"><b>${esc(state.name)}</b> · ${esc(state.format)}-well plate</p>`;
  const extra=state.notes.trim()?`<p style="font-family:Arial,sans-serif">${esc(state.notes)}</p>`:'';
  return copyRich(title+extra+factorLegendHTML('plate')+plateHTML(),makeNote(),'Plate note copied, including factor colors and axis notes.');}
 function transposeCurrent(){
