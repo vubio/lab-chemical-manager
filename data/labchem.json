@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updatedAt": "2026-10-28T15:48:24.513Z",
+  "updatedAt": "2026-10-28T15:55:14.007Z",
   "chemicals": {
     "version": 1,
     "chemicals": [
@@ -3582,7 +3582,7 @@
         {
           "id": "factor1",
           "name": "Retinol (µM)",
-          "values": "0, 1, 5, 10, 25, 50"
+          "values": "0, 1, 5, 10, 20, 40"
         },
         {
           "id": "factor2",
@@ -3714,7 +3714,23 @@
         "[[\"factor1\",\"50\"],[\"factor3\",\"0\"]]": 1,
         "[[\"factor1\",\"50\"],[\"factor3\",\"25\"]]": 1,
         "[[\"factor1\",\"50\"],[\"factor3\",\"50\"]]": 1,
-        "[[\"factor1\",\"50\"],[\"factor3\",\"100\"]]": 1
+        "[[\"factor1\",\"50\"],[\"factor3\",\"100\"]]": 1,
+        "[[\"factor1\",\"21\"],[\"factor3\",\"0\"]]": 1,
+        "[[\"factor1\",\"21\"],[\"factor3\",\"25\"]]": 1,
+        "[[\"factor1\",\"21\"],[\"factor3\",\"50\"]]": 1,
+        "[[\"factor1\",\"21\"],[\"factor3\",\"100\"]]": 1,
+        "[[\"factor1\",\"2\"],[\"factor3\",\"0\"]]": 1,
+        "[[\"factor1\",\"2\"],[\"factor3\",\"25\"]]": 1,
+        "[[\"factor1\",\"2\"],[\"factor3\",\"50\"]]": 1,
+        "[[\"factor1\",\"2\"],[\"factor3\",\"100\"]]": 1,
+        "[[\"factor1\",\"20\"],[\"factor3\",\"0\"]]": 1,
+        "[[\"factor1\",\"20\"],[\"factor3\",\"25\"]]": 1,
+        "[[\"factor1\",\"20\"],[\"factor3\",\"50\"]]": 1,
+        "[[\"factor1\",\"20\"],[\"factor3\",\"100\"]]": 1,
+        "[[\"factor1\",\"40\"],[\"factor3\",\"0\"]]": 1,
+        "[[\"factor1\",\"40\"],[\"factor3\",\"25\"]]": 1,
+        "[[\"factor1\",\"40\"],[\"factor3\",\"50\"]]": 1,
+        "[[\"factor1\",\"40\"],[\"factor3\",\"100\"]]": 1
       },
       "assignments": {
         "A1": {
@@ -3764,24 +3780,24 @@
         "A5": {
           "labels": [
             "0",
-            "25"
+            "20"
           ],
           "factorNames": [
             "Palmitate (µM)",
             "Retinol (µM)"
           ],
-          "group": "[[\"factor1\",\"25\"],[\"factor3\",\"0\"]]"
+          "group": "[[\"factor1\",\"20\"],[\"factor3\",\"0\"]]"
         },
         "A6": {
           "labels": [
             "0",
-            "50"
+            "40"
           ],
           "factorNames": [
             "Palmitate (µM)",
             "Retinol (µM)"
           ],
-          "group": "[[\"factor1\",\"50\"],[\"factor3\",\"0\"]]"
+          "group": "[[\"factor1\",\"40\"],[\"factor3\",\"0\"]]"
         },
         "B1": {
           "labels": [
@@ -3830,24 +3846,24 @@
         "B5": {
           "labels": [
             "25",
-            "25"
+            "20"
           ],
           "factorNames": [
             "Palmitate (µM)",
             "Retinol (µM)"
           ],
-          "group": "[[\"factor1\",\"25\"],[\"factor3\",\"25\"]]"
+          "group": "[[\"factor1\",\"20\"],[\"factor3\",\"25\"]]"
         },
         "B6": {
           "labels": [
             "25",
-            "50"
+            "40"
           ],
           "factorNames": [
             "Palmitate (µM)",
             "Retinol (µM)"
           ],
-          "group": "[[\"factor1\",\"50\"],[\"factor3\",\"25\"]]"
+          "group": "[[\"factor1\",\"40\"],[\"factor3\",\"25\"]]"
         },
         "C1": {
           "labels": [
@@ -3896,24 +3912,24 @@
         "C5": {
           "labels": [
             "50",
-            "25"
+            "20"
           ],
           "factorNames": [
             "Palmitate (µM)",
             "Retinol (µM)"
           ],
-          "group": "[[\"factor1\",\"25\"],[\"factor3\",\"50\"]]"
+          "group": "[[\"factor1\",\"20\"],[\"factor3\",\"50\"]]"
         },
         "C6": {
           "labels": [
             "50",
-            "50"
+            "40"
           ],
           "factorNames": [
             "Palmitate (µM)",
             "Retinol (µM)"
           ],
-          "group": "[[\"factor1\",\"50\"],[\"factor3\",\"50\"]]"
+          "group": "[[\"factor1\",\"40\"],[\"factor3\",\"50\"]]"
         },
         "D1": {
           "labels": [
@@ -3962,28 +3978,28 @@
         "D5": {
           "labels": [
             "100",
-            "25"
+            "20"
           ],
           "factorNames": [
             "Palmitate (µM)",
             "Retinol (µM)"
           ],
-          "group": "[[\"factor1\",\"25\"],[\"factor3\",\"100\"]]"
+          "group": "[[\"factor1\",\"20\"],[\"factor3\",\"100\"]]"
         },
         "D6": {
           "labels": [
             "100",
-            "50"
+            "40"
           ],
           "factorNames": [
             "Palmitate (µM)",
             "Retinol (µM)"
           ],
-          "group": "[[\"factor1\",\"50\"],[\"factor3\",\"100\"]]"
+          "group": "[[\"factor1\",\"40\"],[\"factor3\",\"100\"]]"
         }
       },
       "notes": "",
-      "generatedAt": "2026-10-28T15:41:19.946Z",
+      "generatedAt": "2026-10-28T15:55:07.503Z",
       "manualLayoutChanges": false,
       "factorDraftStale": false,
       "savedAt": "2026-10-21T14:15:57.896Z"
