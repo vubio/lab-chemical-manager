@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updatedAt": "2026-10-28T13:05:30.619Z",
+  "updatedAt": "2026-10-28T13:05:34.305Z",
   "chemicals": {
     "version": 1,
     "chemicals": [
@@ -2425,7 +2425,7 @@
           "kind": "normal",
           "manualLevels": [
             "1k",
-            null,
+            "50",
             null
           ]
         },
@@ -2545,7 +2545,7 @@
           "kind": "normal",
           "manualLevels": [
             "1k",
-            null,
+            "50",
             null
           ]
         },
@@ -2665,7 +2665,7 @@
           "kind": "normal",
           "manualLevels": [
             "1k",
-            null,
+            "50",
             null
           ]
         },
@@ -2785,7 +2785,7 @@
           "kind": "normal",
           "manualLevels": [
             "5k",
-            null,
+            "50",
             null
           ]
         },
@@ -2905,7 +2905,7 @@
           "kind": "normal",
           "manualLevels": [
             "5k",
-            null,
+            "50",
             null
           ]
         },
@@ -3025,7 +3025,7 @@
           "kind": "normal",
           "manualLevels": [
             "5k",
-            null,
+            "50",
             null
           ]
         },
