@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updatedAt": "2026-10-28T13:03:54.794Z",
+  "updatedAt": "2026-10-28T13:04:23.212Z",
   "chemicals": {
     "version": 1,
     "chemicals": [
@@ -2257,47 +2257,12 @@
       "name": "96-well_1k-5k_AA",
       "format": "96",
       "selection": [
-        "A1",
-        "A2",
-        "A3",
-        "A4",
-        "A5",
-        "A6",
-        "A7",
-        "A8",
-        "A9",
-        "A10",
-        "A11",
-        "A12",
-        "B1",
-        "B2",
-        "B3",
-        "B4",
-        "B5",
-        "B6",
-        "B7",
-        "B8",
-        "B9",
-        "B10",
-        "B11",
-        "B12",
-        "C1",
-        "C2",
-        "C3",
-        "C4",
-        "C5",
-        "C6",
-        "C7",
-        "C8",
-        "C9",
-        "C10",
-        "C11",
-        "C12"
+        "C8"
       ],
       "rowNotes": {},
       "colNotes": {},
       "manualLevelNames": [
-        "Level 1",
+        "Cell Density",
         "Level 2",
         "Level 3"
       ],
@@ -2428,10 +2393,731 @@
         "[[\"factor1\",\"1k\"],[\"factor3\",\"525\"]]": 3,
         "[[\"factor1\",\"5k\"],[\"factor3\",\"525\"]]": 3
       },
-      "assignments": {},
+      "assignments": {
+        "A1": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "A2": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "A3": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "A4": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "A5": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "A6": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "A7": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "A8": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "A9": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "A10": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "A11": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "A12": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "B1": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "B2": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "B3": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "B4": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "B5": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "B6": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "B7": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "B8": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "B9": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "B10": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "B11": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "B12": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "C1": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "C2": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "C3": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "C4": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "C5": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "C6": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "C7": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "C8": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "C9": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "C10": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "C11": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "C12": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "1k",
+            null,
+            null
+          ]
+        },
+        "D1": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "D2": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "D3": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "D4": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "D5": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "D6": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "D7": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "D8": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "D9": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "D10": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "D11": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "D12": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "E1": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "E2": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "E3": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "E4": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "E5": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "E6": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "E7": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "E8": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "E9": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "E10": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "E11": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "E12": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "F1": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "F2": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "F3": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "F4": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "F5": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "F6": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "F7": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "F8": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "F9": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "F10": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "F11": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        },
+        "F12": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "5k",
+            null,
+            null
+          ]
+        }
+      },
       "notes": "",
       "generatedAt": "2026-10-28T12:42:43.663Z",
-      "manualLayoutChanges": false,
+      "manualLayoutChanges": true,
       "factorDraftStale": false,
       "savedAt": "2026-10-21T14:15:57.896Z"
     },
