@@ -41,11 +41,29 @@ function normalizeGrid(raw,rows,cols,order='rows'){
  }
  return {plate,filled,empty,rows,cols};
 }
+function matchFactorNames(state,assignments){
+ const entries=Object.values(assignments||{}).filter(r=>r&&r.kind!=='special');
+ const current=(state.factors||[]).filter(f=>f.name?.trim()&&f.values?.trim()).map(f=>f.name.trim());
+ const manual=[false,false,false];
+ for(const record of entries)for(let i=0;i<3;i++)if(String(record.manualLevels?.[i]??'').trim())manual[i]=true;
+ const generated=entries.some(r=>r.group!=='manual');
+ let count=generated?current.length:manual.some(Boolean)?0:current.length;
+ for(let i=0;i<3;i++)if(manual[i])count=Math.max(count,i+1);
+ return Array.from({length:count},(_,i)=>manual[i]?String(state.manualLevelNames?.[i]||'').trim()||'Level '+(i+1):current[i]||'Level '+(i+1));
+}
+function matchedRecordLabels(record,count){
+ const labels=Array.isArray(record.labels)?[...record.labels]:[];
+ if(record.kind!=='special')for(let i=0;i<3;i++){
+  const typed=String(record.manualLevels?.[i]??'').trim();
+  if(typed)labels[i]=typed;
+ }
+ return Array.from({length:count},(_,i)=>labels[i]??'');
+}
 function matchReadings(state,input){
  if(state.factorDraftStale)throw Error('Apply the current experimental factors to the plate before matching.');
  const assignments=state.assignments||{};
  if(!Object.keys(assignments).length)throw Error('Generate or load labeled wells before matching reader values.');
- const factors=(state.factors||[]).filter(f=>f.name?.trim()&&f.values?.trim()).map(f=>f.name.trim());
+ const factors=matchFactorNames(state,assignments);
  const [rows,cols]=shapes[state.format],data=[],controls=[],missing=[],unassigned=[],groups={},specialGroups={};
  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
   const pos=well(r,c),item=assignments[pos],reading=input.plate[pos];
@@ -57,7 +75,7 @@ function matchReadings(state,input){
    specialGroups[label]=(specialGroups[label]||0)+1;
    controls.push({well:pos,label,replicate:'R'+specialGroups[label],reading});
   }else{
-   const labels=Array.from({length:factors.length},(_,i)=>item.labels?.[i]??'');
+   const labels=matchedRecordLabels(item,factors.length);
    const key=JSON.stringify(labels);groups[key]=(groups[key]||0)+1;
    data.push({well:pos,labels,replicate:'R'+groups[key],reading});
   }
@@ -205,6 +223,6 @@ function init(){
  $('pr-controls-csv').addEventListener('click',()=>{if(matched?.controls?.length)download(makeCSV(controlTable(matched)),name()+'_special_controls.csv','text/csv;charset=utf-8')});
  $('pr-xlsx').addEventListener('click',excel);
 }
-window.PlateReadoutCore={parseDelimited,normalizeGrid,matchReadings,outputTable,controlTable,makeCSV,makeXlsx};
+window.PlateReadoutCore={parseDelimited,normalizeGrid,matchFactorNames,matchedRecordLabels,matchReadings,outputTable,controlTable,makeCSV,makeXlsx};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
