@@ -298,7 +298,7 @@ function copyPlateTable(){if(state.factorDraftStale)return notify('Plate labels 
 function persist(){try{localStorage.setItem(STORAGE,JSON.stringify({draft:state,saved}))}catch(e){notify('Could not save plate layout: browser storage full or unavailable.',true)}if(typeof window.dispatchEvent==='function'&&typeof CustomEvent!=='undefined')window.dispatchEvent(new CustomEvent('labchem:data-changed',{detail:{section:'plates'}}))}
 function bootStored(){try{const data=JSON.parse(localStorage.getItem(STORAGE)||'null');if(data){state=normalize(data.draft);saved=Array.isArray(data.saved)?data.saved.map(normalize):[]}}catch(e){state=defaults();saved=[]}}
 function syncMeta(){state.name=$('pl-title').value;state.notes=$('pl-notes').value;state.mode=$('pl-mode').value;persist();updateNote()}
-function refreshAll(){ $('pl-title').value=state.name;$('pl-format').value=state.format;$('pl-mode').value=state.mode;$('pl-fill-order').value=state.fillOrder;$('pl-notes').value=state.notes;renderFactors();renderCombinations();renderPlate();renderSaved();updateNote(); }
+function refreshAll(){ renderManualLevelLegend();$('pl-title').value=state.name;$('pl-format').value=state.format;$('pl-mode').value=state.mode;$('pl-fill-order').value=state.fillOrder;$('pl-notes').value=state.notes;renderFactors();renderCombinations();renderPlate();renderSaved();updateNote(); }
 function renderSaved(){const select=$('pl-saved'),old=select.value;select.innerHTML='<option value="">Choose saved layout</option>'+saved.map(x=>`<option value="${esc(x.id)}">${esc(x.name)} · ${esc(x.format)}-well · ${esc(x.savedAt?new Date(x.savedAt).toLocaleString():'')}</option>`).join('');if(saved.some(s=>s.id===old))select.value=old}
 function notify(message,problem=false){const el=$('pl-layout-status');el.textContent=message;el.classList.toggle('pl-error',problem)}
 function selectionRect(start,end){const [r1,c1]=coord(start),[r2,c2]=coord(end);const arr=[];for(let r=Math.min(r1,r2);r<=Math.max(r1,r2);r++)for(let c=Math.min(c1,c2);c<=Math.max(c1,c2);c++)arr.push(cellName(r,c));return arr}
@@ -442,6 +442,82 @@ function installWellLabelDialog(){
  });
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!overlay.hidden){close();e.stopPropagation()}});
 }
+
+/* Context-menu labeling: preserves every unaffected level on each selected well. */
+function renderManualLevelLegend(){
+ const box=$('pl-manual-level-sidebar');if(!box)return;
+ for(let i=0;i<3;i++){
+  const input=$('pl-manual-name-'+i);
+  if(input&&document.activeElement!==input)input.value=manualLevelLabel(state.manualLevelNames,i);
+ }
+}
+function installManualLevelMenu(){
+ const menu=document.createElement('div');menu.id='pl-manual-context';menu.className='pl-manual-context';menu.hidden=true;menu.setAttribute('role','menu');
+ menu.innerHTML=Array.from({length:3},(_,i)=>'<button type="button" role="menuitem" data-manual-level="'+i+'">Add / edit Level '+(i+1)+'</button>').join('');
+ document.body.appendChild(menu);
+ const overlay=document.createElement('div');overlay.id='pl-manual-dialog';overlay.className='pl-label-overlay';overlay.hidden=true;
+ overlay.innerHTML='<section class="pl-label-modal" role="dialog" aria-modal="true" aria-labelledby="pl-manual-title"><h3 id="pl-manual-title">Manual well label</h3><p id="pl-manual-targets" class="tiny muted"></p><label class="field"><span>Value to place in selected wells</span><input id="pl-manual-value" type="text" maxlength="160" placeholder="e.g., 1k, 5k, Media only" /></label><p class="tiny muted">This changes only the chosen level. Other levels and existing labels remain as they are.</p><div class="action-row"><button type="button" class="btn btn-primary" id="pl-manual-apply">Apply to wells</button><button type="button" class="btn" id="pl-manual-clear">Clear this level</button><button type="button" class="btn" id="pl-manual-cancel">Cancel</button></div></section>';
+ document.body.appendChild(overlay);
+ let targetWells=[],selectedLevel=0;
+ const hideMenu=()=>{menu.hidden=true};
+ const hideDialog=()=>{overlay.hidden=true;targetWells=[]};
+ const openEditor=level=>{
+  selectedLevel=level;hideMenu();
+  if(!targetWells.length)return;
+  $('pl-manual-title').textContent='Add '+manualLevelLabel(state.manualLevelNames,level)+' · Level '+(level+1);
+  $('pl-manual-targets').textContent=targetWells.length+' selected well'+(targetWells.length===1?'':'s')+': '+targetWells.slice(0,15).join(', ')+(targetWells.length>15?'…':'');
+  const values=[...new Set(targetWells.map(w=>String(state.assignments[w]?.manualLevels?.[level]??'')))];
+  $('pl-manual-value').value=values.length===1?values[0]:'';
+  overlay.hidden=false;$('pl-manual-value').focus();$('pl-manual-value').select();
+ };
+ const applyValue=value=>{
+  if(!targetWells.length)return;
+  const typed=String(value||'').trim();
+  state.assignments=assignManualLevels(state.assignments,targetWells,selectedLevel,typed);
+  state.manualLayoutChanges=true;const amount=targetWells.length;
+  hideDialog();renderPlate();updateNote();persist();
+  notify((typed?'Added ':'Cleared ')+manualLevelLabel(state.manualLevelNames,selectedLevel)+' for '+amount+' well'+(amount===1?'':'s')+'.');
+ };
+ menu.addEventListener('click',e=>{
+  const b=e.target.closest('[data-manual-level]');if(b)openEditor(Number(b.dataset.manualLevel));
+ });
+ $('pl-manual-apply').addEventListener('click',()=>{
+  if(!$('pl-manual-value').value.trim()){notify('Enter a label, or use Clear this level to remove it.',true);$('pl-manual-value').focus();return}
+  applyValue($('pl-manual-value').value);
+ });
+ $('pl-manual-clear').addEventListener('click',()=>applyValue(''));
+ $('pl-manual-cancel').addEventListener('click',hideDialog);
+ $('pl-manual-value').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('pl-manual-apply').click()}});
+ overlay.addEventListener('mousedown',e=>{if(e.target===overlay)hideDialog()});
+ document.addEventListener('pointerdown',e=>{if(!menu.hidden&&!e.target.closest('#pl-manual-context'))hideMenu()});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'){hideMenu();if(!overlay.hidden){hideDialog();e.stopPropagation()}}});
+ const grid=$('pl-grid');
+ grid.addEventListener('contextmenu',e=>{
+  const well=e.target.closest('[data-well]');if(!well)return;
+  e.preventDefault();
+  const w=well.dataset.well;
+  if(!state.selection.includes(w)){state.selection=[w];selectionAnchor=w;activeCell=w;renderPlate();persist()}
+  targetWells=state.selection.length?[...new Set(state.selection)]:[w];
+  menu.hidden=false;
+  const maxX=Math.max(0,window.innerWidth-menu.offsetWidth-10),maxY=Math.max(0,window.innerHeight-menu.offsetHeight-10);
+  menu.style.left=Math.max(4,Math.min(e.clientX,maxX))+'px';
+  menu.style.top=Math.max(4,Math.min(e.clientY,maxY))+'px';
+ });
+ const sidebar=$('pl-manual-level-sidebar');
+ sidebar?.addEventListener('input',e=>{
+  const input=e.target.closest('[data-manual-name]');if(!input)return;
+  const i=Number(input.dataset.manualName);
+  if(i<0||i>2)return;
+  state.manualLevelNames[i]=input.value;renderFactorLegend();updateNote();persist();
+ });
+ sidebar?.addEventListener('change',e=>{
+  const input=e.target.closest('[data-manual-name]');if(!input)return;
+  const i=Number(input.dataset.manualName);
+  state.manualLevelNames[i]=manualLevelLabel(state.manualLevelNames,i);
+  input.value=state.manualLevelNames[i];renderFactorLegend();updateNote();persist();
+ });
+}
+
 function beginDrag(e){
  const well=e.target.closest('[data-well]');if(!well||e.button!==0)return;
  e.preventDefault();const start=well.dataset.well,now=Date.now();
@@ -556,7 +632,7 @@ function transposeCurrent(){
  try{const [rows,cols]=dimensions(),result=transposeMap(state.assignments,state.selection,rows,cols);state.manualLayoutChanges=true;state.assignments=result.assignments;state.selection=result.selection;activeCell=null;renderPlate();updateNote();persist();notify(`Transposed ${result.oldSize.join(' × ')} → ${result.newSize.join(' × ')}. Row and column notes stay with their physical plate axes.`)}catch(e){notify(e.message,true)}
 }
 function save(){syncMeta();syncFactors();const item=structuredClone(state);item.id='plate-'+Date.now()+'-'+Math.random().toString(36).slice(2,6);item.savedAt=new Date().toISOString();saved.unshift(item);state.id=item.id;persist();renderSaved();$('pl-saved').value=item.id;notify('Layout saved. Older saved layouts are kept unchanged.')}
-function bind(){installWellLabelDialog();installAxisNoteDialog();const grid=$('pl-grid');
+function bind(){installWellLabelDialog();installAxisNoteDialog();installManualLevelMenu();const grid=$('pl-grid');
  $('pl-toggle-notes').addEventListener('click',()=>{
   notesVisible=!notesVisible;
   renderPlate();
