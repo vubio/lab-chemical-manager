@@ -82,4 +82,29 @@ const missingSpecial=c.matchReadings(specialPlate,{...matrix,plate:{...matrix.pl
 assert(missingSpecial.missing.includes('G1'));
 assert.equal(missingSpecial.controls.length,2);
 
+
+const manualOnly={
+ ...plate,
+ factors:[{id:'factor1',name:'Dose',values:'0 µM;0.1 µM'},{id:'factor2',name:'',values:''}],
+ manualLevelNames:['Cell density','Erastin2','Time'],
+ assignments:{
+  A1:{labels:[],group:'manual',kind:'normal',manualLevels:['1k','0',null]},
+  A2:{labels:[],group:'manual',kind:'normal',manualLevels:['1k','0',null]},
+  B1:{labels:[],group:'manual',kind:'normal',manualLevels:['5k','0.05',null]}
+ }
+};
+const manualRead=c.matchReadings(manualOnly,matrix);
+assert.deepEqual(Array.from(manualRead.factors),['Cell density','Erastin2']);
+assert.equal(manualRead.data.length,3);
+assert.deepEqual(Array.from(manualRead.data.map(x=>x.replicate)),['R1','R2','R1']);
+assert.deepEqual(Array.from(manualRead.data[0].labels),['1k','0']);
+assert.deepEqual(Array.from(c.outputTable(manualRead,'long').headers),['Cell density','Erastin2','Replicate','Read value']);
+assert.equal(c.outputTable(manualRead,'prism').rows.length,2);
+const mixed={...plate,manualLevelNames:['Density','Drug','Time'],assignments:{...assignments,A1:{...assignments.A1,manualLevels:['10k','0.1',null],group:'manual',kind:'normal'}}};
+const mixedOut=c.matchReadings(mixed,matrix);
+assert.deepEqual(Array.from(mixedOut.factors),['Density','Drug']);
+assert.deepEqual(Array.from(mixedOut.data[0].labels),['10k','0.1']);
+assert.equal(mixedOut.data.length,36);
+assert.equal(mixedOut.controls.length,0);
+
 console.log('Plate reader parsing, matching, CSV and XLSX tests passed');
