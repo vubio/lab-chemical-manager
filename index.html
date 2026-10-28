@@ -6,10 +6,10 @@
   <meta name="description" content="Local-first laboratory chemical preparation, dosing calculator and digital lab note records." />
   <title>03_Calculator</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=1" />
-  <link rel="stylesheet" href="styles.css?v=github-sync-20261027-1" />
+  <link rel="stylesheet" href="styles.css?v=manual-levels-20261028-1" />
   <script src="app.js?v=github-sync-20261027-1" defer></script>
-  <script src="plate.js?v=github-sync-20261027-1" defer></script>
-  <script src="plate_reader.js?v=special-controls-20261019-1" defer></script>
+  <script src="plate.js?v=manual-levels-20261028-1" defer></script>
+  <script src="plate_reader.js?v=manual-levels-20261028-1" defer></script>
   <script src="github_sync.js?v=20261027-2" defer></script>
 </head>
 <body>
@@ -55,7 +55,16 @@
             </div>
             <p class="tiny muted plate-instructions"><strong>Move labels:</strong> click the first well, then Shift-click the last to select consecutive wells (A12 continues to B1). The selected block has a clear outline and a count above. Drag any highlighted well to see the final arrangement <strong>before release</strong>; occupied wells shift to make room, never swap. <strong>Selection:</strong> Ctrl/⌘-click toggles wells; drag to select an area. Press Esc to cancel a drag. <strong>Double-click a well</strong> to open its label editor, or select multiple wells and click <strong>Edit / label selected wells</strong> to mark controls such as “Media only”. <strong>Clear selected labels</strong> removes just the selected assignments; Delete/Backspace also works while a selected well has keyboard focus.</p>
             <div id="pl-selection-count" class="plate-counter" aria-live="polite">All wells available</div><div id="pl-drag-preview" class="pl-drag-preview" role="status" aria-live="polite" hidden></div>
-            <div class="plate-placement-controls"><label class="field"><span>Auto-fill direction</span><select id="pl-fill-order"><option value="rows">Rows first (left → right, then down)</option><option value="columns">Columns first (top → bottom, then right)</option></select></label><button class="btn" id="pl-transpose" type="button" title="Swap the rows and columns of the current well map if the transposed pattern fits">Transpose current map</button><span class="tiny muted">Direction applies on Generate. Transpose rotates the existing assignment axes only if they fit the plate.</span></div><div class="action-row plate-grid-actions"><button class="btn" id="pl-copy-table">Copy plate table</button><button type="button" class="btn" id="pl-label-selected">Edit / label selected wells</button><span class="tiny muted">Formatted table for OneNote, including row and column notes</span></div><div id="pl-factor-legend" class="pl-factor-legend" aria-label="Factor label colors"></div><div class="plate-grid-scroll"><div class="pl-note-toolbar"><button class="btn" id="pl-toggle-notes" type="button" aria-controls="pl-grid" aria-expanded="false" aria-pressed="false">Show notes</button></div><div id="pl-grid" class="simple-plate-grid" role="grid" aria-label="Well plate layout"></div></div>
+            <div class="plate-placement-controls"><label class="field"><span>Auto-fill direction</span><select id="pl-fill-order"><option value="rows">Rows first (left → right, then down)</option><option value="columns">Columns first (top → bottom, then right)</option></select></label><button class="btn" id="pl-transpose" type="button" title="Swap the rows and columns of the current well map if the transposed pattern fits">Transpose current map</button><span class="tiny muted">Direction applies on Generate. Transpose rotates the existing assignment axes only if they fit the plate.</span></div><div class="action-row plate-grid-actions"><button class="btn" id="pl-copy-table">Copy plate table</button><button type="button" class="btn" id="pl-label-selected">Edit / label selected wells</button><span class="tiny muted">Formatted table for OneNote, including row and column notes</span></div><div id="pl-factor-legend" class="pl-factor-legend" aria-label="Factor label colors"></div><div class="pl-grid-and-levels">
+ <div class="plate-grid-scroll">
+ <div class="pl-note-toolbar"><button class="btn" id="pl-toggle-notes" type="button" aria-controls="pl-grid" aria-expanded="false" aria-pressed="false">Show notes</button><span class="tiny muted">Select wells, then right-click to add a level label.</span></div>
+ <div id="pl-grid" class="simple-plate-grid" role="grid" aria-label="Well plate layout"></div>
+ </div>
+ <aside id="pl-manual-level-sidebar" class="pl-manual-sidebar" aria-label="Manual label level legend">
+ <h4>Manual label levels</h4><p class="tiny muted">Right-click selected wells to assign values. Rename levels below.</p>
+ <label class="pl-manual-legend-row"><span class="pl-legend-swatch level-0" aria-hidden="true">■</span><span class="pl-legend-prefix">1</span><input type="text" id="pl-manual-name-0" data-manual-name="0" aria-label="Name for manual label Level 1" maxlength="80" value="Level 1" /></label><label class="pl-manual-legend-row"><span class="pl-legend-swatch level-1" aria-hidden="true">■</span><span class="pl-legend-prefix">2</span><input type="text" id="pl-manual-name-1" data-manual-name="1" aria-label="Name for manual label Level 2" maxlength="80" value="Level 2" /></label><label class="pl-manual-legend-row"><span class="pl-legend-swatch level-2" aria-hidden="true">■</span><span class="pl-legend-prefix">3</span><input type="text" id="pl-manual-name-2" data-manual-name="2" aria-label="Name for manual label Level 3" maxlength="80" value="Level 3" /></label>
+ </aside>
+ </div>
             <div class="plate-legend-plain">Coordinates are already shown inside each well. Use Show notes to edit optional row/column annotations. · Empty = available · Green = selected · Labeled = assigned</div>
           </div>
           <div class="plate-panels">
