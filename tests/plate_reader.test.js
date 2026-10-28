@@ -107,4 +107,56 @@ assert.deepEqual(Array.from(mixedOut.data[0].labels),['10k','0.1']);
 assert.equal(mixedOut.data.length,36);
 assert.equal(mixedOut.controls.length,0);
 
+
+// Manual-only workflow must read exclusively manual levels, never hidden generated labels.
+const manualCombo={...plate,manualLevelNames:['Cell density','AA (µM)','Time'],assignments:{
+ A1:{labels:['Old generated A','Old generated B'],group:'manual',kind:'normal',manualLevels:['1k','0',null]},
+ A2:{labels:['Old generated A','Old generated B'],group:'manual',kind:'normal',manualLevels:['1k','0',null]},
+ A3:{labels:['Old generated A','Old generated B'],group:'manual',kind:'normal',manualLevels:['1k','25',null]},
+ B1:{labels:['Old generated A','Old generated B'],group:'manual',kind:'normal',manualLevels:['5k','0',null]},
+ B2:{labels:['Old generated A','Old generated B'],group:'manual',kind:'normal',manualLevels:['5k','25',null]},
+ C1:{labels:['old auto','reading'],group:'generated'},
+ G1:{labels:['Media only'],group:'manual',kind:'special',controlName:'Media only'}
+}};
+const manualCore=c.matchManualReadings;
+assert.equal(typeof manualCore,'function');
+const manualResults=manualCore(manualCombo,matrix);
+assert.deepEqual(Array.from(manualResults.factors),['Cell density','AA (µM)']);
+assert.deepEqual(Array.from(manualResults.data.map(x=>x.well)),['A1','A2','A3','B1','B2']);
+assert.deepEqual(Array.from(manualResults.data[0].labels),['1k','0']);
+assert.deepEqual(Array.from(manualResults.data.map(x=>x.replicate)),['R1','R2','R1','R1','R1']);
+assert.equal(manualResults.data.length,5);
+assert.equal(manualResults.controls.length,1);
+assert.equal(manualResults.controls[0].label,'Media only');
+assert.equal(manualResults.unassigned.length,90);
+assert.equal(manualResults.incomplete.length,0);
+const manuallyLong=c.outputTable(manualResults,'long');
+assert.deepEqual(Array.from(manuallyLong.headers),['Cell density','AA (µM)','Replicate','Read value']);
+assert.deepEqual(Array.from(manuallyLong.rows[0]),['1k','0','R1',101001]);
+assert.equal(c.outputTable(manualResults,'prism').rows.length,2);
+assert.equal(c.outputTable(manualResults,'wide').rows.length,2);
+assert.equal(c.outputTable(manualResults,'matrix').rows.length,8);
+const manuallyExcel=Buffer.from(makeXlsx([{name:'Manual levels',table:manuallyLong},{name:'Special controls',table:c.controlTable(manualResults)}]));
+assert.equal(manuallyExcel.subarray(0,4).toString('hex'),'504b0304');
+assert(manuallyExcel.includes(Buffer.from('xl/workbook.xml')));
+assert(c.makeCSV(manuallyLong).includes('Cell density,AA (µM),Replicate,Read value'));
+assert.deepEqual(Array.from(c.matchReadings(manualCombo,matrix).data.map(x=>x.well)),['A1','A2','A3','B1','B2','C1'],
+  'original match button still accepts the complete labeled plate');
+const incompleteManual={...manualCombo,assignments:{
+ A1:{labels:[],kind:'normal',group:'manual',manualLevels:['1k',null,'24h']},
+ A2:{labels:[],kind:'normal',group:'manual',manualLevels:['1k','25',null]},
+ G1:manualCombo.assignments.G1
+}};
+const partialResults=manualCore(incompleteManual,matrix);
+assert.deepEqual(Array.from(partialResults.factors),['Cell density','AA (µM)','Time']);
+assert.deepEqual(Array.from(partialResults.incomplete),['A1','A2']);
+assert.deepEqual(Array.from(partialResults.data[0].labels),['1k','','24h']);
+assert.deepEqual(Array.from(partialResults.data[1].labels),['1k','25','']);
+assert.equal(partialResults.controls.length,1);
+assert.throws(()=>manualCore({...plate,assignments:{A1:{labels:['0'],kind:'normal',group:'generated'}}},matrix),/no manual/i);
+assert.equal(manualCore({...manualCombo,factorDraftStale:true},matrix).data.length,5,
+ 'manual-only matching does not depend on stale automatic-factor drafts');
+const missingManualGrid={...matrix,plate:{...matrix.plate,A1:null}};
+assert(manualCore(manualCombo,missingManualGrid).missing.includes('A1'));
+
 console.log('Plate reader parsing, matching, CSV and XLSX tests passed');
