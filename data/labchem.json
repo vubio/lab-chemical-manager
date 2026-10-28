@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updatedAt": "2026-10-28T13:03:35.839Z",
+  "updatedAt": "2026-10-28T13:03:54.794Z",
   "chemicals": {
     "version": 1,
     "chemicals": [
@@ -2258,8 +2258,41 @@
       "format": "96",
       "selection": [
         "A1",
+        "A2",
+        "A3",
+        "A4",
+        "A5",
+        "A6",
+        "A7",
+        "A8",
+        "A9",
+        "A10",
+        "A11",
+        "A12",
         "B1",
-        "C1"
+        "B2",
+        "B3",
+        "B4",
+        "B5",
+        "B6",
+        "B7",
+        "B8",
+        "B9",
+        "B10",
+        "B11",
+        "B12",
+        "C1",
+        "C2",
+        "C3",
+        "C4",
+        "C5",
+        "C6",
+        "C7",
+        "C8",
+        "C9",
+        "C10",
+        "C11",
+        "C12"
       ],
       "rowNotes": {},
       "colNotes": {},
@@ -2395,338 +2428,7 @@
         "[[\"factor1\",\"1k\"],[\"factor3\",\"525\"]]": 3,
         "[[\"factor1\",\"5k\"],[\"factor3\",\"525\"]]": 3
       },
-      "assignments": {
-        "A1": {
-          "labels": [
-            "1k",
-            "0"
-          ],
-          "factorNames": [
-            "Cell Density",
-            "AA (µM)"
-          ],
-          "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0\"]]"
-        },
-        "A2": {
-          "labels": [
-            "1k",
-            "0"
-          ],
-          "factorNames": [
-            "Cell Density",
-            "AA (µM)"
-          ],
-          "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0\"]]"
-        },
-        "A3": {
-          "labels": [
-            "1k",
-            "0"
-          ],
-          "factorNames": [
-            "Cell Density",
-            "AA (µM)"
-          ],
-          "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0\"]]"
-        },
-        "A4": {
-          "labels": [
-            "1k",
-            "25"
-          ],
-          "factorNames": [
-            "Cell Density",
-            "AA (µM)"
-          ],
-          "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"25\"]]"
-        },
-        "A5": {
-          "labels": [
-            "1k",
-            "25"
-          ],
-          "factorNames": [
-            "Cell Density",
-            "AA (µM)"
-          ],
-          "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"25\"]]"
-        },
-        "A6": {
-          "labels": [
-            "1k",
-            "25"
-          ],
-          "factorNames": [
-            "Cell Density",
-            "AA (µM)"
-          ],
-          "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"25\"]]"
-        },
-        "A7": {
-          "labels": [
-            "1k",
-            "50"
-          ],
-          "factorNames": [
-            "Cell Density",
-            "AA (µM)"
-          ],
-          "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"50\"]]"
-        },
-        "A8": {
-          "labels": [
-            "1k",
-            "50"
-          ],
-          "factorNames": [
-            "Cell Density",
-            "AA (µM)"
-          ],
-          "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"50\"]]"
-        },
-        "A9": {
-          "labels": [
-            "1k",
-            "50"
-          ],
-          "factorNames": [
-            "Cell Density",
-            "AA (µM)"
-          ],
-          "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"50\"]]"
-        },
-        "A10": {
-          "labels": [
-            "1k",
-            "100"
-          ],
-          "factorNames": [
-            "Cell Density",
-            "AA (µM)"
-          ],
-          "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"100\"]]"
-        },
-        "A11": {
-          "labels": [
-            "1k",
-            "100"
-          ],
-          "factorNames": [
-            "Cell Density",
-            "AA (µM)"
-          ],
-          "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"100\"]]"
-        },
-        "A12": {
-          "labels": [
-            "1k",
-            "100"
-          ],
-          "factorNames": [
-            "Cell Density",
-            "AA (µM)"
-          ],
-          "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"100\"]]"
-        },
-        "B1": {
-          "labels": [
-            "1k",
-            "200"
-          ],
-          "factorNames": [
-            "Cell Density",
-            "AA (µM)"
-          ],
-          "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"200\"]]"
-        },
-        "B2": {
-          "labels": [
-            "1k",
-            "200"
-          ],
-          "factorNames": [
-            "Cell Density",
-            "AA (µM)"
-          ],
-          "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"200\"]]"
-        },
-        "B3": {
-          "labels": [
-            "1k",
-            "200"
-          ],
-          "factorNames": [
-            "Cell Density",
-            "AA (µM)"
-          ],
-          "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"200\"]]"
-        },
-        "B4": {
-          "labels": [
-            "5k",
-            "0"
-          ],
-          "factorNames": [
-            "Cell Density",
-            "AA (µM)"
-          ],
-          "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0\"]]"
-        },
-        "B5": {
-          "labels": [
-            "5k",
-            "0"
-          ],
-          "factorNames": [
-            "Cell Density",
-            "AA (µM)"
-          ],
-          "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0\"]]"
-        },
-        "B6": {
-          "labels": [
-            "5k",
-            "0"
-          ],
-          "factorNames": [
-            "Cell Density",
-            "AA (µM)"
-          ],
-          "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0\"]]"
-        },
-        "B7": {
-          "labels": [
-            "5k",
-            "25"
-          ],
-          "factorNames": [
-            "Cell Density",
-            "AA (µM)"
-          ],
-          "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"25\"]]"
-        },
-        "B8": {
-          "labels": [
-            "5k",
-            "25"
-          ],
-          "factorNames": [
-            "Cell Density",
-            "AA (µM)"
-          ],
-          "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"25\"]]"
-        },
-        "B9": {
-          "labels": [
-            "5k",
-            "25"
-          ],
-          "factorNames": [
-            "Cell Density",
-            "AA (µM)"
-          ],
-          "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"25\"]]"
-        },
-        "B10": {
-          "labels": [
-            "5k",
-            "50"
-          ],
-          "factorNames": [
-            "Cell Density",
-            "AA (µM)"
-          ],
-          "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"50\"]]"
-        },
-        "B11": {
-          "labels": [
-            "5k",
-            "50"
-          ],
-          "factorNames": [
-            "Cell Density",
-            "AA (µM)"
-          ],
-          "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"50\"]]"
-        },
-        "B12": {
-          "labels": [
-            "5k",
-            "50"
-          ],
-          "factorNames": [
-            "Cell Density",
-            "AA (µM)"
-          ],
-          "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"50\"]]"
-        },
-        "C1": {
-          "labels": [
-            "5k",
-            "100"
-          ],
-          "factorNames": [
-            "Cell Density",
-            "AA (µM)"
-          ],
-          "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"100\"]]"
-        },
-        "C2": {
-          "labels": [
-            "5k",
-            "100"
-          ],
-          "factorNames": [
-            "Cell Density",
-            "AA (µM)"
-          ],
-          "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"100\"]]"
-        },
-        "C3": {
-          "labels": [
-            "5k",
-            "100"
-          ],
-          "factorNames": [
-            "Cell Density",
-            "AA (µM)"
-          ],
-          "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"100\"]]"
-        },
-        "C4": {
-          "labels": [
-            "5k",
-            "200"
-          ],
-          "factorNames": [
-            "Cell Density",
-            "AA (µM)"
-          ],
-          "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"200\"]]"
-        },
-        "C5": {
-          "labels": [
-            "5k",
-            "200"
-          ],
-          "factorNames": [
-            "Cell Density",
-            "AA (µM)"
-          ],
-          "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"200\"]]"
-        },
-        "C6": {
-          "labels": [
-            "5k",
-            "200"
-          ],
-          "factorNames": [
-            "Cell Density",
-            "AA (µM)"
-          ],
-          "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"200\"]]"
-        }
-      },
+      "assignments": {},
       "notes": "",
       "generatedAt": "2026-10-28T12:42:43.663Z",
       "manualLayoutChanges": false,
