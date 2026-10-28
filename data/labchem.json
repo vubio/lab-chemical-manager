@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updatedAt": "2026-10-28T14:26:59.041Z",
+  "updatedAt": "2026-10-28T14:27:19.009Z",
   "chemicals": {
     "version": 1,
     "chemicals": [
@@ -2885,7 +2885,7 @@
       "factors": [
         {
           "id": "factor1",
-          "name": "",
+          "name": "Retinol (µM)",
           "values": ""
         },
         {
