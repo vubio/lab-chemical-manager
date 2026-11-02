@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updatedAt": "2026-11-02T16:43:51.228Z",
+  "updatedAt": "2026-11-02T16:44:33.486Z",
   "chemicals": {
     "version": 1,
     "chemicals": [
@@ -4040,9 +4040,9 @@
       "name": "96-well_1k-5k-10k_AA",
       "format": "96",
       "selection": [
-        "A1",
-        "B1",
-        "C1"
+        "A2",
+        "C2",
+        "B2"
       ],
       "rowNotes": {
         "A": "1k",
@@ -4162,10 +4162,161 @@
         "[[\"factor1\",\"5k\"],[\"factor3\",\"25\"]]": 3,
         "[[\"factor1\",\"10k\"],[\"factor3\",\"25\"]]": 3
       },
-      "assignments": {},
+      "assignments": {
+        "A1": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "0",
+            null,
+            null
+          ]
+        },
+        "B1": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "0",
+            null,
+            null
+          ]
+        },
+        "C1": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "0",
+            null,
+            null
+          ]
+        },
+        "A2": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "25",
+            null,
+            null
+          ]
+        },
+        "B2": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "25",
+            null,
+            null
+          ]
+        },
+        "C2": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "25",
+            null,
+            null
+          ]
+        },
+        "A3": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "50",
+            null,
+            null
+          ]
+        },
+        "B3": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "50",
+            null,
+            null
+          ]
+        },
+        "C3": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "50",
+            null,
+            null
+          ]
+        },
+        "A4": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "75",
+            null,
+            null
+          ]
+        },
+        "B4": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "75",
+            null,
+            null
+          ]
+        },
+        "C4": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "75",
+            null,
+            null
+          ]
+        },
+        "A5": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "100",
+            null,
+            null
+          ]
+        },
+        "B5": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "100",
+            null,
+            null
+          ]
+        },
+        "C5": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "100",
+            null,
+            null
+          ]
+        }
+      },
       "notes": "",
       "generatedAt": "2026-10-20T00:24:24.459Z",
-      "manualLayoutChanges": false,
+      "manualLayoutChanges": true,
       "factorDraftStale": false,
       "savedAt": "2026-10-21T14:15:57.896Z"
     },
