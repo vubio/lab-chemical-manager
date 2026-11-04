@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updatedAt": "2026-11-04T20:56:05.007Z",
+  "updatedAt": "2026-11-04T20:57:07.837Z",
   "chemicals": {
     "version": 1,
     "chemicals": [
@@ -4052,8 +4052,8 @@
       },
       "colNotes": {},
       "manualLevelNames": [
-        "Cell Density",
-        "AA (µM)",
+        "Treatment",
+        "Concentration",
         "Level 3"
       ],
       "fillOrder": "rows",
