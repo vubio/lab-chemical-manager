@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updatedAt": "2026-11-04T21:34:35.725Z",
+  "updatedAt": "2026-11-04T21:36:37.067Z",
   "chemicals": {
     "version": 1,
     "chemicals": [
@@ -4040,7 +4040,10 @@
       "name": "96-well_1k-5k-10k_AA",
       "format": "96",
       "selection": [
-        "E12"
+        "E2",
+        "F2",
+        "G2",
+        "H2"
       ],
       "rowNotes": {
         "A": "1k",
@@ -4187,7 +4190,7 @@
           "kind": "normal",
           "manualLevels": [
             "AA (µM)",
-            "75",
+            "50",
             null
           ]
         },
@@ -4197,7 +4200,7 @@
           "kind": "normal",
           "manualLevels": [
             "AA (µM)",
-            "50",
+            "75",
             null
           ]
         },
@@ -4237,7 +4240,7 @@
           "kind": "normal",
           "manualLevels": [
             "AA (µM)",
-            "75",
+            "50",
             null
           ]
         },
@@ -4247,7 +4250,7 @@
           "kind": "normal",
           "manualLevels": [
             "AA (µM)",
-            "50",
+            "75",
             null
           ]
         },
@@ -4287,7 +4290,7 @@
           "kind": "normal",
           "manualLevels": [
             "AA (µM)",
-            "75",
+            "50",
             null
           ]
         },
@@ -4297,7 +4300,7 @@
           "kind": "normal",
           "manualLevels": [
             "AA (µM)",
-            "50",
+            "75",
             null
           ]
         },
@@ -4337,7 +4340,7 @@
           "kind": "normal",
           "manualLevels": [
             "AA (µM)",
-            "75",
+            "50",
             null
           ]
         },
@@ -4347,7 +4350,7 @@
           "kind": "normal",
           "manualLevels": [
             "AA (µM)",
-            "50",
+            "75",
             null
           ]
         },
