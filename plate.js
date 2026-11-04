@@ -297,8 +297,8 @@ function copyConditionsTable(){const rows=[['Condition','Replicates'],...conditi
 function copyPlateTable(){const rows=plateTable();return copyRich(factorLegendHTML('plate')+plateHTML(),[factorLegendPlain('plate'),'',...rows.map(r=>r.join('\t'))].join('\n'),'Plate table copied as displayed, including manual labels, color legend, and axis notes.')}
 function persist(){try{localStorage.setItem(STORAGE,JSON.stringify({draft:state,saved}))}catch(e){notify('Could not save plate layout: browser storage full or unavailable.',true)}if(typeof window.dispatchEvent==='function'&&typeof CustomEvent!=='undefined')window.dispatchEvent(new CustomEvent('labchem:data-changed',{detail:{section:'plates'}}))}
 function bootStored(){try{const data=JSON.parse(localStorage.getItem(STORAGE)||'null');if(data){state=normalize(data.draft);saved=Array.isArray(data.saved)?data.saved.map(normalize):[]}}catch(e){state=defaults();saved=[]}}
-function syncMeta(){state.name=$('pl-title').value;state.notes=$('pl-notes').value;state.mode=$('pl-mode').value;persist();updateNote()}
-function refreshAll(){ renderManualLevelLegend();$('pl-title').value=state.name;$('pl-format').value=state.format;$('pl-mode').value=state.mode;$('pl-fill-order').value=state.fillOrder;$('pl-notes').value=state.notes;renderFactors();renderCombinations();renderPlate();renderSaved();updateNote(); }
+function syncMeta(){state.name=$('pl-title').value;if($('pl-quick-name')&&$('pl-quick-name')!==document.activeElement)$('pl-quick-name').value=state.name;state.notes=$('pl-notes').value;state.mode=$('pl-mode').value;persist();updateNote()}
+function refreshAll(){ renderManualLevelLegend();$('pl-title').value=state.name;if($('pl-quick-name'))$('pl-quick-name').value=state.name;$('pl-format').value=state.format;$('pl-mode').value=state.mode;$('pl-fill-order').value=state.fillOrder;$('pl-notes').value=state.notes;renderFactors();renderCombinations();renderPlate();renderSaved();updateNote(); }
 function renderSaved(){
  const select=$('pl-saved'),quick=$('pl-quick-saved'),old=select.value||quick?.value||'';
  const options='<option value="">Choose saved layout</option>'+saved.map(x=>`<option value="${esc(x.id)}">${esc(x.name)} · ${esc(x.format)}-well · ${esc(x.savedAt?new Date(x.savedAt).toLocaleString():'')}</option>`).join('');
@@ -689,7 +689,7 @@ async function copyNote(){const title=`<p style="font-family:Arial,sans-serif"><
 function transposeCurrent(){
  try{const [rows,cols]=dimensions(),result=transposeMap(state.assignments,state.selection,rows,cols);state.manualLayoutChanges=true;state.assignments=result.assignments;state.selection=result.selection;activeCell=null;renderPlate();updateNote();persist();notify(`Transposed ${result.oldSize.join(' × ')} → ${result.newSize.join(' × ')}. Row and column notes stay with their physical plate axes.`)}catch(e){notify(e.message,true)}
 }
-function save(){syncMeta();syncFactors();const item=structuredClone(state);item.id='plate-'+Date.now()+'-'+Math.random().toString(36).slice(2,6);item.savedAt=new Date().toISOString();saved.unshift(item);state.id=item.id;persist();renderSaved();$('pl-saved').value=item.id;if($('pl-quick-saved'))$('pl-quick-saved').value=item.id;if($('pl-quick-load'))$('pl-quick-load').disabled=false;notify('Layout saved. Older saved layouts are kept unchanged.')}
+function save(){const name=String($('pl-quick-name')?.value??$('pl-title').value).trim();if(!name){notify('Enter a layout name beside Save layout before saving.',true);$('pl-quick-name')?.focus();return} $('pl-title').value=name;if($('pl-quick-name'))$('pl-quick-name').value=name;syncMeta();syncFactors();const item=structuredClone(state);item.id='plate-'+Date.now()+'-'+Math.random().toString(36).slice(2,6);item.savedAt=new Date().toISOString();saved.unshift(item);state.id=item.id;persist();renderSaved();$('pl-saved').value=item.id;if($('pl-quick-saved'))$('pl-quick-saved').value=item.id;if($('pl-quick-load'))$('pl-quick-load').disabled=false;notify('Layout saved. Older saved layouts are kept unchanged.')}
 function bind(){installWellLabelDialog();installAxisNoteDialog();installManualLevelMenu();const grid=$('pl-grid');
  $('pl-toggle-notes').addEventListener('click',()=>{
   notesVisible=!notesVisible;
@@ -736,6 +736,13 @@ function bind(){installWellLabelDialog();installAxisNoteDialog();installManualLe
  $('pl-label-selected').addEventListener('click',()=>{const targets=state.selection.length?state.selection:activeCell?[activeCell]:[];if(!targets.length){notify('Select wells on the plate, then click “Label selected wells”.',true);return}openWellLabelDialog(targets[0],true)});
  $('pl-generate').addEventListener('click',generate);$('pl-save-label').addEventListener('click',()=>{if(activeCell)updateEditorFields();persist()});$('pl-remove-label').addEventListener('click',()=>{if(activeCell){delete state.assignments[activeCell];state.manualLayoutChanges=true;renderPlate();updateNote();persist()}});
  $('pl-save').addEventListener('click',save);$('pl-copy').addEventListener('click',copyNote);$('pl-tsv').addEventListener('click',downloadTSV);
+ $('pl-quick-name').addEventListener('input',e=>{
+  $('pl-title').value=e.target.value;
+  syncMeta();
+ });
+ $('pl-quick-name').addEventListener('keydown',e=>{
+  if(e.key==='Enter'){e.preventDefault();$('pl-quick-save').click()}
+ });
  $('pl-quick-save').addEventListener('click',()=>$('pl-save').click());
  $('pl-quick-saved').addEventListener('change',e=>{
   $('pl-saved').value=e.target.value;
