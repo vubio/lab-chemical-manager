@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updatedAt": "2026-11-04T20:54:54.053Z",
+  "updatedAt": "2026-11-04T20:55:05.950Z",
   "chemicals": {
     "version": 1,
     "chemicals": [
@@ -4040,9 +4040,6 @@
       "name": "96-well_1k-5k-10k_AA",
       "format": "96",
       "selection": [
-        "A5",
-        "B5",
-        "C5",
         "D5"
       ],
       "rowNotes": {
@@ -4210,7 +4207,7 @@
           "kind": "normal",
           "manualLevels": [
             "AA (µM)",
-            null,
+            "100",
             null
           ]
         },
@@ -4260,7 +4257,7 @@
           "kind": "normal",
           "manualLevels": [
             "AA (µM)",
-            null,
+            "100",
             null
           ]
         },
@@ -4310,7 +4307,7 @@
           "kind": "normal",
           "manualLevels": [
             "AA (µM)",
-            null,
+            "100",
             null
           ]
         },
@@ -4360,7 +4357,7 @@
           "kind": "normal",
           "manualLevels": [
             "AA (µM)",
-            null,
+            "100",
             null
           ]
         },
