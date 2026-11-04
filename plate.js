@@ -208,17 +208,17 @@ function renderPlate(){
  }
  grid.innerHTML=h;renderFactorLegend();
  const chosen=[...selected].sort((a,b)=>wellIndex(a,cols)-wellIndex(b,cols));
- const isContinuous=contiguous(chosen,cols);
+ const selectionType=selectionGeometry(chosen,cols);
  const countLabeled=chosen.filter(w=>state.assignments[w]).length;
  $('pl-clear-selected').disabled=countLabeled===0;
- $('pl-selection-count').textContent=hasSelected?`${selected.size} selected (${countLabeled} labeled) · ${chosen.length===1?chosen[0]:`${chosen[0]}–${chosen.at(-1)}`} · ${isContinuous?'Consecutive':'Not consecutive'} · ${Object.keys(state.assignments).length} total labeled`: `No wells selected · ${Object.keys(state.assignments).length} labeled on ${state.format}-well plate`;
+ $('pl-selection-count').textContent=hasSelected?`${selected.size} selected (${countLabeled} labeled) · ${chosen.length===1?chosen[0]:`${chosen[0]}–${chosen.at(-1)}`} · ${selectionType} · drag to move together · ${Object.keys(state.assignments).length} total labeled`: `No wells selected · ${Object.keys(state.assignments).length} labeled on ${state.format}-well plate`;
  $('pl-selection-count').classList.toggle('pl-selection-active',hasSelected);
  const feedback=$('pl-drag-preview');
  if(feedback){
   if(drag?.mode==='move'){
    feedback.hidden=false;
    feedback.className='pl-drag-preview'+(drag.error?' pl-preview-error':'');
-   feedback.textContent=drag.error?`Cannot drop here: ${drag.error} · Release to cancel, or press Esc.`:preview?`PREVIEW · ${preview.sourceCount} labeled well${preview.sourceCount===1?'':'s'} → ${preview.selection[0]}–${preview.selection.at(-1)} · ${preview.displaced.length?'Other labels shift automatically.':'Empty destination.'} Release to apply · Esc to cancel.`:`Moving ${drag.sources.length} well${drag.sources.length===1?'':'s'} · Hover over a destination to preview · Esc to cancel.`;
+   feedback.textContent=drag.error?`Cannot drop here: ${drag.error} · Release to cancel, or press Esc.`:preview?`PREVIEW · ${preview.sourceCount} labeled well${preview.sourceCount===1?'':'s'} moving together → ${preview.selection[0]}–${preview.selection.at(-1)} · ${preview.displaced.length?'Other labels shift forward.':'No other labels displaced.'} Release to apply · Esc to cancel.`:`Moving ${drag.sources.length} selected well${drag.sources.length===1?'':'s'} together · Hover over a destination to preview · Esc to cancel.`;
   }else{feedback.hidden=true;feedback.textContent=''}
  }
  $('pl-current-well').textContent=activeCell?`Well ${activeCell} · double-click to edit its labels`:'Click or double-click a well to edit its labels';
@@ -354,6 +354,55 @@ function moveBlock(assignments,selection,start,end,rows,cols){
  const next={};after.forEach((record,i)=>{if(record)next[wellAt(i,cols)]=record});
  return {assignments:next,selection:target,sourceCount:count,displaced,method};
 }
+
+/* Translate a multi-row/multi-column well selection as one geometric shape.
+   Unlike moveBlock's linear insertion, each moved well retains its relative
+   row and column offset. Destination collisions push existing labels forward,
+   never swapping with or overwriting the selected group. */
+function moveWellShape(assignments,selection,start,end,rows,cols){
+ const selected=[...new Set(selection.includes(start)?selection:[start])];
+ const selectedLabeled=selected.filter(w=>Object.prototype.hasOwnProperty.call(assignments,w));
+ if(!selectedLabeled.length||!assignments[start])throw Error('Start the move by dragging a selected, labeled well.');
+ const [sr,sc]=coord(start),[er,ec]=coord(end),dr=er-sr,dc=ec-sc;
+ const shift=w=>{
+  const [r,c]=coord(w),nr=r+dr,nc=c+dc;
+  if(nr<0||nr>=rows||nc<0||nc>=cols)throw Error('This group would extend outside the plate. Move it toward an area with enough rows and columns.');
+  return cellName(nr,nc);
+ };
+ // Validate every selected coordinate, including selected empty wells, before
+ // attempting any changes. The original assignments remain immutable.
+ const targets=selected.map(shift);
+ if(!dr&&!dc)return {assignments:{...assignments},selection:targets,sourceCount:selectedLabeled.length,displaced:[],method:'unchanged',shape:'spatial'};
+ const originals=Object.entries(assignments),sourceSet=new Set(selectedLabeled),next={};
+ const reserved=new Set();
+ for(const source of selectedLabeled){
+  const destination=shift(source);
+  reserved.add(wellIndex(destination,cols));
+  next[destination]=assignments[source];
+ }
+ const taken=new Set(reserved);
+ const others=originals.filter(([w])=>!sourceSet.has(w)).sort((a,b)=>wellIndex(a[0],cols)-wellIndex(b[0],cols));
+ const displaced=[];
+ for(const [well,record] of others){
+  const original=wellIndex(well,cols);let destination=original;
+  while(destination<rows*cols&&taken.has(destination))destination++;
+  if(destination>=rows*cols)throw Error('Not enough free wells after the destination to move existing labels without overwriting. Choose another area.');
+  taken.add(destination);
+  const finalWell=wellAt(destination,cols);
+  next[finalWell]=record;
+  if(destination!==original)displaced.push(finalWell);
+ }
+ return {assignments:next,selection:targets,sourceCount:selectedLabeled.length,displaced,method:displaced.length?'insert':'empty',shape:'spatial'};
+}
+function selectionGeometry(wells,cols){
+ const coords=[...new Set(wells)].map(coord);
+ if(!coords.length)return '';
+ const top=Math.min(...coords.map(x=>x[0])),bottom=Math.max(...coords.map(x=>x[0]));
+ const left=Math.min(...coords.map(x=>x[1])),right=Math.max(...coords.map(x=>x[1]));
+ const height=bottom-top+1,width=right-left+1;
+ return height*width===coords.length?`${height}×${width} rectangle`:contiguous(wells,cols)?'consecutive range':'grouped selection';
+}
+
 function openWellLabelDialog(well,applySelection=false){
  const targets=applySelection&&state.selection.length?state.selection.filter(w=>allCoords().includes(w)):[well];
  if(!targets.length){notify('Select one or more wells first.',true);return}
@@ -540,7 +589,7 @@ function moveDrag(e){
  const dest=well.dataset.well;if(dest===drag.last)return;
  drag.last=dest;drag.moved=true;
  if(drag.mode==='move'){
-  try{const [rows,cols]=dimensions();drag.preview=moveBlock(state.assignments,drag.sources,drag.start,dest,rows,cols);drag.error=null;drag.invalid=null}
+  try{const [rows,cols]=dimensions();drag.preview=contiguous(drag.sources,cols)&&drag.sources.every(w=>state.assignments[w])?moveBlock(state.assignments,drag.sources,drag.start,dest,rows,cols):moveWellShape(state.assignments,drag.sources,drag.start,dest,rows,cols);drag.error=null;drag.invalid=null}
   catch(err){drag.preview=null;drag.error=err.message;drag.invalid=dest}
   renderPlate();
  }else if(drag.mode!=='shift'){
@@ -693,6 +742,6 @@ window.PlateLayoutCloud={
   persist();refreshAll();
  }
 };
-window.PlateLayoutCore={SHAPES,effectiveLabels,assignManualLevels,manualLevelUsage,clearSelectedAssignments,axisHeaderHTML,axisInlineHeaderHTML,plateAxisGridStart,place,moveBlock,transposeMap,combinations,splitValues,cellName,applySelection,selectionRect,contiguous,linearRange,plateHTML,plateTable,conditionHTML,conditionTable,labelsHTML,legendEntries,factorLegendHTML,factorLegendPlain,getSnapshot:()=>structuredClone(state)};
+window.PlateLayoutCore={SHAPES,effectiveLabels,assignManualLevels,manualLevelUsage,moveWellShape,selectionGeometry,clearSelectedAssignments,axisHeaderHTML,axisInlineHeaderHTML,plateAxisGridStart,place,moveBlock,transposeMap,combinations,splitValues,cellName,applySelection,selectionRect,contiguous,linearRange,plateHTML,plateTable,conditionHTML,conditionTable,labelsHTML,legendEntries,factorLegendHTML,factorLegendPlain,getSnapshot:()=>structuredClone(state)};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
