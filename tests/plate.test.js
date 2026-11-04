@@ -168,4 +168,16 @@ assert(plateScript.includes("if(quick)quick.value=selected"));
 assert(plateScript.includes("if($('pl-quick-saved'))$('pl-quick-saved').value=item.id"));
 assert(plateScript.includes("saved.unshift(item)"), 'new versions are retained');
 
+
+const quickNameHTML=fs.readFileSync('index.html','utf8');
+const quickNameJS=fs.readFileSync('plate.js','utf8');
+assert(quickNameHTML.includes('id="pl-quick-name"'), 'quick save has a layout-name field');
+assert(quickNameHTML.indexOf('id="pl-quick-name"')<quickNameHTML.indexOf('id="pl-quick-save"'), 'name field precedes save');
+assert(quickNameJS.includes("$('pl-quick-name').addEventListener('input'"), 'sidebar name is editable');
+assert(quickNameJS.includes("$('pl-title').value=e.target.value"), 'quick name updates original name field');
+assert(quickNameJS.includes("if($('pl-quick-name'))$('pl-quick-name').value=state.name"), 'loaded layouts repopulate quick name');
+assert(quickNameJS.includes("Enter a layout name beside Save layout before saving."), 'empty names rejected');
+assert(quickNameJS.includes("if(e.key==='Enter'){e.preventDefault();$('pl-quick-save').click()}"), 'enter can save');
+assert(quickNameJS.includes("const name=String($('pl-quick-name')?.value"), 'save reads quick name');
+
 console.log('Plate layout allocation and selection tests passed');
