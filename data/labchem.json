@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updatedAt": "2026-11-04T21:37:09.925Z",
+  "updatedAt": "2026-11-04T21:37:21.840Z",
   "chemicals": {
     "version": 1,
     "chemicals": [
@@ -4040,10 +4040,7 @@
       "name": "96-well_1k-5k-10k_AA",
       "format": "96",
       "selection": [
-        "E5",
-        "F5",
-        "G5",
-        "H5"
+        "E8"
       ],
       "rowNotes": {
         "A": "1k",
