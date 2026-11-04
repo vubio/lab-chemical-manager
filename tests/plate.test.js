@@ -152,4 +152,20 @@ assert.throws(()=>levelCore.moveWellShape(fullMap,shapeWells,'E1','E2',8,12),/No
 assert.equal(fullMap.H12.labels[0],'H12');
 assert.equal(levelCore.selectionGeometry(['A1','A3','C1'],12),'grouped selection');
 
+
+const indexHTML=fs.readFileSync('index.html','utf8');
+const plateScript=fs.readFileSync('plate.js','utf8');
+assert(indexHTML.includes('id="pl-quick-save"'));
+assert(indexHTML.includes('id="pl-quick-saved"'));
+assert(indexHTML.includes('id="pl-quick-load"'));
+assert(indexHTML.includes('id="pl-saved"'), 'existing lower saved-layout selector remains');
+assert(indexHTML.includes('id="pl-save"'), 'existing save action remains');
+assert(indexHTML.includes('id="pl-load"'), 'existing load action remains');
+assert(plateScript.includes("$('pl-quick-save').addEventListener('click',()=>$('pl-save').click())"));
+assert(plateScript.includes("$('pl-load').click()"));
+assert(plateScript.includes("if(quick)quick.innerHTML=options"));
+assert(plateScript.includes("if(quick)quick.value=selected"));
+assert(plateScript.includes("if($('pl-quick-saved'))$('pl-quick-saved').value=item.id"));
+assert(plateScript.includes("saved.unshift(item)"), 'new versions are retained');
+
 console.log('Plate layout allocation and selection tests passed');
