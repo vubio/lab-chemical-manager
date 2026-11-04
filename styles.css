@@ -411,3 +411,60 @@ body.pr-open{overflow:hidden}
  #page-plate .pl-manual-sidebar p{margin-bottom:7px}
  #page-plate .pl-manual-legend-row{display:inline-grid;width:min(190px,32%);margin-right:10px}
 }
+
+
+/* Fast save/load beside the plate: reuse the same saved layouts as the lower controls. */
+#page-plate .pl-quick-layouts {
+  margin-top:13px;
+  padding-top:11px;
+  border-top:1px solid #d4dfe7;
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  gap:7px;
+}
+#page-plate .pl-quick-layouts h4{
+  margin:0 0 2px;
+  font-size:12px;
+  font-weight:750;
+  color:#344b60;
+}
+#page-plate .pl-quick-layouts .pl-quick-label {
+  display:block;
+  font-size:10px;
+  color:#607486;
+  margin-top:5px;
+}
+#page-plate .pl-quick-layouts select {
+  box-sizing:border-box;
+  display:block;
+  width:100%;
+  min-width:0;
+  max-width:100%;
+  height:30px;
+  padding:4px 5px;
+  border:1px solid #c2cfda;
+  border-radius:0;
+  background:#fff;
+  color:#263d51;
+  font:11px Arial,sans-serif;
+}
+#page-plate .pl-quick-layouts .btn{
+  width:100%;
+  box-sizing:border-box;
+  margin:0;
+  padding:8px 7px;
+  border-radius:2px;
+  font-size:11px;
+  white-space:normal;
+}
+#page-plate .pl-quick-layouts .pl-quick-save{
+  background:#e8f3f1;
+  color:#155c55;
+  border:1px solid #9bc4bb;
+  font-weight:700;
+}
+#page-plate .pl-quick-layouts .pl-quick-load:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
