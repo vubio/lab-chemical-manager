@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updatedAt": "2026-11-04T23:30:58.308Z",
+  "updatedAt": "2026-11-04T23:31:12.330Z",
   "chemicals": {
     "version": 1,
     "chemicals": [
@@ -4036,11 +4036,13 @@
   },
   "plates": {
     "draft": {
-      "id": "plate-1793834791085-90fw",
-      "name": "96-well_1k-5k-10k_AA",
+      "id": "plate-1792455528868-hu05",
+      "name": "96-well_1k-5k-10k_Eras2",
       "format": "96",
       "selection": [
-        "C7"
+        "G1",
+        "G2",
+        "G3"
       ],
       "rowNotes": {
         "A": "1k",
@@ -4049,12 +4051,12 @@
       },
       "colNotes": {},
       "manualLevelNames": [
-        "Treatment",
-        "Concentration",
+        "Level 1",
+        "Level 2",
         "Level 3"
       ],
       "fillOrder": "rows",
-      "mode": "select",
+      "mode": "move",
       "factors": [
         {
           "id": "factor1",
@@ -4063,8 +4065,8 @@
         },
         {
           "id": "factor3",
-          "name": "AA (µM)",
-          "values": "0, 5, 10, 25, 50, 100"
+          "name": "Erastin2 (µM)",
+          "values": "0, 0.05, 0.1, 0.2, 0.5"
         },
         {
           "id": "factor2",
@@ -4128,445 +4130,543 @@
         "[[\"factor1\",\"10k\"],[\"factor3\",\"0.\"]]": 3,
         "[[\"factor1\",\"1k\"],[\"factor3\",\"0.5\"]]": 3,
         "[[\"factor1\",\"5k\"],[\"factor3\",\"0.5\"]]": 3,
-        "[[\"factor1\",\"10k\"],[\"factor3\",\"0.5\"]]": 3,
-        "[[\"factor1\",\"1k\"],[\"factor3\",\"1\"]]": 3,
-        "[[\"factor1\",\"5k\"],[\"factor3\",\"1\"]]": 3,
-        "[[\"factor1\",\"10k\"],[\"factor3\",\"1\"]]": 3,
-        "[[\"factor1\",\"1k\"],[\"factor3\",\"10\"]]": 3,
-        "[[\"factor1\",\"5k\"],[\"factor3\",\"10\"]]": 3,
-        "[[\"factor1\",\"10k\"],[\"factor3\",\"10\"]]": 3,
-        "[[\"factor1\",\"1k\"],[\"factor3\",\"100\"]]": 3,
-        "[[\"factor1\",\"5k\"],[\"factor3\",\"100\"]]": 3,
-        "[[\"factor1\",\"10k\"],[\"factor3\",\"100\"]]": 3,
-        "[[\"factor1\",\"1k\"],[\"factor3\",\"5\"]]": 3,
-        "[[\"factor1\",\"5k\"],[\"factor3\",\"5\"]]": 3,
-        "[[\"factor1\",\"10k\"],[\"factor3\",\"5\"]]": 3,
-        "[[\"factor1\",\"1k\"],[\"factor3\",\"50\"]]": 3,
-        "[[\"factor1\",\"5k\"],[\"factor3\",\"50\"]]": 3,
-        "[[\"factor1\",\"10k\"],[\"factor3\",\"50\"]]": 3,
-        "[[\"factor1\",\"1k\"],[\"factor3\",\"510\"]]": 3,
-        "[[\"factor1\",\"5k\"],[\"factor3\",\"510\"]]": 3,
-        "[[\"factor1\",\"10k\"],[\"factor3\",\"510\"]]": 3,
-        "[[\"factor1\",\"1k\"],[\"factor3\",\"2\"]]": 3,
-        "[[\"factor1\",\"5k\"],[\"factor3\",\"2\"]]": 3,
-        "[[\"factor1\",\"10k\"],[\"factor3\",\"2\"]]": 3,
-        "[[\"factor1\",\"1k\"],[\"factor3\",\"20\"]]": 3,
-        "[[\"factor1\",\"5k\"],[\"factor3\",\"20\"]]": 3,
-        "[[\"factor1\",\"10k\"],[\"factor3\",\"20\"]]": 3,
-        "[[\"factor1\",\"1k\"],[\"factor3\",\"250\"]]": 3,
-        "[[\"factor1\",\"5k\"],[\"factor3\",\"250\"]]": 3,
-        "[[\"factor1\",\"10k\"],[\"factor3\",\"250\"]]": 3,
-        "[[\"factor1\",\"1k\"],[\"factor3\",\"25\"]]": 3,
-        "[[\"factor1\",\"5k\"],[\"factor3\",\"25\"]]": 3,
-        "[[\"factor1\",\"10k\"],[\"factor3\",\"25\"]]": 3
+        "[[\"factor1\",\"10k\"],[\"factor3\",\"0.5\"]]": 3
       },
       "assignments": {
-        "E1": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "0",
-            null
-          ]
-        },
-        "E2": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "1",
-            null
-          ]
-        },
-        "E3": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "5",
-            null
-          ]
-        },
-        "E4": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "10",
-            null
-          ]
-        },
-        "E5": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "20",
-            null
-          ]
-        },
-        "F1": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "0",
-            null
-          ]
-        },
-        "F2": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "1",
-            null
-          ]
-        },
-        "F3": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "5",
-            null
-          ]
-        },
-        "F4": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "10",
-            null
-          ]
-        },
-        "F5": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "20",
-            null
-          ]
-        },
-        "G1": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "0",
-            null
-          ]
-        },
-        "G2": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "1",
-            null
-          ]
-        },
-        "G3": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "5",
-            null
-          ]
-        },
-        "G4": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "10",
-            null
-          ]
-        },
-        "G5": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "20",
-            null
-          ]
-        },
-        "H1": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "0",
-            null
-          ]
-        },
-        "H2": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "1",
-            null
-          ]
-        },
-        "H3": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "5",
-            null
-          ]
-        },
-        "H4": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "10",
-            null
-          ]
-        },
-        "H5": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "20",
-            null
-          ]
-        },
         "A1": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "0",
-            null
-          ]
+          "labels": [
+            "1k",
+            "0"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0\"]]"
         },
         "A2": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "25",
-            null
-          ]
+          "labels": [
+            "1k",
+            "0"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0\"]]"
         },
         "A3": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "50",
-            null
-          ]
+          "labels": [
+            "1k",
+            "0"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0\"]]"
         },
         "A4": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "75",
-            null
-          ]
+          "labels": [
+            "1k",
+            "0.05"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.05\"]]"
         },
         "A5": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "100",
-            null
-          ]
+          "labels": [
+            "1k",
+            "0.05"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.05\"]]"
+        },
+        "A6": {
+          "labels": [
+            "1k",
+            "0.05"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.05\"]]"
+        },
+        "A7": {
+          "labels": [
+            "1k",
+            "0.1"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.1\"]]"
+        },
+        "A8": {
+          "labels": [
+            "1k",
+            "0.1"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.1\"]]"
+        },
+        "A9": {
+          "labels": [
+            "1k",
+            "0.1"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.1\"]]"
+        },
+        "A10": {
+          "labels": [
+            "1k",
+            "0.2"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.2\"]]"
+        },
+        "A11": {
+          "labels": [
+            "1k",
+            "0.2"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.2\"]]"
+        },
+        "A12": {
+          "labels": [
+            "1k",
+            "0.2"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.2\"]]"
         },
         "B1": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "0",
-            null
-          ]
+          "labels": [
+            "1k",
+            "0.5"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.5\"]]"
         },
         "B2": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "25",
-            null
-          ]
+          "labels": [
+            "1k",
+            "0.5"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.5\"]]"
         },
         "B3": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "50",
-            null
-          ]
-        },
-        "B4": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "75",
-            null
-          ]
-        },
-        "B5": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "100",
-            null
-          ]
+          "labels": [
+            "1k",
+            "0.5"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"1k\"],[\"factor3\",\"0.5\"]]"
         },
         "C1": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "0",
-            null
-          ]
+          "labels": [
+            "5k",
+            "0"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0\"]]"
         },
         "C2": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "25",
-            null
-          ]
+          "labels": [
+            "5k",
+            "0"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0\"]]"
         },
         "C3": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "50",
-            null
-          ]
+          "labels": [
+            "5k",
+            "0"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0\"]]"
         },
         "C4": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "75",
-            null
-          ]
+          "labels": [
+            "5k",
+            "0.05"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.05\"]]"
         },
         "C5": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "100",
-            null
-          ]
+          "labels": [
+            "5k",
+            "0.05"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.05\"]]"
+        },
+        "C6": {
+          "labels": [
+            "5k",
+            "0.05"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.05\"]]"
+        },
+        "C7": {
+          "labels": [
+            "5k",
+            "0.1"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.1\"]]"
+        },
+        "C8": {
+          "labels": [
+            "5k",
+            "0.1"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.1\"]]"
+        },
+        "C9": {
+          "labels": [
+            "5k",
+            "0.1"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.1\"]]"
+        },
+        "C10": {
+          "labels": [
+            "5k",
+            "0.2"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.2\"]]"
+        },
+        "C11": {
+          "labels": [
+            "5k",
+            "0.2"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.2\"]]"
+        },
+        "C12": {
+          "labels": [
+            "5k",
+            "0.2"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.2\"]]"
         },
         "D1": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "0",
-            null
-          ]
+          "labels": [
+            "5k",
+            "0.5"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.5\"]]"
         },
         "D2": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "25",
-            null
-          ]
+          "labels": [
+            "5k",
+            "0.5"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.5\"]]"
         },
         "D3": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "50",
-            null
-          ]
+          "labels": [
+            "5k",
+            "0.5"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"5k\"],[\"factor3\",\"0.5\"]]"
         },
-        "D4": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "75",
-            null
-          ]
+        "E1": {
+          "labels": [
+            "10k",
+            "0"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0\"]]"
         },
-        "D5": {
-          "labels": [],
+        "E2": {
+          "labels": [
+            "10k",
+            "0"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0\"]]"
+        },
+        "E3": {
+          "labels": [
+            "10k",
+            "0"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0\"]]"
+        },
+        "E4": {
+          "labels": [
+            "10k",
+            "0.05"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.05\"]]"
+        },
+        "E5": {
+          "labels": [
+            "10k",
+            "0.05"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.05\"]]"
+        },
+        "E6": {
+          "labels": [
+            "10k",
+            "0.05"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.05\"]]"
+        },
+        "E7": {
+          "labels": [
+            "10k",
+            "0.1"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.1\"]]"
+        },
+        "E8": {
+          "labels": [
+            "10k",
+            "0.1"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.1\"]]"
+        },
+        "E9": {
+          "labels": [
+            "10k",
+            "0.1"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.1\"]]"
+        },
+        "E10": {
+          "labels": [
+            "10k",
+            "0.2"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.2\"]]"
+        },
+        "E11": {
+          "labels": [
+            "10k",
+            "0.2"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.2\"]]"
+        },
+        "E12": {
+          "labels": [
+            "10k",
+            "0.2"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.2\"]]"
+        },
+        "F1": {
+          "labels": [
+            "10k",
+            "0.5"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.5\"]]"
+        },
+        "F2": {
+          "labels": [
+            "10k",
+            "0.5"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.5\"]]"
+        },
+        "F3": {
+          "labels": [
+            "10k",
+            "0.5"
+          ],
+          "factorNames": [
+            "Cell Density",
+            "Erastin2 (µM)"
+          ],
+          "group": "[[\"factor1\",\"10k\"],[\"factor3\",\"0.5\"]]"
+        },
+        "G1": {
+          "labels": [
+            "Media Only"
+          ],
+          "factorNames": [
+            "Control"
+          ],
           "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "100",
-            null
-          ]
+          "kind": "special",
+          "controlName": "Media Only"
+        },
+        "G2": {
+          "labels": [
+            "Media Only"
+          ],
+          "factorNames": [
+            "Control"
+          ],
+          "group": "manual",
+          "kind": "special",
+          "controlName": "Media Only"
+        },
+        "G3": {
+          "labels": [
+            "Media Only"
+          ],
+          "factorNames": [
+            "Control"
+          ],
+          "group": "manual",
+          "kind": "special",
+          "controlName": "Media Only"
         }
       },
       "notes": "",
-      "generatedAt": "2026-10-20T00:24:24.459Z",
+      "generatedAt": "2026-10-19T21:33:10.628Z",
       "manualLayoutChanges": true,
       "factorDraftStale": false,
-      "savedAt": "2026-11-04T23:26:31.085Z"
+      "savedAt": "2026-10-20T00:18:48.868Z"
     },
     "saved": [
       {
