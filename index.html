@@ -6,9 +6,9 @@
   <meta name="description" content="Local-first laboratory chemical preparation, dosing calculator and digital lab note records." />
   <title>03_Calculator</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=1" />
-  <link rel="stylesheet" href="styles.css?v=quick-save-load-20261104-1" />
+  <link rel="stylesheet" href="styles.css?v=quick-name-20261104-1" />
   <script src="app.js?v=github-sync-20261027-1" defer></script>
-  <script src="plate.js?v=quick-save-load-20261104-1" defer></script>
+  <script src="plate.js?v=quick-name-20261104-1" defer></script>
   <script src="plate_reader.js?v=match-manual-20261028-1" defer></script>
   <script src="github_sync.js?v=20261027-2" defer></script>
 </head>
@@ -65,6 +65,8 @@
  <label class="pl-manual-legend-row"><span class="pl-legend-swatch level-0" aria-hidden="true">■</span><span class="pl-legend-prefix">1</span><input type="text" id="pl-manual-name-0" data-manual-name="0" aria-label="Name for manual label Level 1" maxlength="80" value="Level 1" /></label><label class="pl-manual-legend-row"><span class="pl-legend-swatch level-1" aria-hidden="true">■</span><span class="pl-legend-prefix">2</span><input type="text" id="pl-manual-name-1" data-manual-name="1" aria-label="Name for manual label Level 2" maxlength="80" value="Level 2" /></label><label class="pl-manual-legend-row"><span class="pl-legend-swatch level-2" aria-hidden="true">■</span><span class="pl-legend-prefix">3</span><input type="text" id="pl-manual-name-2" data-manual-name="2" aria-label="Name for manual label Level 3" maxlength="80" value="Level 3" /></label>
  <div class="pl-quick-layouts" aria-label="Quick save and load plate layouts">
   <h4>Saved plate layouts</h4>
+  <label for="pl-quick-name" class="pl-quick-label">Layout name</label>
+  <input type="text" id="pl-quick-name" class="pl-quick-name" maxlength="150" placeholder="Name this experiment" value="New experiment" aria-label="Name for the plate layout to save" />
   <button type="button" class="btn small pl-quick-save" id="pl-quick-save">Save layout</button>
   <label for="pl-quick-saved" class="pl-quick-label">Load a saved layout</label>
   <select id="pl-quick-saved" aria-label="Choose saved plate layout"><option value="">Choose saved layout</option></select>
