@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updatedAt": "2026-11-04T20:55:05.950Z",
+  "updatedAt": "2026-11-04T20:55:18.223Z",
   "chemicals": {
     "version": 1,
     "chemicals": [
@@ -4040,6 +4040,25 @@
       "name": "96-well_1k-5k-10k_AA",
       "format": "96",
       "selection": [
+        "A1",
+        "A2",
+        "A3",
+        "A4",
+        "A5",
+        "B1",
+        "B2",
+        "B3",
+        "B4",
+        "B5",
+        "C1",
+        "C2",
+        "C3",
+        "C4",
+        "C5",
+        "D1",
+        "D2",
+        "D3",
+        "D4",
         "D5"
       ],
       "rowNotes": {
@@ -4358,206 +4377,6 @@
           "manualLevels": [
             "AA (µM)",
             "100",
-            null
-          ]
-        },
-        "E1": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "0",
-            null
-          ]
-        },
-        "E2": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            null,
-            null
-          ]
-        },
-        "E3": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            null,
-            null
-          ]
-        },
-        "E4": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            null,
-            null
-          ]
-        },
-        "E5": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            null,
-            null
-          ]
-        },
-        "F1": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "0",
-            null
-          ]
-        },
-        "F2": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            null,
-            null
-          ]
-        },
-        "F3": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            null,
-            null
-          ]
-        },
-        "F4": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            null,
-            null
-          ]
-        },
-        "F5": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            null,
-            null
-          ]
-        },
-        "G1": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "0",
-            null
-          ]
-        },
-        "G2": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            null,
-            null
-          ]
-        },
-        "G3": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            null,
-            null
-          ]
-        },
-        "G4": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            null,
-            null
-          ]
-        },
-        "G5": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            null,
-            null
-          ]
-        },
-        "H1": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "0",
-            null
-          ]
-        },
-        "H2": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            null,
-            null
-          ]
-        },
-        "H3": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            null,
-            null
-          ]
-        },
-        "H4": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            null,
-            null
-          ]
-        },
-        "H5": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            null,
             null
           ]
         }
