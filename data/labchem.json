@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updatedAt": "2026-11-04T23:16:34.904Z",
+  "updatedAt": "2026-11-04T23:21:34.955Z",
   "chemicals": {
     "version": 1,
     "chemicals": [
@@ -4040,26 +4040,7 @@
       "name": "96-well_1k-5k-10k_AA",
       "format": "96",
       "selection": [
-        "E1",
-        "E2",
-        "E3",
-        "E4",
-        "E5",
-        "F1",
-        "F2",
-        "F3",
-        "F4",
-        "F5",
-        "G1",
-        "G2",
-        "G3",
-        "G4",
-        "G5",
-        "H1",
-        "H2",
-        "H3",
-        "H4",
-        "H5"
+        "E6"
       ],
       "rowNotes": {
         "A": "1k",
@@ -4180,206 +4161,6 @@
         "[[\"factor1\",\"10k\"],[\"factor3\",\"25\"]]": 3
       },
       "assignments": {
-        "A1": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "0",
-            null
-          ]
-        },
-        "A2": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "25",
-            null
-          ]
-        },
-        "A3": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "50",
-            null
-          ]
-        },
-        "A4": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "75",
-            null
-          ]
-        },
-        "A5": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "100",
-            null
-          ]
-        },
-        "B1": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "0",
-            null
-          ]
-        },
-        "B2": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "25",
-            null
-          ]
-        },
-        "B3": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "50",
-            null
-          ]
-        },
-        "B4": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "75",
-            null
-          ]
-        },
-        "B5": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "100",
-            null
-          ]
-        },
-        "C1": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "0",
-            null
-          ]
-        },
-        "C2": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "25",
-            null
-          ]
-        },
-        "C3": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "50",
-            null
-          ]
-        },
-        "C4": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "75",
-            null
-          ]
-        },
-        "C5": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "100",
-            null
-          ]
-        },
-        "D1": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "0",
-            null
-          ]
-        },
-        "D2": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "25",
-            null
-          ]
-        },
-        "D3": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "50",
-            null
-          ]
-        },
-        "D4": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "75",
-            null
-          ]
-        },
-        "D5": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "100",
-            null
-          ]
-        },
         "E1": {
           "labels": [],
           "group": "manual",
@@ -4577,6 +4358,206 @@
           "manualLevels": [
             "Retinol (µM)",
             "20",
+            null
+          ]
+        },
+        "A1": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "AA (µM)",
+            "0",
+            null
+          ]
+        },
+        "A2": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "AA (µM)",
+            "25",
+            null
+          ]
+        },
+        "A3": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "AA (µM)",
+            "50",
+            null
+          ]
+        },
+        "A4": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "AA (µM)",
+            "75",
+            null
+          ]
+        },
+        "A5": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "AA (µM)",
+            "100",
+            null
+          ]
+        },
+        "B1": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "AA (µM)",
+            "0",
+            null
+          ]
+        },
+        "B2": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "AA (µM)",
+            "25",
+            null
+          ]
+        },
+        "B3": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "AA (µM)",
+            "50",
+            null
+          ]
+        },
+        "B4": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "AA (µM)",
+            "75",
+            null
+          ]
+        },
+        "B5": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "AA (µM)",
+            "100",
+            null
+          ]
+        },
+        "C1": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "AA (µM)",
+            "0",
+            null
+          ]
+        },
+        "C2": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "AA (µM)",
+            "25",
+            null
+          ]
+        },
+        "C3": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "AA (µM)",
+            "50",
+            null
+          ]
+        },
+        "C4": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "AA (µM)",
+            "75",
+            null
+          ]
+        },
+        "C5": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "AA (µM)",
+            "100",
+            null
+          ]
+        },
+        "D1": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "AA (µM)",
+            "0",
+            null
+          ]
+        },
+        "D2": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "AA (µM)",
+            "25",
+            null
+          ]
+        },
+        "D3": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "AA (µM)",
+            "50",
+            null
+          ]
+        },
+        "D4": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "AA (µM)",
+            "75",
+            null
+          ]
+        },
+        "D5": {
+          "labels": [],
+          "group": "manual",
+          "kind": "normal",
+          "manualLevels": [
+            "AA (µM)",
+            "100",
             null
           ]
         }
