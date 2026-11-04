@@ -106,4 +106,50 @@ assert(manualClipboardLabel.includes('#1E5196'));
 assert(!manualClipboardLabel.includes('Old Dose'));
 assert(!manualClipboardLabel.includes('Old Drug'));
 
+
+// Move a rectangle as a geometric shape, rather than as a linear row-major run.
+const shapeWells=[];
+const shapeMap={A1:{labels:['Unrelated guard']},C4:{labels:['Unrelated at C4']},C6:{labels:['Unrelated at C6']}};
+for(let r=4;r<8;r++)for(let c=1;c<=5;c++){
+ const well=String.fromCharCode(65+r)+c;
+ shapeWells.push(well);
+ shapeMap[well]={labels:[well],manualLevels:[well,'25']};
+}
+assert.equal(levelCore.selectionGeometry(shapeWells,12),'4×5 rectangle');
+const firstShape=levelCore.moveWellShape(shapeMap,shapeWells,'E1','C3',8,12);
+assert.equal(firstShape.sourceCount,20);
+assert.equal(firstShape.selection.length,20);
+assert.equal(levelCore.selectionGeometry(firstShape.selection,12),'4×5 rectangle');
+assert.equal(firstShape.assignments.C3.labels[0],'E1');
+assert.equal(firstShape.assignments.F7.labels[0],'H5');
+assert.equal(firstShape.assignments.C3.manualLevels[0],'E1');
+assert.equal(firstShape.assignments.A1.labels[0],'Unrelated guard');
+assert.equal(Object.keys(firstShape.assignments).length,Object.keys(shapeMap).length);
+assert.equal(firstShape.method,'insert','other labels shift instead of swapping');
+assert.equal(firstShape.displaced.length,2);
+assert(Object.values(firstShape.assignments).some(v=>v.labels[0]==='Unrelated at C4'));
+assert(Object.values(firstShape.assignments).some(v=>v.labels[0]==='Unrelated at C6'));
+for(const w of shapeWells)assert.equal(shapeMap[w].labels[0],w,'original assignments unchanged before release');
+const shapeAgain=levelCore.moveWellShape(shapeMap,shapeWells,'E1','E1',8,12);
+assert.equal(shapeAgain.method,'unchanged');
+assert.throws(()=>levelCore.moveWellShape(shapeMap,shapeWells,'E1','H9',8,12),/outside.*plate/i);
+assert.equal(Object.keys(shapeMap).length,23,'invalid preview does not mutate the plate');
+// Sparse selections keep gaps and their relative row/column offsets.
+const sparseSelection=['D1','D2','D3','E1','E2','E3'];
+const sparseMap={D1:{labels:['D1']},D3:{labels:['D3']},E2:{labels:['E2']},H12:{labels:['Guard']}};
+const sparseResult=levelCore.moveWellShape(sparseMap,sparseSelection,'D1','C2',8,12);
+assert.deepEqual(Array.from(sparseResult.selection),['C2','C3','C4','D2','D3','D4']);
+assert.equal(sparseResult.sourceCount,3);
+assert.equal(sparseResult.assignments.C2.labels[0],'D1');
+assert.equal(sparseResult.assignments.C4.labels[0],'D3');
+assert.equal(sparseResult.assignments.D3.labels[0],'E2');
+assert.equal(sparseResult.assignments.H12.labels[0],'Guard');
+assert.equal(Object.keys(sparseResult.assignments).length,4);
+assert.throws(()=>levelCore.moveWellShape({},sparseSelection,'D1','C2',8,12),/labeled/);
+// The occupied destination is never overwritten when no forward free cell exists.
+const fullMap={};for(const w of coords(8,12))fullMap[w]={labels:[w]};
+assert.throws(()=>levelCore.moveWellShape(fullMap,shapeWells,'E1','E2',8,12),/Not enough free wells/i);
+assert.equal(fullMap.H12.labels[0],'H12');
+assert.equal(levelCore.selectionGeometry(['A1','A3','C1'],12),'grouped selection');
+
 console.log('Plate layout allocation and selection tests passed');
