@@ -468,3 +468,24 @@ body.pr-open{overflow:hidden}
   opacity:.5;
   cursor:not-allowed;
 }
+
+
+/* The quick Save control has its own immediately editable experiment name. */
+#page-plate .pl-quick-layouts .pl-quick-name{
+  display:block;
+  box-sizing:border-box;
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  padding:6px 7px;
+  height:34px;
+  border:1px solid #99b2c1;
+  border-radius:2px;
+  color:#1d3647;
+  background:#fff;
+  font:600 12px/1.3 Arial,sans-serif;
+}
+#page-plate .pl-quick-layouts .pl-quick-name:focus{
+  outline:2px solid #4d9e9a;
+  outline-offset:0;
+}
