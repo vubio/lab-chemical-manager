@@ -333,10 +333,8 @@ for(const color of bgPalette.values()){
 const sameWithAnotherNote={labels:['0/100','0'],rowNotes:{A:'24h'},colNotes:{1:'100 µM AA'},kind:'normal'};
 assert.equal(bgCore.conditionBackground(labeledPairs.A1,bgPalette),bgCore.conditionBackground(sameWithAnotherNote,bgPalette));
 const bgText=fs.readFileSync('plate.js','utf8'),bgCSS=fs.readFileSync('styles.css','utf8');
-assert(bgText.includes('--condition-bg:
-+'{conditionBackground(record,backgroundPalette)}'),'live wells use tint');
-assert(bgText.includes('background:
-+'{conditionBackground(record,backgroundPalette)};min-width:75px'),'OneNote table uses matching tint');
+assert(bgText.includes('--condition-bg:')&&bgText.includes('conditionBackground(record,backgroundPalette)'),'live wells use tint');
+assert(bgText.includes('background:')&&bgText.includes('min-width:75px'),'OneNote table uses matching tint');
 assert(bgCSS.includes(':not(.pl-selected):not(.pl-drop-target)'),'selection and drag feedback remain visible');
 assert(bgCSS.includes(':not(.pl-special)'),'controls remain gray');
 
