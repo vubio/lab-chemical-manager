@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updatedAt": "2026-11-05T20:05:49.686Z",
+  "updatedAt": "2026-11-05T20:17:16.904Z",
   "chemicals": {
     "version": 1,
     "chemicals": [
@@ -4044,6 +4044,8 @@
       ],
       "rowNotes": {},
       "colNotes": {},
+      "rowNoteMerges": [],
+      "colNoteMerges": [],
       "manualLevelNames": [
         "Treatment",
         "Concentration",
@@ -4687,6 +4689,8 @@
         ],
         "rowNotes": {},
         "colNotes": {},
+        "rowNoteMerges": [],
+        "colNoteMerges": [],
         "manualLevelNames": [
           "Treatment",
           "Concentration",
@@ -5326,6 +5330,8 @@
           "E": "10k"
         },
         "colNotes": {},
+        "rowNoteMerges": [],
+        "colNoteMerges": [],
         "manualLevelNames": [
           "Treatment",
           "Concentration",
@@ -5961,6 +5967,8 @@
           "E": "10k"
         },
         "colNotes": {},
+        "rowNoteMerges": [],
+        "colNoteMerges": [],
         "manualLevelNames": [
           "Treatment",
           "Concentration",
@@ -6494,6 +6502,8 @@
           "E": "10k"
         },
         "colNotes": {},
+        "rowNoteMerges": [],
+        "colNoteMerges": [],
         "manualLevelNames": [
           "Level 1",
           "Level 2",
@@ -7023,6 +7033,8 @@
           "E": "10k"
         },
         "colNotes": {},
+        "rowNoteMerges": [],
+        "colNoteMerges": [],
         "manualLevelNames": [
           "Level 1",
           "Level 2",
@@ -7785,6 +7797,8 @@
           "E": "10k"
         },
         "colNotes": {},
+        "rowNoteMerges": [],
+        "colNoteMerges": [],
         "manualLevelNames": [
           "Level 1",
           "Level 2",
@@ -8416,6 +8430,8 @@
           "E": "10k"
         },
         "colNotes": {},
+        "rowNoteMerges": [],
+        "colNoteMerges": [],
         "manualLevelNames": [
           "Level 1",
           "Level 2",
