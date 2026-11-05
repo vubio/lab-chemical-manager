@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updatedAt": "2026-11-05T20:00:59.492Z",
+  "updatedAt": "2026-11-05T20:01:34.512Z",
   "chemicals": {
     "version": 1,
     "chemicals": [
@@ -4040,7 +4040,7 @@
       "name": "96-well_1k-5k-10k_AA",
       "format": "96",
       "selection": [
-        "F8"
+        "H1"
       ],
       "rowNotes": {
         "A": "1k",
@@ -4064,7 +4064,7 @@
         {
           "id": "factor3",
           "name": "Retinol",
-          "values": "0, 5, 10"
+          "values": "0, 2, 5"
         },
         {
           "id": "factor2",
@@ -4188,7 +4188,39 @@
         "[[\"factor1\",\"25/75\"],[\"factor3\",\"10\"]]": 4,
         "[[\"factor1\",\"50/50\"],[\"factor3\",\"0\"]]": 4,
         "[[\"factor1\",\"50/50\"],[\"factor3\",\"5\"]]": 4,
-        "[[\"factor1\",\"50/50\"],[\"factor3\",\"10\"]]": 4
+        "[[\"factor1\",\"50/50\"],[\"factor3\",\"10\"]]": 4,
+        "[[\"factor1\",\"0/100\"],[\"factor3\",\"25\"]]": 4,
+        "[[\"factor1\",\"5/95\"],[\"factor3\",\"25\"]]": 4,
+        "[[\"factor1\",\"25/75\"],[\"factor3\",\"25\"]]": 4,
+        "[[\"factor1\",\"50/50\"],[\"factor3\",\"25\"]]": 4,
+        "[[\"factor1\",\"0/100\"],[\"factor3\",\"2.5\"]]": 4,
+        "[[\"factor1\",\"5/95\"],[\"factor3\",\"2.5\"]]": 4,
+        "[[\"factor1\",\"25/75\"],[\"factor3\",\"2.5\"]]": 4,
+        "[[\"factor1\",\"50/50\"],[\"factor3\",\"2.5\"]]": 4,
+        "[[\"factor1\",\"0/100\"],[\"factor3\",\"2.55\"]]": 4,
+        "[[\"factor1\",\"5/95\"],[\"factor3\",\"2.55\"]]": 4,
+        "[[\"factor1\",\"25/75\"],[\"factor3\",\"2.55\"]]": 4,
+        "[[\"factor1\",\"50/50\"],[\"factor3\",\"2.55\"]]": 4,
+        "[[\"factor1\",\"0/100\"],[\"factor3\",\"2.5 5\"]]": 4,
+        "[[\"factor1\",\"5/95\"],[\"factor3\",\"2.5 5\"]]": 4,
+        "[[\"factor1\",\"25/75\"],[\"factor3\",\"2.5 5\"]]": 4,
+        "[[\"factor1\",\"50/50\"],[\"factor3\",\"2.5 5\"]]": 4,
+        "[[\"factor1\",\"0/100\"],[\"factor3\",\"2. 5\"]]": 4,
+        "[[\"factor1\",\"5/95\"],[\"factor3\",\"2. 5\"]]": 4,
+        "[[\"factor1\",\"25/75\"],[\"factor3\",\"2. 5\"]]": 4,
+        "[[\"factor1\",\"50/50\"],[\"factor3\",\"2. 5\"]]": 4,
+        "[[\"factor1\",\"0/100\"],[\"factor3\",\"2 5\"]]": 4,
+        "[[\"factor1\",\"5/95\"],[\"factor3\",\"2 5\"]]": 4,
+        "[[\"factor1\",\"25/75\"],[\"factor3\",\"2 5\"]]": 4,
+        "[[\"factor1\",\"50/50\"],[\"factor3\",\"2 5\"]]": 4,
+        "[[\"factor1\",\"0/100\"],[\"factor3\",\"2\"]]": 4,
+        "[[\"factor1\",\"5/95\"],[\"factor3\",\"2\"]]": 4,
+        "[[\"factor1\",\"25/75\"],[\"factor3\",\"2\"]]": 4,
+        "[[\"factor1\",\"50/50\"],[\"factor3\",\"2\"]]": 4,
+        "[[\"factor1\",\"0/100\"],[\"factor3\",\"1\"]]": 4,
+        "[[\"factor1\",\"5/95\"],[\"factor3\",\"1\"]]": 4,
+        "[[\"factor1\",\"25/75\"],[\"factor3\",\"1\"]]": 4,
+        "[[\"factor1\",\"50/50\"],[\"factor3\",\"1\"]]": 4
       },
       "assignments": {
         "A1": {
@@ -4234,94 +4266,6 @@
             "Retinol"
           ],
           "group": "[[\"factor1\",\"0/100\"],[\"factor3\",\"0\"]]"
-        },
-        "A5": {
-          "labels": [
-            "0/100",
-            "5"
-          ],
-          "factorNames": [
-            "Ratio",
-            "Retinol"
-          ],
-          "group": "[[\"factor1\",\"0/100\"],[\"factor3\",\"5\"]]"
-        },
-        "A6": {
-          "labels": [
-            "0/100",
-            "5"
-          ],
-          "factorNames": [
-            "Ratio",
-            "Retinol"
-          ],
-          "group": "[[\"factor1\",\"0/100\"],[\"factor3\",\"5\"]]"
-        },
-        "A7": {
-          "labels": [
-            "0/100",
-            "5"
-          ],
-          "factorNames": [
-            "Ratio",
-            "Retinol"
-          ],
-          "group": "[[\"factor1\",\"0/100\"],[\"factor3\",\"5\"]]"
-        },
-        "A8": {
-          "labels": [
-            "0/100",
-            "5"
-          ],
-          "factorNames": [
-            "Ratio",
-            "Retinol"
-          ],
-          "group": "[[\"factor1\",\"0/100\"],[\"factor3\",\"5\"]]"
-        },
-        "A9": {
-          "labels": [
-            "0/100",
-            "10"
-          ],
-          "factorNames": [
-            "Ratio",
-            "Retinol"
-          ],
-          "group": "[[\"factor1\",\"0/100\"],[\"factor3\",\"10\"]]"
-        },
-        "A10": {
-          "labels": [
-            "0/100",
-            "10"
-          ],
-          "factorNames": [
-            "Ratio",
-            "Retinol"
-          ],
-          "group": "[[\"factor1\",\"0/100\"],[\"factor3\",\"10\"]]"
-        },
-        "A11": {
-          "labels": [
-            "0/100",
-            "10"
-          ],
-          "factorNames": [
-            "Ratio",
-            "Retinol"
-          ],
-          "group": "[[\"factor1\",\"0/100\"],[\"factor3\",\"10\"]]"
-        },
-        "A12": {
-          "labels": [
-            "0/100",
-            "10"
-          ],
-          "factorNames": [
-            "Ratio",
-            "Retinol"
-          ],
-          "group": "[[\"factor1\",\"0/100\"],[\"factor3\",\"10\"]]"
         },
         "B1": {
           "labels": [
@@ -4370,39 +4314,50 @@
         "B5": {
           "labels": [
             "5/95",
-            "5"
+            "2"
           ],
           "factorNames": [
             "Ratio",
             "Retinol"
           ],
-          "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"5\"]]"
+          "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"2\"]]"
         },
         "B6": {
           "labels": [
             "5/95",
-            "5"
+            "2"
           ],
           "factorNames": [
             "Ratio",
             "Retinol"
           ],
-          "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"5\"]]"
+          "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"2\"]]"
         },
         "B7": {
           "labels": [
             "5/95",
-            "5"
+            "2"
           ],
           "factorNames": [
             "Ratio",
             "Retinol"
           ],
-          "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"5\"]]"
+          "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"2\"]]"
         },
         "B8": {
           "labels": [
             "5/95",
+            "2"
+          ],
+          "factorNames": [
+            "Ratio",
+            "Retinol"
+          ],
+          "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"2\"]]"
+        },
+        "B9": {
+          "labels": [
+            "5/95",
             "5"
           ],
           "factorNames": [
@@ -4411,49 +4366,38 @@
           ],
           "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"5\"]]"
         },
-        "B9": {
-          "labels": [
-            "5/95",
-            "10"
-          ],
-          "factorNames": [
-            "Ratio",
-            "Retinol"
-          ],
-          "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"10\"]]"
-        },
         "B10": {
           "labels": [
             "5/95",
-            "10"
+            "5"
           ],
           "factorNames": [
             "Ratio",
             "Retinol"
           ],
-          "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"10\"]]"
+          "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"5\"]]"
         },
         "B11": {
           "labels": [
             "5/95",
-            "10"
+            "5"
           ],
           "factorNames": [
             "Ratio",
             "Retinol"
           ],
-          "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"10\"]]"
+          "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"5\"]]"
         },
         "B12": {
           "labels": [
             "5/95",
-            "10"
+            "5"
           ],
           "factorNames": [
             "Ratio",
             "Retinol"
           ],
-          "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"10\"]]"
+          "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"5\"]]"
         },
         "C1": {
           "labels": [
@@ -4502,39 +4446,50 @@
         "C5": {
           "labels": [
             "25/75",
-            "5"
+            "2"
           ],
           "factorNames": [
             "Ratio",
             "Retinol"
           ],
-          "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"5\"]]"
+          "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"2\"]]"
         },
         "C6": {
           "labels": [
             "25/75",
-            "5"
+            "2"
           ],
           "factorNames": [
             "Ratio",
             "Retinol"
           ],
-          "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"5\"]]"
+          "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"2\"]]"
         },
         "C7": {
           "labels": [
             "25/75",
-            "5"
+            "2"
           ],
           "factorNames": [
             "Ratio",
             "Retinol"
           ],
-          "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"5\"]]"
+          "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"2\"]]"
         },
         "C8": {
           "labels": [
             "25/75",
+            "2"
+          ],
+          "factorNames": [
+            "Ratio",
+            "Retinol"
+          ],
+          "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"2\"]]"
+        },
+        "C9": {
+          "labels": [
+            "25/75",
             "5"
           ],
           "factorNames": [
@@ -4543,49 +4498,38 @@
           ],
           "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"5\"]]"
         },
-        "C9": {
-          "labels": [
-            "25/75",
-            "10"
-          ],
-          "factorNames": [
-            "Ratio",
-            "Retinol"
-          ],
-          "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"10\"]]"
-        },
         "C10": {
           "labels": [
             "25/75",
-            "10"
+            "5"
           ],
           "factorNames": [
             "Ratio",
             "Retinol"
           ],
-          "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"10\"]]"
+          "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"5\"]]"
         },
         "C11": {
           "labels": [
             "25/75",
-            "10"
+            "5"
           ],
           "factorNames": [
             "Ratio",
             "Retinol"
           ],
-          "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"10\"]]"
+          "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"5\"]]"
         },
         "C12": {
           "labels": [
             "25/75",
-            "10"
+            "5"
           ],
           "factorNames": [
             "Ratio",
             "Retinol"
           ],
-          "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"10\"]]"
+          "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"5\"]]"
         },
         "D1": {
           "labels": [
@@ -4634,39 +4578,50 @@
         "D5": {
           "labels": [
             "50/50",
-            "5"
+            "2"
           ],
           "factorNames": [
             "Ratio",
             "Retinol"
           ],
-          "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"5\"]]"
+          "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"2\"]]"
         },
         "D6": {
           "labels": [
             "50/50",
-            "5"
+            "2"
           ],
           "factorNames": [
             "Ratio",
             "Retinol"
           ],
-          "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"5\"]]"
+          "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"2\"]]"
         },
         "D7": {
           "labels": [
             "50/50",
-            "5"
+            "2"
           ],
           "factorNames": [
             "Ratio",
             "Retinol"
           ],
-          "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"5\"]]"
+          "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"2\"]]"
         },
         "D8": {
           "labels": [
             "50/50",
+            "2"
+          ],
+          "factorNames": [
+            "Ratio",
+            "Retinol"
+          ],
+          "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"2\"]]"
+        },
+        "D9": {
+          "labels": [
+            "50/50",
             "5"
           ],
           "factorNames": [
@@ -4675,54 +4630,43 @@
           ],
           "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"5\"]]"
         },
-        "D9": {
-          "labels": [
-            "50/50",
-            "10"
-          ],
-          "factorNames": [
-            "Ratio",
-            "Retinol"
-          ],
-          "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"10\"]]"
-        },
         "D10": {
           "labels": [
             "50/50",
-            "10"
+            "5"
           ],
           "factorNames": [
             "Ratio",
             "Retinol"
           ],
-          "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"10\"]]"
+          "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"5\"]]"
         },
         "D11": {
           "labels": [
             "50/50",
-            "10"
+            "5"
           ],
           "factorNames": [
             "Ratio",
             "Retinol"
           ],
-          "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"10\"]]"
+          "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"5\"]]"
         },
         "D12": {
           "labels": [
             "50/50",
-            "10"
+            "5"
           ],
           "factorNames": [
             "Ratio",
             "Retinol"
           ],
-          "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"10\"]]"
+          "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"5\"]]"
         }
       },
       "notes": "",
-      "generatedAt": "2026-11-05T20:00:45.215Z",
-      "manualLayoutChanges": false,
+      "generatedAt": "2026-11-05T20:01:12.421Z",
+      "manualLayoutChanges": true,
       "factorDraftStale": false,
       "savedAt": "2026-11-04T23:26:31.085Z"
     },
