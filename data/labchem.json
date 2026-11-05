@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updatedAt": "2026-11-05T20:02:44.855Z",
+  "updatedAt": "2026-11-05T20:03:05.068Z",
   "chemicals": {
     "version": 1,
     "chemicals": [
@@ -4036,8 +4036,8 @@
   },
   "plates": {
     "draft": {
-      "id": "plate-1793834791085-90fw",
-      "name": "96-well_1k-5k-10k_AA",
+      "id": "plate-1793908978460-cqbq",
+      "name": "HSC-T6/Huh. 26.11.05",
       "format": "96",
       "selection": [
         "H2"
@@ -4671,6 +4671,641 @@
       "savedAt": "2026-11-04T23:26:31.085Z"
     },
     "saved": [
+      {
+        "id": "plate-1793908978460-cqbq",
+        "name": "HSC-T6/Huh. 26.11.05",
+        "format": "96",
+        "selection": [
+          "H2"
+        ],
+        "rowNotes": {
+          "A": "1k",
+          "C": "5k",
+          "E": "10k"
+        },
+        "colNotes": {},
+        "manualLevelNames": [
+          "Treatment",
+          "Concentration",
+          "Level 3"
+        ],
+        "fillOrder": "rows",
+        "mode": "select",
+        "factors": [
+          {
+            "id": "factor1",
+            "name": "HSC-T6/Huh7 Ratio",
+            "values": "0/100, 5/95, 25/75, 50/50"
+          },
+          {
+            "id": "factor3",
+            "name": "Retinol (µM)",
+            "values": "0, 2, 5"
+          },
+          {
+            "id": "factor2",
+            "name": "",
+            "values": ""
+          },
+          {
+            "id": "factor4",
+            "name": "",
+            "values": ""
+          }
+        ],
+        "counts": {
+          "[[\"factor1\",\"0 µM\"],[\"factor2\",\"0\"]]": 2,
+          "[[\"factor1\",\"0 µM\"],[\"factor2\",\"100\"]]": 3,
+          "[[\"factor1\",\"0 µM\"],[\"factor2\",\"300\"]]": 1,
+          "[[\"factor1\",\"0 µM\"],[\"factor2\",\"400\"]]": 2,
+          "[[\"factor1\",\"0.05 µM\"],[\"factor2\",\"0\"]]": 2,
+          "[[\"factor1\",\"0.05 µM\"],[\"factor2\",\"100\"]]": 3,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"0\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"0\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"0\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"1 µM AA\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"1 µM AA\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"1 µM AA\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"2 µM AA\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"2 µM AA\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"2 µM AA\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"0\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"0\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"0\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"1 µM AA\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"1 µM AA\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"1 µM AA\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"0\"],[\"factor3\",\"2 µM AA\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"100\"],[\"factor3\",\"2 µM AA\"]]": 2,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor2\",\"300\"],[\"factor3\",\"2 µM AA\"]]": 2,
+          "[[\"factor1\",\"0 µM E\"],[\"factor3\",\"0\"]]": 3,
+          "[[\"factor1\",\"0 µM E\"],[\"factor3\",\"1 µM AA\"]]": 3,
+          "[[\"factor1\",\"0 µM E\"],[\"factor3\",\"2 µM AA\"]]": 3,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor3\",\"0\"]]": 3,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor3\",\"1 µM AA\"]]": 3,
+          "[[\"factor1\",\"0.05 µM E\"],[\"factor3\",\"2 µM AA\"]]": 3,
+          "[[\"factor1\",\"0.01 µM E\"],[\"factor3\",\"0\"]]": 3,
+          "[[\"factor1\",\"0.01 µM E\"],[\"factor3\",\"1 µM AA\"]]": 3,
+          "[[\"factor1\",\"0.01 µM E\"],[\"factor3\",\"2 µM AA\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"0\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"0.05\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"0.1\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"0.2\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"0\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"0.05\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"0.1\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"0.2\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"0\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"0.05\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"0.1\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"0.2\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"0.\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"0.\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"0.\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"0.5\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"0.5\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"0.5\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"1\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"1\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"1\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"10\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"10\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"10\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"100\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"100\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"100\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"5\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"5\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"5\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"50\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"50\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"50\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"510\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"510\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"510\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"2\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"2\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"2\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"20\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"20\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"20\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"250\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"250\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"250\"]]": 3,
+          "[[\"factor1\",\"1k\"],[\"factor3\",\"25\"]]": 3,
+          "[[\"factor1\",\"5k\"],[\"factor3\",\"25\"]]": 3,
+          "[[\"factor1\",\"10k\"],[\"factor3\",\"25\"]]": 3,
+          "[[\"factor1\",\"1\"],[\"factor3\",\"0\"]]": 3,
+          "[[\"factor1\",\"1\"],[\"factor3\",\"5\"]]": 3,
+          "[[\"factor1\",\"1\"],[\"factor3\",\"10\"]]": 3,
+          "[[\"factor1\",\"1\"],[\"factor3\",\"25\"]]": 3,
+          "[[\"factor1\",\"1\"],[\"factor3\",\"50\"]]": 3,
+          "[[\"factor1\",\"1\"],[\"factor3\",\"100\"]]": 3,
+          "[[\"factor1\",\"1:\"],[\"factor3\",\"0\"]]": 3,
+          "[[\"factor1\",\"1:\"],[\"factor3\",\"5\"]]": 3,
+          "[[\"factor1\",\"1:\"],[\"factor3\",\"10\"]]": 3,
+          "[[\"factor1\",\"1:\"],[\"factor3\",\"25\"]]": 3,
+          "[[\"factor1\",\"1:\"],[\"factor3\",\"50\"]]": 3,
+          "[[\"factor1\",\"1:\"],[\"factor3\",\"100\"]]": 3,
+          "[[\"factor1\",\"1:1\"],[\"factor3\",\"0\"]]": 3,
+          "[[\"factor1\",\"1:1\"],[\"factor3\",\"5\"]]": 3,
+          "[[\"factor1\",\"1:1\"],[\"factor3\",\"10\"]]": 3,
+          "[[\"factor1\",\"1:1\"],[\"factor3\",\"25\"]]": 3,
+          "[[\"factor1\",\"1:1\"],[\"factor3\",\"50\"]]": 3,
+          "[[\"factor1\",\"1:1\"],[\"factor3\",\"100\"]]": 3,
+          "[[\"factor1\",\"0/100\"],[\"factor3\",\"0\"]]": 4,
+          "[[\"factor1\",\"0/100\"],[\"factor3\",\"5\"]]": 4,
+          "[[\"factor1\",\"0/100\"],[\"factor3\",\"10\"]]": 4,
+          "[[\"factor1\",\"5/95\"],[\"factor3\",\"0\"]]": 4,
+          "[[\"factor1\",\"5/95\"],[\"factor3\",\"5\"]]": 4,
+          "[[\"factor1\",\"5/95\"],[\"factor3\",\"10\"]]": 4,
+          "[[\"factor1\",\"25/75\"],[\"factor3\",\"0\"]]": 4,
+          "[[\"factor1\",\"25/75\"],[\"factor3\",\"5\"]]": 4,
+          "[[\"factor1\",\"25/75\"],[\"factor3\",\"10\"]]": 4,
+          "[[\"factor1\",\"50/50\"],[\"factor3\",\"0\"]]": 4,
+          "[[\"factor1\",\"50/50\"],[\"factor3\",\"5\"]]": 4,
+          "[[\"factor1\",\"50/50\"],[\"factor3\",\"10\"]]": 4,
+          "[[\"factor1\",\"0/100\"],[\"factor3\",\"25\"]]": 4,
+          "[[\"factor1\",\"5/95\"],[\"factor3\",\"25\"]]": 4,
+          "[[\"factor1\",\"25/75\"],[\"factor3\",\"25\"]]": 4,
+          "[[\"factor1\",\"50/50\"],[\"factor3\",\"25\"]]": 4,
+          "[[\"factor1\",\"0/100\"],[\"factor3\",\"2.5\"]]": 4,
+          "[[\"factor1\",\"5/95\"],[\"factor3\",\"2.5\"]]": 4,
+          "[[\"factor1\",\"25/75\"],[\"factor3\",\"2.5\"]]": 4,
+          "[[\"factor1\",\"50/50\"],[\"factor3\",\"2.5\"]]": 4,
+          "[[\"factor1\",\"0/100\"],[\"factor3\",\"2.55\"]]": 4,
+          "[[\"factor1\",\"5/95\"],[\"factor3\",\"2.55\"]]": 4,
+          "[[\"factor1\",\"25/75\"],[\"factor3\",\"2.55\"]]": 4,
+          "[[\"factor1\",\"50/50\"],[\"factor3\",\"2.55\"]]": 4,
+          "[[\"factor1\",\"0/100\"],[\"factor3\",\"2.5 5\"]]": 4,
+          "[[\"factor1\",\"5/95\"],[\"factor3\",\"2.5 5\"]]": 4,
+          "[[\"factor1\",\"25/75\"],[\"factor3\",\"2.5 5\"]]": 4,
+          "[[\"factor1\",\"50/50\"],[\"factor3\",\"2.5 5\"]]": 4,
+          "[[\"factor1\",\"0/100\"],[\"factor3\",\"2. 5\"]]": 4,
+          "[[\"factor1\",\"5/95\"],[\"factor3\",\"2. 5\"]]": 4,
+          "[[\"factor1\",\"25/75\"],[\"factor3\",\"2. 5\"]]": 4,
+          "[[\"factor1\",\"50/50\"],[\"factor3\",\"2. 5\"]]": 4,
+          "[[\"factor1\",\"0/100\"],[\"factor3\",\"2 5\"]]": 4,
+          "[[\"factor1\",\"5/95\"],[\"factor3\",\"2 5\"]]": 4,
+          "[[\"factor1\",\"25/75\"],[\"factor3\",\"2 5\"]]": 4,
+          "[[\"factor1\",\"50/50\"],[\"factor3\",\"2 5\"]]": 4,
+          "[[\"factor1\",\"0/100\"],[\"factor3\",\"2\"]]": 4,
+          "[[\"factor1\",\"5/95\"],[\"factor3\",\"2\"]]": 4,
+          "[[\"factor1\",\"25/75\"],[\"factor3\",\"2\"]]": 4,
+          "[[\"factor1\",\"50/50\"],[\"factor3\",\"2\"]]": 4,
+          "[[\"factor1\",\"0/100\"],[\"factor3\",\"1\"]]": 4,
+          "[[\"factor1\",\"5/95\"],[\"factor3\",\"1\"]]": 4,
+          "[[\"factor1\",\"25/75\"],[\"factor3\",\"1\"]]": 4,
+          "[[\"factor1\",\"50/50\"],[\"factor3\",\"1\"]]": 4
+        },
+        "assignments": {
+          "A1": {
+            "labels": [
+              "0/100",
+              "0"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"0/100\"],[\"factor3\",\"0\"]]"
+          },
+          "A2": {
+            "labels": [
+              "0/100",
+              "0"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"0/100\"],[\"factor3\",\"0\"]]"
+          },
+          "A3": {
+            "labels": [
+              "0/100",
+              "0"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"0/100\"],[\"factor3\",\"0\"]]"
+          },
+          "A4": {
+            "labels": [
+              "0/100",
+              "0"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"0/100\"],[\"factor3\",\"0\"]]"
+          },
+          "B1": {
+            "labels": [
+              "5/95",
+              "0"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"0\"]]"
+          },
+          "B2": {
+            "labels": [
+              "5/95",
+              "0"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"0\"]]"
+          },
+          "B3": {
+            "labels": [
+              "5/95",
+              "0"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"0\"]]"
+          },
+          "B4": {
+            "labels": [
+              "5/95",
+              "0"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"0\"]]"
+          },
+          "B5": {
+            "labels": [
+              "5/95",
+              "2"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"2\"]]"
+          },
+          "B6": {
+            "labels": [
+              "5/95",
+              "2"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"2\"]]"
+          },
+          "B7": {
+            "labels": [
+              "5/95",
+              "2"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"2\"]]"
+          },
+          "B8": {
+            "labels": [
+              "5/95",
+              "2"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"2\"]]"
+          },
+          "B9": {
+            "labels": [
+              "5/95",
+              "5"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"5\"]]"
+          },
+          "B10": {
+            "labels": [
+              "5/95",
+              "5"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"5\"]]"
+          },
+          "B11": {
+            "labels": [
+              "5/95",
+              "5"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"5\"]]"
+          },
+          "B12": {
+            "labels": [
+              "5/95",
+              "5"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"5\"]]"
+          },
+          "C1": {
+            "labels": [
+              "25/75",
+              "0"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"0\"]]"
+          },
+          "C2": {
+            "labels": [
+              "25/75",
+              "0"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"0\"]]"
+          },
+          "C3": {
+            "labels": [
+              "25/75",
+              "0"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"0\"]]"
+          },
+          "C4": {
+            "labels": [
+              "25/75",
+              "0"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"0\"]]"
+          },
+          "C5": {
+            "labels": [
+              "25/75",
+              "2"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"2\"]]"
+          },
+          "C6": {
+            "labels": [
+              "25/75",
+              "2"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"2\"]]"
+          },
+          "C7": {
+            "labels": [
+              "25/75",
+              "2"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"2\"]]"
+          },
+          "C8": {
+            "labels": [
+              "25/75",
+              "2"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"2\"]]"
+          },
+          "C9": {
+            "labels": [
+              "25/75",
+              "5"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"5\"]]"
+          },
+          "C10": {
+            "labels": [
+              "25/75",
+              "5"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"5\"]]"
+          },
+          "C11": {
+            "labels": [
+              "25/75",
+              "5"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"5\"]]"
+          },
+          "C12": {
+            "labels": [
+              "25/75",
+              "5"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"5\"]]"
+          },
+          "D1": {
+            "labels": [
+              "50/50",
+              "0"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"0\"]]"
+          },
+          "D2": {
+            "labels": [
+              "50/50",
+              "0"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"0\"]]"
+          },
+          "D3": {
+            "labels": [
+              "50/50",
+              "0"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"0\"]]"
+          },
+          "D4": {
+            "labels": [
+              "50/50",
+              "0"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"0\"]]"
+          },
+          "D5": {
+            "labels": [
+              "50/50",
+              "2"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"2\"]]"
+          },
+          "D6": {
+            "labels": [
+              "50/50",
+              "2"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"2\"]]"
+          },
+          "D7": {
+            "labels": [
+              "50/50",
+              "2"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"2\"]]"
+          },
+          "D8": {
+            "labels": [
+              "50/50",
+              "2"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"2\"]]"
+          },
+          "D9": {
+            "labels": [
+              "50/50",
+              "5"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"5\"]]"
+          },
+          "D10": {
+            "labels": [
+              "50/50",
+              "5"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"5\"]]"
+          },
+          "D11": {
+            "labels": [
+              "50/50",
+              "5"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"5\"]]"
+          },
+          "D12": {
+            "labels": [
+              "50/50",
+              "5"
+            ],
+            "factorNames": [
+              "HSC-T6/Huh7 Ratio",
+              "Retinol (µM)"
+            ],
+            "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"5\"]]"
+          }
+        },
+        "notes": "",
+        "generatedAt": "2026-11-05T20:02:03.584Z",
+        "manualLayoutChanges": true,
+        "factorDraftStale": false,
+        "savedAt": "2026-11-05T20:02:58.460Z"
+      },
       {
         "id": "plate-1793834791085-90fw",
         "name": "96-well_1k-5k-10k_AA",
