@@ -159,3 +159,15 @@ Manual values can be layered on already generated factor assignments without imm
 Both buttons open the same paste-and-match interface and use the same physical well coordinates and full raw plate grid (6, 12, 24, 48, 96, or 384 wells). Both support long/jamovi, long + well, Prism grouped (two factors), wide, plate-matrix, Copy, CSV, and Excel exports. Manual files include `manual_` in the downloaded name to distinguish the exports. The manual matcher warns when wells have blank values in one of the levels used by the plate; it leaves those columns blank rather than silently borrowing automatically generated values.
 
 **Copy plate table / Copy plate note** copies the labels *currently displayed* in the plate, including manual Level 1–3 overrides, priority text colors, and renamed legend headings, even if automatic factor inputs were subsequently edited. It does not replace or regenerate the current plate. The old Copy condition table remains tied to the automatic conditions calculator.
+
+## Merge row and column note headers
+
+Use the **Show notes** toggle above the independent Plate Layout. Header names remain compact and each well retains its own A1/B3 coordinate.
+
+1. Click the row label **A**, then hold **Shift** and click **D** to select **A–D**. Or select numbered column headers **1–4** in exactly the same way. Ctrl/⌘-click can add or remove individual headers; only consecutive ranges can be merged.
+2. Click **Merge selected headers**. One editable header now spans the selected rows or columns. Type `24h`, `48h`, or any short note. The well assignments are not moved or changed.
+3. For example, merge **A–D** and enter `24h`; merge **E–H** and enter `48h`.
+4. To restore separate headers, click the merged header label and choose **Unmerge**. The grouped text is copied to *previously blank* individual notes, while pre-existing individual notes are kept.
+5. **Hide notes** removes the header bands without deleting notes or their merge settings.
+
+All merged header ranges are stored with the plate draft and saved versions, included in GitHub sync and backups, and reproduced as true `rowspan` / `colspan` header cells when copying the formatted table into OneNote. Plain TSV/clipboard fallbacks repeat a merged note under each of its original row or column labels. Overlapping merges are blocked; unmerge a range first to regroup it.
