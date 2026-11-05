@@ -513,3 +513,24 @@ body.pr-open{overflow:hidden}
 #page-plate .pl-axis-inline.pl-row-axis.pl-axis-merged{height:100%;min-height:0;align-self:stretch;justify-content:center}
 #page-plate .pl-axis-inline.pl-col-axis.pl-axis-merged{height:65px;min-height:65px;justify-content:center}
 #page-plate .pl-axis-inline input{flex:0 0 auto}
+
+
+/* Context menu actions for safely duplicating selected well blocks. */
+#page-plate .pl-context-separator{
+ height:1px;
+ margin:5px 3px;
+ background:#cedbe4;
+}
+#page-plate .pl-manual-context button:disabled{
+ opacity:.45;
+ cursor:not-allowed;
+ background:#fff;
+}
+#page-plate #pl-copy-wells,#page-plate #pl-paste-wells{
+ border-left:3px solid #55858f;
+ font-weight:700;
+ color:#214c5c;
+}
+#page-plate #pl-paste-wells:not(:disabled){
+ border-left-color:#12817b;
+}
