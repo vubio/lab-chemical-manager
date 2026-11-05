@@ -516,21 +516,21 @@ body.pr-open{overflow:hidden}
 
 
 /* Context menu actions for safely duplicating selected well blocks. */
-#page-plate .pl-context-separator{
+.pl-context-separator{
  height:1px;
  margin:5px 3px;
  background:#cedbe4;
 }
-#page-plate .pl-manual-context button:disabled{
+.pl-manual-context button:disabled{
  opacity:.45;
  cursor:not-allowed;
  background:#fff;
 }
-#page-plate #pl-copy-wells,#page-plate #pl-paste-wells{
+#pl-copy-wells,#page-plate #pl-paste-wells{
  border-left:3px solid #55858f;
  font-weight:700;
  color:#214c5c;
 }
-#page-plate #pl-paste-wells:not(:disabled){
+#pl-paste-wells:not(:disabled){
  border-left-color:#12817b;
 }
