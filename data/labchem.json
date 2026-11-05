@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updatedAt": "2026-11-05T20:01:34.512Z",
+  "updatedAt": "2026-11-05T20:02:23.376Z",
   "chemicals": {
     "version": 1,
     "chemicals": [
@@ -4058,12 +4058,12 @@
       "factors": [
         {
           "id": "factor1",
-          "name": "Ratio",
+          "name": "HSC-T6/Huh7 Ratio",
           "values": "0/100, 5/95, 25/75, 50/50"
         },
         {
           "id": "factor3",
-          "name": "Retinol",
+          "name": "Retinol (µM)",
           "values": "0, 2, 5"
         },
         {
@@ -4229,8 +4229,8 @@
             "0"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"0/100\"],[\"factor3\",\"0\"]]"
         },
@@ -4240,8 +4240,8 @@
             "0"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"0/100\"],[\"factor3\",\"0\"]]"
         },
@@ -4251,8 +4251,8 @@
             "0"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"0/100\"],[\"factor3\",\"0\"]]"
         },
@@ -4262,8 +4262,8 @@
             "0"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"0/100\"],[\"factor3\",\"0\"]]"
         },
@@ -4273,8 +4273,8 @@
             "0"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"0\"]]"
         },
@@ -4284,8 +4284,8 @@
             "0"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"0\"]]"
         },
@@ -4295,8 +4295,8 @@
             "0"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"0\"]]"
         },
@@ -4306,8 +4306,8 @@
             "0"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"0\"]]"
         },
@@ -4317,8 +4317,8 @@
             "2"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"2\"]]"
         },
@@ -4328,8 +4328,8 @@
             "2"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"2\"]]"
         },
@@ -4339,8 +4339,8 @@
             "2"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"2\"]]"
         },
@@ -4350,8 +4350,8 @@
             "2"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"2\"]]"
         },
@@ -4361,8 +4361,8 @@
             "5"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"5\"]]"
         },
@@ -4372,8 +4372,8 @@
             "5"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"5\"]]"
         },
@@ -4383,8 +4383,8 @@
             "5"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"5\"]]"
         },
@@ -4394,8 +4394,8 @@
             "5"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"5/95\"],[\"factor3\",\"5\"]]"
         },
@@ -4405,8 +4405,8 @@
             "0"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"0\"]]"
         },
@@ -4416,8 +4416,8 @@
             "0"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"0\"]]"
         },
@@ -4427,8 +4427,8 @@
             "0"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"0\"]]"
         },
@@ -4438,8 +4438,8 @@
             "0"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"0\"]]"
         },
@@ -4449,8 +4449,8 @@
             "2"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"2\"]]"
         },
@@ -4460,8 +4460,8 @@
             "2"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"2\"]]"
         },
@@ -4471,8 +4471,8 @@
             "2"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"2\"]]"
         },
@@ -4482,8 +4482,8 @@
             "2"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"2\"]]"
         },
@@ -4493,8 +4493,8 @@
             "5"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"5\"]]"
         },
@@ -4504,8 +4504,8 @@
             "5"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"5\"]]"
         },
@@ -4515,8 +4515,8 @@
             "5"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"5\"]]"
         },
@@ -4526,8 +4526,8 @@
             "5"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"25/75\"],[\"factor3\",\"5\"]]"
         },
@@ -4537,8 +4537,8 @@
             "0"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"0\"]]"
         },
@@ -4548,8 +4548,8 @@
             "0"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"0\"]]"
         },
@@ -4559,8 +4559,8 @@
             "0"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"0\"]]"
         },
@@ -4570,8 +4570,8 @@
             "0"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"0\"]]"
         },
@@ -4581,8 +4581,8 @@
             "2"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"2\"]]"
         },
@@ -4592,8 +4592,8 @@
             "2"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"2\"]]"
         },
@@ -4603,8 +4603,8 @@
             "2"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"2\"]]"
         },
@@ -4614,8 +4614,8 @@
             "2"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"2\"]]"
         },
@@ -4625,8 +4625,8 @@
             "5"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"5\"]]"
         },
@@ -4636,8 +4636,8 @@
             "5"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"5\"]]"
         },
@@ -4647,8 +4647,8 @@
             "5"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"5\"]]"
         },
@@ -4658,14 +4658,14 @@
             "5"
           ],
           "factorNames": [
-            "Ratio",
-            "Retinol"
+            "HSC-T6/Huh7 Ratio",
+            "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"50/50\"],[\"factor3\",\"5\"]]"
         }
       },
       "notes": "",
-      "generatedAt": "2026-11-05T20:01:12.421Z",
+      "generatedAt": "2026-11-05T20:02:03.584Z",
       "manualLayoutChanges": true,
       "factorDraftStale": false,
       "savedAt": "2026-11-04T23:26:31.085Z"
