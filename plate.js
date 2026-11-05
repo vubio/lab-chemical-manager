@@ -122,7 +122,7 @@ function unmergeAxisRanges(merges,notes,axis,indices,max){
  return {merges:remaining,notes:next,count:matching.length};
 }
 const defaults=()=>({id:null,name:'New experiment',format:'96',selection:[],rowNotes:{},colNotes:{},rowNoteMerges:[],colNoteMerges:[],manualLevelNames:[...DEFAULT_LEVEL_NAMES],fillOrder:'rows',mode:'select',factors:[{id:'factor1',name:'Dose',values:'0 µM; 0.05 µM; 0.1 µM; 0.2 µM'},{id:'factor2',name:'Cell density',values:''},{id:'factor3',name:'',values:''},{id:'factor4',name:'',values:''}],counts:{},assignments:{},notes:'',generatedAt:null,manualLayoutChanges:false,factorDraftStale:false});
-let state=defaults(),saved=[],activeCell=null,drag=null,suppressClick=false,selectionAnchor=null,checkedCombinations=new Set(),factorUpdateTimer=null,lastWellPointer=null,labelDialogTargets=[],notesVisible=false,axisSelection={axis:null,indices:[]},axisSelectionAnchor=null;
+let state=defaults(),saved=[],activeCell=null,drag=null,suppressClick=false,selectionAnchor=null,checkedCombinations=new Set(),factorUpdateTimer=null,lastWellPointer=null,labelDialogTargets=[],wellClipboard=null,notesVisible=false,axisSelection={axis:null,indices:[]},axisSelectionAnchor=null;
 function normalize(s){const d=defaults();if(!s||typeof s!=='object')return d;return {...d,...s, format:SHAPES[String(s.format)]?String(s.format):'96',selection:Array.isArray(s.selection)?s.selection:[],rowNotes:s.rowNotes&&typeof s.rowNotes==='object'?s.rowNotes:{},colNotes:s.colNotes&&typeof s.colNotes==='object'?s.colNotes:{},rowNoteMerges:normalizeAxisMerges(s.rowNoteMerges,SHAPES[String(s.format)]?.[0]||8),colNoteMerges:normalizeAxisMerges(s.colNoteMerges,SHAPES[String(s.format)]?.[1]||12),manualLevelNames:Array.from({length:3},(_,i)=>manualLevelLabel(s.manualLevelNames,i)),fillOrder:s.fillOrder==='columns'?'columns':'rows', factors:Array.isArray(s.factors)&&s.factors.length?s.factors.slice(0,4).map((f,i)=>({id:String(f.id||'factor'+(i+1)),name:String(f.name||''),values:String(f.values||'')})):d.factors,counts:s.counts&&typeof s.counts==='object'?s.counts:{},assignments:s.assignments&&typeof s.assignments==='object'?s.assignments:{},manualLayoutChanges:!!s.manualLayoutChanges,factorDraftStale:!!s.factorDraftStale}}
 function dimensions(){return SHAPES[state.format]}
 function allCoords(){let [rows,cols]=dimensions(),arr=[];for(let r=0;r<rows;r++)for(let c=0;c<cols;c++)arr.push(cellName(r,c));return arr}
@@ -195,6 +195,39 @@ function transposeMap(assignments,selection,rows,cols){
  for(const [w,data] of Object.entries(assignments))swapped[target(w)]=structuredClone(data);
  return {assignments:swapped,selection:selection.map(target),oldSize:[height,width],newSize:[width,height]};
 }
+
+/* Internal well clipboard: position is relative to the copied selection's
+   bounding box, not the position of the clicked source well. Copying never
+   mutates the source; pasting is all-or-nothing and refuses collisions. */
+function makeWellCopy(assignments,selectedWells,rows,cols){
+ const selection=[...new Set(selectedWells||[])];
+ if(!selection.length)throw Error('Select one or more wells to copy.');
+ const positions=selection.map(w=>{
+  const [r,c]=coord(w);
+  if(r<0||r>=rows||c<0||c>=cols)throw Error('The selection contains a well outside this plate.');
+  return {well:w,row:r,col:c};
+ });
+ const minRow=Math.min(...positions.map(p=>p.row)),minCol=Math.min(...positions.map(p=>p.col));
+ const maxRow=Math.max(...positions.map(p=>p.row)),maxCol=Math.max(...positions.map(p=>p.col));
+ const selected=positions.map(p=>({dr:p.row-minRow,dc:p.col-minCol}));
+ const items=positions.filter(p=>assignments[p.well]).map(p=>({dr:p.row-minRow,dc:p.col-minCol,record:JSON.parse(JSON.stringify(assignments[p.well]))}));
+ if(!items.length)throw Error('The selected wells are empty. Add labels before copying.');
+ return {width:maxCol-minCol+1,height:maxRow-minRow+1,selected,items,source:cellName(minRow,minCol)};
+}
+function pasteWellCopy(assignments,clipboard,topLeft,rows,cols){
+ if(!clipboard?.items?.length)throw Error('Copy labeled wells first.');
+ const [row,col]=coord(topLeft);
+ if(row<0||col<0||row+clipboard.height>rows||col+clipboard.width>cols){
+  throw Error('The copied '+clipboard.height+'×'+clipboard.width+' group does not fit starting at '+topLeft+'. Choose a well farther up/left, or copy fewer rows or columns.');
+ }
+ const target=(dr,dc)=>cellName(row+dr,col+dc);
+ const occupied=clipboard.items.filter(item=>Object.prototype.hasOwnProperty.call(assignments,target(item.dr,item.dc))).map(item=>target(item.dr,item.dc));
+ if(occupied.length)throw Error('Destination already contains labels ('+occupied.slice(0,5).join(', ')+(occupied.length>5?', …':'')+'). Choose an empty area or clear those wells first.');
+ const result={...assignments};
+ for(const item of clipboard.items)result[target(item.dr,item.dc)]=JSON.parse(JSON.stringify(item.record));
+ return {assignments:result,selection:clipboard.selected.map(p=>target(p.dr,p.dc)),pasted:clipboard.items.length,width:clipboard.width,height:clipboard.height};
+}
+
 function clearSelectedAssignments(assignments,selectedWells){
  const next={...assignments};
  let count=0;
@@ -652,12 +685,13 @@ function renderManualLevelLegend(){
 }
 function installManualLevelMenu(){
  const menu=document.createElement('div');menu.id='pl-manual-context';menu.className='pl-manual-context';menu.hidden=true;menu.setAttribute('role','menu');
- menu.innerHTML=Array.from({length:3},(_,i)=>'<button type="button" role="menuitem" data-manual-level="'+i+'">Add / edit Level '+(i+1)+'</button>').join('');
+ menu.innerHTML=Array.from({length:3},(_,i)=>'<button type="button" role="menuitem" data-manual-level="'+i+'">Add / edit Level '+(i+1)+'</button>').join('')+
+ '<div class="pl-context-separator" role="separator"></div><button type="button" role="menuitem" id="pl-copy-wells">Copy selected wells</button><button type="button" role="menuitem" id="pl-paste-wells" disabled>Paste here (top-left)</button>';
  document.body.appendChild(menu);
  const overlay=document.createElement('div');overlay.id='pl-manual-dialog';overlay.className='pl-label-overlay';overlay.hidden=true;
  overlay.innerHTML='<section class="pl-label-modal" role="dialog" aria-modal="true" aria-labelledby="pl-manual-title"><h3 id="pl-manual-title">Manual well label</h3><p id="pl-manual-targets" class="tiny muted"></p><label class="field"><span>Value to place in selected wells</span><input id="pl-manual-value" type="text" maxlength="160" placeholder="e.g., 1k, 5k, Media only" /></label><p class="tiny muted">This changes only the chosen level. Other levels and existing labels remain as they are.</p><div class="action-row"><button type="button" class="btn btn-primary" id="pl-manual-apply">Apply to wells</button><button type="button" class="btn" id="pl-manual-clear">Clear this level</button><button type="button" class="btn" id="pl-manual-cancel">Cancel</button></div></section>';
  document.body.appendChild(overlay);
- let targetWells=[],selectedLevel=0;
+ let targetWells=[],selectedLevel=0,contextWell=null;
  const hideMenu=()=>{menu.hidden=true};
  const hideDialog=()=>{overlay.hidden=true;targetWells=[]};
  const openEditor=level=>{
@@ -678,7 +712,32 @@ function installManualLevelMenu(){
   notify((typed?'Added ':'Cleared ')+manualLevelLabel(state.manualLevelNames,selectedLevel)+' for '+amount+' well'+(amount===1?'':'s')+'.');
  };
  menu.addEventListener('click',e=>{
-  const b=e.target.closest('[data-manual-level]');if(b)openEditor(Number(b.dataset.manualLevel));
+  const b=e.target.closest('[data-manual-level]');
+  if(b){openEditor(Number(b.dataset.manualLevel));return}
+  if(e.target.closest('#pl-copy-wells')){
+   hideMenu();
+   try{
+    const [rows,cols]=dimensions();
+    wellClipboard=makeWellCopy(state.assignments,targetWells,rows,cols);
+    notify('Copied '+wellClipboard.items.length+' labeled well'+(wellClipboard.items.length===1?'':'s')+
+      ' ('+wellClipboard.height+'×'+wellClipboard.width+' area, '+wellClipboard.source+' origin). Right-click the destination top-left well and select Paste here.');
+   }catch(err){notify('Copy canceled: '+err.message,true)}
+   return;
+  }
+  if(e.target.closest('#pl-paste-wells')){
+   hideMenu();
+   try{
+    const [rows,cols]=dimensions();
+    const result=pasteWellCopy(state.assignments,wellClipboard,contextWell,rows,cols);
+    state.assignments=result.assignments;
+    state.selection=result.selection;
+    state.manualLayoutChanges=true;
+    state.factorDraftStale=false;
+    activeCell=contextWell;selectionAnchor=contextWell;
+    renderPlate();updateNote();persist();
+    notify('Pasted '+result.pasted+' labeled well'+(result.pasted===1?'':'s')+' starting at '+contextWell+'. Original wells were not changed.');
+   }catch(err){notify('Paste canceled: '+err.message,true)}
+  }
  });
  $('pl-manual-apply').addEventListener('click',()=>{
   if(!$('pl-manual-value').value.trim()){notify('Enter a label, or use Clear this level to remove it.',true);$('pl-manual-value').focus();return}
@@ -694,9 +753,14 @@ function installManualLevelMenu(){
  grid.addEventListener('contextmenu',e=>{
   const well=e.target.closest('[data-well]');if(!well)return;
   e.preventDefault();
-  const w=well.dataset.well;
+  const w=well.dataset.well;contextWell=w;
   if(!state.selection.includes(w)){state.selection=[w];selectionAnchor=w;activeCell=w;renderPlate();persist()}
   targetWells=state.selection.length?[...new Set(state.selection)]:[w];
+  const copyCount=targetWells.filter(pos=>state.assignments[pos]).length;
+  $('pl-copy-wells').textContent='Copy selected wells ('+copyCount+' labeled)';
+  $('pl-copy-wells').disabled=copyCount===0;
+  $('pl-paste-wells').disabled=!wellClipboard;
+  $('pl-paste-wells').textContent=wellClipboard?'Paste '+wellClipboard.items.length+' wells here (top-left)':'Paste here (copy wells first)';
   menu.hidden=false;
   const maxX=Math.max(0,window.innerWidth-menu.offsetWidth-10),maxY=Math.max(0,window.innerHeight-menu.offsetHeight-10);
   menu.style.left=Math.max(4,Math.min(e.clientX,maxX))+'px';
@@ -932,6 +996,6 @@ window.PlateLayoutCloud={
   persist();refreshAll();
  }
 };
-window.PlateLayoutCore={SHAPES,shadeHex,factorValuePalette,factorValueColor,normalizeAxisMerges,axisMergeAt,mergeAxisRange,unmergeAxisRanges,axisRangeText,effectiveLabels,assignManualLevels,manualLevelUsage,moveWellShape,selectionGeometry,clearSelectedAssignments,axisHeaderHTML,axisInlineHeaderHTML,plateAxisGridStart,place,moveBlock,transposeMap,combinations,splitValues,cellName,applySelection,selectionRect,contiguous,linearRange,plateHTML,plateTable,conditionHTML,conditionTable,labelsHTML,legendEntries,factorLegendHTML,factorLegendPlain,getSnapshot:()=>structuredClone(state)};
+window.PlateLayoutCore={SHAPES,makeWellCopy,pasteWellCopy,shadeHex,factorValuePalette,factorValueColor,normalizeAxisMerges,axisMergeAt,mergeAxisRange,unmergeAxisRanges,axisRangeText,effectiveLabels,assignManualLevels,manualLevelUsage,moveWellShape,selectionGeometry,clearSelectedAssignments,axisHeaderHTML,axisInlineHeaderHTML,plateAxisGridStart,place,moveBlock,transposeMap,combinations,splitValues,cellName,applySelection,selectionRect,contiguous,linearRange,plateHTML,plateTable,conditionHTML,conditionTable,labelsHTML,legendEntries,factorLegendHTML,factorLegendPlain,getSnapshot:()=>structuredClone(state)};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
