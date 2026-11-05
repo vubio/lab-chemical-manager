@@ -534,3 +534,10 @@ body.pr-open{overflow:hidden}
 #pl-paste-wells:not(:disabled){
  border-left-color:#12817b;
 }
+
+
+/* Condition tints are intentionally faint. Selected/moving wells keep their
+   existing green/amber/red feedback, and special controls remain gray. */
+#page-plate .pl-well.pl-assigned:not(.pl-special):not(.pl-selected):not(.pl-drop-target):not(.pl-move-origin):not(.pl-ripple):not(.pl-drop-invalid){
+  background-color:var(--condition-bg,#EAF4F8);
+}
