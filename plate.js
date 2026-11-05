@@ -71,12 +71,12 @@ function factorValueColor(palette,level,value){
    label values. Neither row/column notes nor position affect this key.
    Screen and rich clipboard renderings use the exact same palette. */
 const CONDITION_TINTS=[
- '#EAF4F8','#F2F6FA','#ECF5F5','#F4F5FA',
- '#EDF4F8','#F2F7F5','#EEF6F9','#F5F6FA',
- '#EAF5F5','#F1F5FA','#EDF7F6','#F5F7F9',
- '#ECF3F9','#F3F7F6','#EEF4F8','#F5F5F9',
- '#EFF7F8','#F4F7F5','#ECF4F7','#F3F6FA',
- '#EDF6F5','#F2F5F9','#EAF5F8','#F4F6F8'
+ '#D8E9F5','#E6F1D7','#F6E5D8','#ECE0F5',
+ '#D7EEE9','#F4EDCF','#F3DEE7','#DAE5F4',
+ '#E2EED9','#F5E8D6','#E4DEF3','#D9F0E3',
+ '#F3E0D8','#DFEBF5','#EEF0D4','#E8E2F2',
+ '#D8ECEF','#F5E3E1','#E3EDD8','#E3E6F5',
+ '#F2E9D7','#DCF0E8','#F1E0ED','#E1EBF0'
 ];
 function conditionLabelKey(record){
  if(!record||record.kind==='special')return null;
