@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updatedAt": "2026-11-05T20:03:05.068Z",
+  "updatedAt": "2026-11-05T20:03:08.994Z",
   "chemicals": {
     "version": 1,
     "chemicals": [
@@ -4040,7 +4040,7 @@
       "name": "HSC-T6/Huh. 26.11.05",
       "format": "96",
       "selection": [
-        "H2"
+        "H12"
       ],
       "rowNotes": {
         "A": "1k",
