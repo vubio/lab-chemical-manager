@@ -180,4 +180,40 @@ assert(quickNameJS.includes("Enter a layout name beside Save layout before savin
 assert(quickNameJS.includes("if(e.key==='Enter'){e.preventDefault();$('pl-quick-save').click()}"), 'enter can save');
 assert(quickNameJS.includes("const name=String($('pl-quick-name')?.value"), 'save reads quick name');
 
+
+// Merged note ranges on both axes, including legacy notes and copy semantics.
+const axisCore=sandbox.window.PlateLayoutCore;
+const rowMerge=axisCore.mergeAxisRange([],{},'row',0,3,8);
+assert.deepEqual(Array.from(rowMerge.map(m=>[m.start,m.end,m.note])),[[0,3,'']]);
+assert.equal(axisCore.axisRangeText('row',0,3),'A–D');
+assert.equal(axisCore.axisRangeText('column',0,3),'1–4');
+assert.equal(axisCore.mergeAxisRange([], {A:'24h',B:'24h'},'row',0,3,8)[0].note,'24h');
+assert.equal(axisCore.mergeAxisRange([], {A:'24h',B:'48h'},'row',0,3,8)[0].note,'','individual notes stay preserved if notes differ');
+assert.throws(()=>axisCore.mergeAxisRange(rowMerge,{},'row',2,4,8),/Unmerge/);
+assert.throws(()=>axisCore.mergeAxisRange([],{},'row',0,8,8),/consecutive/);
+const twoGroups=axisCore.mergeAxisRange(rowMerge,{},'row',4,7,8);
+assert.equal(twoGroups.length,2);
+const savedRowMerge=[{start:0,end:3,note:'24h'},{start:4,end:7,note:'48h'}];
+const restored=axisCore.unmergeAxisRanges(savedRowMerge,{A:'Original A'},'row',[0,1,2,3],8);
+assert.deepEqual(Array.from(restored.merges.map(m=>m.note)),['48h']);
+assert.deepEqual(['A','B','C','D'].map(x=>restored.notes[x]),['Original A','24h','24h','24h']);
+assert.throws(()=>axisCore.unmergeAxisRanges(rowMerge,{},'row',[0,1],8),/merged header/);
+assert.equal(axisCore.normalizeAxisMerges([{start:4,end:7,note:'48h'},{start:0,end:3,note:'24h'}],8).length,2);
+assert.equal(axisCore.normalizeAxisMerges([{start:0,end:3},{start:3,end:6}],8).length,1);
+const wideMerged=axisCore.plateAxisGridStart(true,12,{},[{start:0,end:3,note:'Vehicle control'}]);
+assert(wideMerged.includes('data-merged-axis="column"'));
+assert(wideMerged.includes('data-merged-start="0"'));
+assert(wideMerged.includes('grid-column:2/span 4'));
+assert(wideMerged.includes('1–4'));
+assert.equal((wideMerged.match(/data-column-note=/g)||[]).length,8);
+const mergedRowHeader=axisCore.axisInlineHeaderHTML('row','A','24h',{index:0,span:4,label:'A–D',placement:'grid-column:1;grid-row:2/span 4'});
+assert(mergedRowHeader.includes('data-merged-axis="row"'));
+assert(mergedRowHeader.includes('A–D'));
+assert(mergedRowHeader.includes('grid-row:2/span 4'));
+const plateSource=fs.readFileSync('plate.js','utf8');
+const htmlSource=fs.readFileSync('index.html','utf8');
+assert(htmlSource.includes('id="pl-merge-axis"')&&htmlSource.includes('id="pl-unmerge-axis"'));
+assert(plateSource.includes('rowspan="')&&plateSource.includes('colspan="'),'OneNote copy preserves merged headers as table spans');
+assert(plateSource.includes('state.rowNoteMerges')&&plateSource.includes('state.colNoteMerges'),'merge ranges saved in plate layout data');
+
 console.log('Plate layout allocation and selection tests passed');
