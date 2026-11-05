@@ -996,6 +996,6 @@ window.PlateLayoutCloud={
   persist();refreshAll();
  }
 };
-window.PlateLayoutCore={SHAPES,makeWellCopy,pasteWellCopy,shadeHex,factorValuePalette,factorValueColor,normalizeAxisMerges,axisMergeAt,mergeAxisRange,unmergeAxisRanges,axisRangeText,effectiveLabels,assignManualLevels,manualLevelUsage,moveWellShape,selectionGeometry,clearSelectedAssignments,axisHeaderHTML,axisInlineHeaderHTML,plateAxisGridStart,place,moveBlock,transposeMap,combinations,splitValues,cellName,applySelection,selectionRect,contiguous,linearRange,plateHTML,plateTable,conditionHTML,conditionTable,labelsHTML,legendEntries,factorLegendHTML,factorLegendPlain,getSnapshot:()=>structuredClone(state)};
+window.PlateLayoutCore={SHAPES,axisHTML,makeWellCopy,pasteWellCopy,shadeHex,factorValuePalette,factorValueColor,normalizeAxisMerges,axisMergeAt,mergeAxisRange,unmergeAxisRanges,axisRangeText,effectiveLabels,assignManualLevels,manualLevelUsage,moveWellShape,selectionGeometry,clearSelectedAssignments,axisHeaderHTML,axisInlineHeaderHTML,plateAxisGridStart,place,moveBlock,transposeMap,combinations,splitValues,cellName,applySelection,selectionRect,contiguous,linearRange,plateHTML,plateTable,conditionHTML,conditionTable,labelsHTML,legendEntries,factorLegendHTML,factorLegendPlain,getSnapshot:()=>structuredClone(state)};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
