@@ -171,3 +171,13 @@ Use the **Show notes** toggle above the independent Plate Layout. Header names r
 5. **Hide notes** removes the header bands without deleting notes or their merge settings.
 
 All merged header ranges are stored with the plate draft and saved versions, included in GitHub sync and backups, and reproduced as true `rowspan` / `colspan` header cells when copying the formatted table into OneNote. Plain TSV/clipboard fallbacks repeat a merged note under each of its original row or column labels. Overlapping merges are blocked; unmerge a range first to regroup it.
+
+## Copy and paste well blocks, OneNote headers, and value shades
+
+**Right-click copy/paste of wells:** Select a block of wells on the plate (drag a rectangle, Shift-click, or Ctrl/⌘-click multiple wells). Right-click a selected well and choose **Copy selected wells**. Right-click the intended **top-left destination well** and select **Paste here**. The source remains unchanged, and the copied wells keep their relative row/column positions, regular factor assignments, manual Level 1–3 labels, and special controls. Example: copy **A1–D12** (48 wells), then paste starting at **E1** to populate **E1–H12**. Copying also works for sparse selections; empty selected cells remain empty.
+
+Paste checks the **full selected bounding rectangle** against plate boundaries before making any changes. It also checks every labeled destination. If the destination is too close to the edge or already contains assignments, paste is rejected with an actionable error—no partial write and no automatic overwriting. The copied block is kept in the current browser page's internal clipboard (separate from the browser/system clipboard used by **Copy plate table**).
+
+**Copied OneNote tables:** Merged note headers such as A–D and E–H put the header on one line and its note (e.g. 24h or 48h) on a second line using an explicit HTML line break. Rich copying retains rowspans/colspans when supported by OneNote.
+
+**Within-factor shading:** Factor identity still determines hue—dark red for Level 1/primary, blue for Level 2/secondary, green for Level 3, and purple for Level 4. Distinct values within the *same* factor receive modestly lighter/darker variations of that hue (up to 12% darker or 14% lighter). Each value gets the same shade everywhere in the current plate. These colors are also applied to the rich HTML table copied for OneNote. The actual label text is always present; color is supplemental.
