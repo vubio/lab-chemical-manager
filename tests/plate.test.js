@@ -293,4 +293,9 @@ const plateCode=fs.readFileSync('plate.js','utf8');
 assert(plateCode.includes('id="pl-copy-wells"')&&plateCode.includes('id="pl-paste-wells"'));
 assert(plateCode.includes("pasteWellCopy(state.assignments,wellClipboard,contextWell,rows,cols)"));
 
+
+// The new inline shade styling must not recolor gray special controls.
+const paletteCode=fs.readFileSync('plate.js','utf8');
+assert(paletteCode.includes("record?.kind==='special'?'#495360'"),'special controls must remain gray on the live plate');
+
 console.log('Plate layout allocation and selection tests passed');
