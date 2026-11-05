@@ -249,9 +249,9 @@ assert.throws(()=>clipboardCore.pasteWellCopy(upperMap,copied48,'F1',8,12),/does
 assert.throws(()=>clipboardCore.pasteWellCopy(upperMap,copied48,'A1',8,12),/already contains labels/i);
 assert.equal(Object.keys(upperMap).length,48,'invalid paste is atomic');
 // Smaller copy with sparse positions, keeping gaps and complex special-control metadata.
-const sparseMap={A2:{kind:'special',controlName:'Media only',labels:['Media only']},A4:{labels:['AA',25],group:'generated'},B3:{labels:['Retinol','5'],manualLevels:['Treated',null,null]}};
-const sparseClip=clipboardCore.makeWellCopy(sparseMap,['A2','A3','A4','B2','B3','B4'],8,12);
-const sparsePaste=clipboardCore.pasteWellCopy(sparseMap,sparseClip,'E7',8,12);
+const copiedSparseMap={A2:{kind:'special',controlName:'Media only',labels:['Media only']},A4:{labels:['AA',25],group:'generated'},B3:{labels:['Retinol','5'],manualLevels:['Treated',null,null]}};
+const sparseClip=clipboardCore.makeWellCopy(copiedSparseMap,['A2','A3','A4','B2','B3','B4'],8,12);
+const sparsePaste=clipboardCore.pasteWellCopy(copiedSparseMap,sparseClip,'E7',8,12);
 assert.equal(sparseClip.width,3);
 assert.equal(sparseClip.height,2);
 assert.equal(sparsePaste.assignments.E7.controlName,'Media only');
@@ -260,7 +260,7 @@ assert.equal(sparsePaste.assignments.F8.manualLevels[0],'Treated');
 assert.equal(sparsePaste.assignments.E8,undefined,'unlabeled source gaps remain blank');
 assert.equal(sparsePaste.selection.length,6);
 assert.throws(()=>clipboardCore.makeWellCopy({},['A1'],8,12),/empty/i);
-assert.throws(()=>clipboardCore.makeWellCopy(sparseMap,['A99'],8,12),/outside/i);
+assert.throws(()=>clipboardCore.makeWellCopy(copiedSparseMap,['A99'],8,12),/outside/i);
 // Within-factor shades: same values same shade; different values subtly vary,
 // and factor 1 red remains strongly distinct from factor 2 blue.
 const shades=clipboardCore.factorValuePalette({
