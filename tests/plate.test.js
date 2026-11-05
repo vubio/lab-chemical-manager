@@ -216,4 +216,81 @@ assert(htmlSource.includes('id="pl-merge-axis"')&&htmlSource.includes('id="pl-un
 assert(plateSource.includes('rowspan="')&&plateSource.includes('colspan="'),'OneNote copy preserves merged headers as table spans');
 assert(plateSource.includes('state.rowNoteMerges')&&plateSource.includes('state.colNoteMerges'),'merge ranges saved in plate layout data');
 
+
+// Copy the upper 48 wells A1–D12 to the lower 48 wells E1–H12.
+const clipboardCore=sandbox.window.PlateLayoutCore;
+const upper48=[],upperMap={};
+for(let rr=0;rr<4;rr++)for(let cc=1;cc<=12;cc++){
+ const w=String.fromCharCode(65+rr)+cc;
+ upper48.push(w);
+ upperMap[w]={labels:['Treatment '+rr,String(cc)],manualLevels:[null,String(cc),null],group:'manual',kind:'normal'};
+}
+const originalUpper=JSON.stringify(upperMap);
+const copied48=clipboardCore.makeWellCopy(upperMap,upper48,8,12);
+assert.equal(copied48.height,4);
+assert.equal(copied48.width,12);
+assert.equal(copied48.items.length,48);
+assert.equal(copied48.selected.length,48);
+assert.equal(copied48.source,'A1');
+const bottom48=clipboardCore.pasteWellCopy(upperMap,copied48,'E1',8,12);
+assert.equal(Object.keys(bottom48.assignments).length,96);
+assert.equal(bottom48.pasted,48);
+assert.equal(bottom48.assignments.E1.labels[0],'Treatment 0');
+assert.equal(bottom48.assignments.H12.labels[0],'Treatment 3');
+assert.equal(bottom48.assignments.H12.manualLevels[1],'12');
+assert.equal(bottom48.selection.length,48);
+assert.equal(bottom48.selection[0],'E1');
+assert.equal(bottom48.selection.at(-1),'H12');
+assert.equal(JSON.stringify(upperMap),originalUpper,'copy and paste leave source unchanged');
+bottom48.assignments.E1.labels[0]='Edited copy';
+assert.equal(upperMap.A1.labels[0],'Treatment 0','pasted records are deep copied');
+assert.throws(()=>clipboardCore.pasteWellCopy(upperMap,copied48,'E2',8,12),/does not fit.*copy fewer/i);
+assert.throws(()=>clipboardCore.pasteWellCopy(upperMap,copied48,'F1',8,12),/does not fit/i);
+assert.throws(()=>clipboardCore.pasteWellCopy(upperMap,copied48,'A1',8,12),/already contains labels/i);
+assert.equal(Object.keys(upperMap).length,48,'invalid paste is atomic');
+// Smaller copy with sparse positions, keeping gaps and complex special-control metadata.
+const sparseMap={A2:{kind:'special',controlName:'Media only',labels:['Media only']},A4:{labels:['AA',25],group:'generated'},B3:{labels:['Retinol','5'],manualLevels:['Treated',null,null]}};
+const sparseClip=clipboardCore.makeWellCopy(sparseMap,['A2','A3','A4','B2','B3','B4'],8,12);
+const sparsePaste=clipboardCore.pasteWellCopy(sparseMap,sparseClip,'E7',8,12);
+assert.equal(sparseClip.width,3);
+assert.equal(sparseClip.height,2);
+assert.equal(sparsePaste.assignments.E7.controlName,'Media only');
+assert.equal(sparsePaste.assignments.E9.labels[1],25);
+assert.equal(sparsePaste.assignments.F8.manualLevels[0],'Treated');
+assert.equal(sparsePaste.assignments.E8,undefined,'unlabeled source gaps remain blank');
+assert.equal(sparsePaste.selection.length,6);
+assert.throws(()=>clipboardCore.makeWellCopy({},['A1'],8,12),/empty/i);
+assert.throws(()=>clipboardCore.makeWellCopy(sparseMap,['A99'],8,12),/outside/i);
+// Within-factor shades: same values same shade; different values subtly vary,
+// and factor 1 red remains strongly distinct from factor 2 blue.
+const shades=clipboardCore.factorValuePalette({
+ A1:{labels:['0','AA'],kind:'normal'},A2:{labels:['1','AA'],kind:'normal'},
+ A3:{labels:['5','Retinol'],kind:'normal'},A4:{labels:['10','AA'],kind:'normal'},
+ B1:{labels:['0','AA'],kind:'normal'},G1:{kind:'special',labels:['Control']}
+});
+const r0=clipboardCore.factorValueColor(shades,0,'0');
+const r1=clipboardCore.factorValueColor(shades,0,'1');
+const r5=clipboardCore.factorValueColor(shades,0,'5');
+const r10=clipboardCore.factorValueColor(shades,0,'10');
+assert.equal(new Set([r0,r1,r5,r10]).size,4);
+assert.equal(clipboardCore.factorValueColor(shades,0,'0'),r0);
+assert.notEqual(r0,clipboardCore.factorValueColor(shades,1,'AA'));
+for(const shade of [r0,r1,r5,r10]){
+ const red=parseInt(shade.slice(1,3),16),green=parseInt(shade.slice(3,5),16),blue=parseInt(shade.slice(5,7),16);
+ assert(red>green*2&&red>blue*2,'within-factor shades retain the factor hue');
+}
+assert.equal(clipboardCore.factorValuePalette({A1:{kind:'normal',labels:['Only']}})[0].get('Only'),'#A41E22');
+const colored=clipboardCore.labelsHTML({labels:['0','AA']},shades);
+assert(colored.includes('color:'+r0));
+assert(colored.includes('color:'+clipboardCore.factorValueColor(shades,1,'AA')));
+assert(!colored.includes('color:#A41E22'),'clipboard should use a shade when multiple values exist');
+// OneNote should receive a hard line break after a merged header label.
+const axisRich=clipboardCore.axisHTML('A–D','24h');
+assert(axisRich.includes('A–D</strong><br><span'), 'explicit HTML break required for OneNote');
+assert(axisRich.includes('24h'));
+assert(!clipboardCore.axisHTML('E','').includes('<br>'));
+const plateCode=fs.readFileSync('plate.js','utf8');
+assert(plateCode.includes('id="pl-copy-wells"')&&plateCode.includes('id="pl-paste-wells"'));
+assert(plateCode.includes("pasteWellCopy(state.assignments,wellClipboard,contextWell,rows,cols)"));
+
 console.log('Plate layout allocation and selection tests passed');
