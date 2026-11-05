@@ -322,13 +322,20 @@ assert.equal(bgCore.conditionBackground(labeledPairs.B1,bgPalette),bgCore.condit
 assert.notEqual(bgCore.conditionBackground(labeledPairs.A1,bgPalette),bgCore.conditionBackground(labeledPairs.A2,bgPalette));
 assert.notEqual(bgCore.conditionBackground(labeledPairs.A1,bgPalette),bgCore.conditionBackground(labeledPairs.B1,bgPalette));
 assert.equal(bgPalette.size,5,'each distinct non-empty combination has one shade');
+const firstFiveShades=[...bgPalette.values()];
+assert(firstFiveShades.some(hex=>[1,3,5].some(i=>parseInt(hex.slice(i,i+2),16)<230)),
+ 'background tint should be visibly stronger than the earlier almost-white palette');
+for(let i=0;i<firstFiveShades.length;i++)for(let j=i+1;j<firstFiveShades.length;j++){
+ const distance=[1,3,5].reduce((sum,k)=>sum+Math.abs(parseInt(firstFiveShades[i].slice(k,k+2),16)-parseInt(firstFiveShades[j].slice(k,k+2),16)),0);
+ assert(distance>=24,'different conditions should have noticeably different pastel backgrounds');
+}
 assert.equal(bgCore.conditionBackground(labeledPairs.G1,bgPalette),'#F0F0ED','special controls stay gray');
 assert.equal(bgCore.conditionBackground(null,bgPalette),'#FFFFFF','empty wells remain white');
 assert.equal(bgCore.conditionBackground(labeledPairs.H2,bgPalette),'#FFFFFF','empty labels remain white');
 for(const color of bgPalette.values()){
  assert(/^#[0-9A-F]{6}$/.test(color));
  const rgb=[1,3,5].map(k=>parseInt(color.slice(k,k+2),16));
- assert(Math.min(...rgb)>=230,'condition backgrounds remain near-white');
+ assert(Math.min(...rgb)>=210,'condition backgrounds remain light enough for dark labels');
 }
 const sameWithAnotherNote={labels:['0/100','0'],rowNotes:{A:'24h'},colNotes:{1:'100 µM AA'},kind:'normal'};
 assert.equal(bgCore.conditionBackground(labeledPairs.A1,bgPalette),bgCore.conditionBackground(sameWithAnotherNote,bgPalette));
