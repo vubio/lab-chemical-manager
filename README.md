@@ -181,3 +181,9 @@ Paste checks the **full selected bounding rectangle** against plate boundaries b
 **Copied OneNote tables:** Merged note headers such as A–D and E–H put the header on one line and its note (e.g. 24h or 48h) on a second line using an explicit HTML line break. Rich copying retains rowspans/colspans when supported by OneNote.
 
 **Within-factor shading:** Factor identity still determines hue—dark red for Level 1/primary, blue for Level 2/secondary, green for Level 3, and purple for Level 4. Distinct values within the *same* factor receive modestly lighter/darker variations of that hue (up to 12% darker or 14% lighter). Each value gets the same shade everywhere in the current plate. These colors are also applied to the rich HTML table copied for OneNote. The actual label text is always present; color is supplemental.
+
+### Subtle background tints for matching well conditions
+
+Each non-empty, non-special plate well now receives a very light pastel background determined by the **complete combination of effective factor labels shown inside the well**. Wells with the same labels (for instance A1–A4 and E1–E4 after copying) get exactly the same background, regardless of coordinates, merged row/column notes, or whether the labels were generated automatically or entered manually. Different label combinations get modestly varied near-white shades. These are visual aids only and do not change the saved experimental factors, reader matching, or calculated results.
+
+Selection and drag-preview colors remain prominent, control/extra wells keep gray styling, and empty wells stay white. The formatted **Copy plate table** and **Copy plate note** outputs for OneNote use the very same computed background tints. No extra fields or database migration are needed.
