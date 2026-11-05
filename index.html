@@ -6,9 +6,9 @@
   <meta name="description" content="Local-first laboratory chemical preparation, dosing calculator and digital lab note records." />
   <title>03_Calculator</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=1" />
-  <link rel="stylesheet" href="styles.css?v=quick-name-20261104-1" />
+  <link rel="stylesheet" href="styles.css?v=axis-merge-20261105-1" />
   <script src="app.js?v=github-sync-20261027-1" defer></script>
-  <script src="plate.js?v=quick-name-20261104-1" defer></script>
+  <script src="plate.js?v=axis-merge-20261105-1" defer></script>
   <script src="plate_reader.js?v=match-manual-20261028-1" defer></script>
   <script src="github_sync.js?v=20261027-2" defer></script>
 </head>
@@ -58,6 +58,12 @@
             <div class="plate-placement-controls"><label class="field"><span>Auto-fill direction</span><select id="pl-fill-order"><option value="rows">Rows first (left → right, then down)</option><option value="columns">Columns first (top → bottom, then right)</option></select></label><button class="btn" id="pl-transpose" type="button" title="Swap the rows and columns of the current well map if the transposed pattern fits">Transpose current map</button><span class="tiny muted">Direction applies on Generate. Transpose rotates the existing assignment axes only if they fit the plate.</span></div><div class="action-row plate-grid-actions"><button class="btn" id="pl-copy-table">Copy plate table</button><button type="button" class="btn" id="pl-label-selected">Edit / label selected wells</button><span class="tiny muted">Formatted table for OneNote, including row and column notes</span></div><div id="pl-factor-legend" class="pl-factor-legend" aria-label="Factor label colors"></div><div class="pl-grid-and-levels">
  <div class="plate-grid-scroll">
  <div class="pl-note-toolbar"><button class="btn" id="pl-toggle-notes" type="button" aria-controls="pl-grid" aria-expanded="false" aria-pressed="false">Show notes</button><span class="tiny muted">Select wells, then right-click to add a level label.</span></div>
+ <div id="pl-axis-merge-tools" class="pl-axis-merge-tools" hidden>
+  <span id="pl-axis-selection-status" class="tiny muted" aria-live="polite">Click a row or column label; Shift-click to select a range</span>
+  <button type="button" class="btn small" id="pl-merge-axis" disabled>Merge selected headers</button>
+  <button type="button" class="btn small" id="pl-unmerge-axis" disabled>Unmerge</button>
+  <button type="button" class="btn small" id="pl-clear-axis-selection" disabled>Clear selection</button>
+ </div>
  <div id="pl-grid" class="simple-plate-grid" role="grid" aria-label="Well plate layout"></div>
  </div>
  <aside id="pl-manual-level-sidebar" class="pl-manual-sidebar" aria-label="Manual label level legend">
