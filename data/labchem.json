@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updatedAt": "2026-11-04T23:31:24.639Z",
+  "updatedAt": "2026-11-05T19:58:50.222Z",
   "chemicals": {
     "version": 1,
     "chemicals": [
@@ -4040,7 +4040,62 @@
       "name": "96-well_1k-5k-10k_AA",
       "format": "96",
       "selection": [
-        "C7"
+        "A1",
+        "A2",
+        "A3",
+        "A4",
+        "A5",
+        "A6",
+        "A7",
+        "B1",
+        "B2",
+        "B3",
+        "B4",
+        "B5",
+        "B6",
+        "B7",
+        "C1",
+        "C2",
+        "C3",
+        "C4",
+        "C5",
+        "C6",
+        "C7",
+        "D1",
+        "D2",
+        "D3",
+        "D4",
+        "D5",
+        "D6",
+        "D7",
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6",
+        "E7",
+        "F1",
+        "F2",
+        "F3",
+        "F4",
+        "F5",
+        "F6",
+        "F7",
+        "G1",
+        "G2",
+        "G3",
+        "G4",
+        "G5",
+        "G6",
+        "G7",
+        "H1",
+        "H2",
+        "H3",
+        "H4",
+        "H5",
+        "H6",
+        "H7"
       ],
       "rowNotes": {
         "A": "1k",
@@ -4160,411 +4215,10 @@
         "[[\"factor1\",\"5k\"],[\"factor3\",\"25\"]]": 3,
         "[[\"factor1\",\"10k\"],[\"factor3\",\"25\"]]": 3
       },
-      "assignments": {
-        "E1": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "0",
-            null
-          ]
-        },
-        "E2": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "1",
-            null
-          ]
-        },
-        "E3": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "5",
-            null
-          ]
-        },
-        "E4": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "10",
-            null
-          ]
-        },
-        "E5": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "20",
-            null
-          ]
-        },
-        "F1": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "0",
-            null
-          ]
-        },
-        "F2": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "1",
-            null
-          ]
-        },
-        "F3": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "5",
-            null
-          ]
-        },
-        "F4": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "10",
-            null
-          ]
-        },
-        "F5": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "20",
-            null
-          ]
-        },
-        "G1": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "0",
-            null
-          ]
-        },
-        "G2": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "1",
-            null
-          ]
-        },
-        "G3": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "5",
-            null
-          ]
-        },
-        "G4": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "10",
-            null
-          ]
-        },
-        "G5": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "20",
-            null
-          ]
-        },
-        "H1": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "0",
-            null
-          ]
-        },
-        "H2": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "1",
-            null
-          ]
-        },
-        "H3": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "5",
-            null
-          ]
-        },
-        "H4": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "10",
-            null
-          ]
-        },
-        "H5": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "Retinol (µM)",
-            "20",
-            null
-          ]
-        },
-        "A1": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "0",
-            null
-          ]
-        },
-        "A2": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "25",
-            null
-          ]
-        },
-        "A3": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "50",
-            null
-          ]
-        },
-        "A4": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "75",
-            null
-          ]
-        },
-        "A5": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "100",
-            null
-          ]
-        },
-        "B1": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "0",
-            null
-          ]
-        },
-        "B2": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "25",
-            null
-          ]
-        },
-        "B3": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "50",
-            null
-          ]
-        },
-        "B4": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "75",
-            null
-          ]
-        },
-        "B5": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "100",
-            null
-          ]
-        },
-        "C1": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "0",
-            null
-          ]
-        },
-        "C2": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "25",
-            null
-          ]
-        },
-        "C3": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "50",
-            null
-          ]
-        },
-        "C4": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "75",
-            null
-          ]
-        },
-        "C5": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "100",
-            null
-          ]
-        },
-        "D1": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "0",
-            null
-          ]
-        },
-        "D2": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "25",
-            null
-          ]
-        },
-        "D3": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "50",
-            null
-          ]
-        },
-        "D4": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "75",
-            null
-          ]
-        },
-        "D5": {
-          "labels": [],
-          "group": "manual",
-          "kind": "normal",
-          "manualLevels": [
-            "AA (µM)",
-            "100",
-            null
-          ]
-        }
-      },
+      "assignments": {},
       "notes": "",
       "generatedAt": "2026-10-20T00:24:24.459Z",
-      "manualLayoutChanges": true,
+      "manualLayoutChanges": false,
       "factorDraftStale": false,
       "savedAt": "2026-11-04T23:26:31.085Z"
     },
