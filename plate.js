@@ -220,6 +220,55 @@ function plateAxisGridStart(showNotes,cols,colNotes={},colMerges=[],selection=nu
  }
  return content;
 }
+function selectedAxisRange(){const nums=[...new Set(axisSelection.indices)].sort((a,b)=>a-b);return {axis:axisSelection.axis,nums}}
+function updateAxisSelectionControls(){
+ const bar=$('pl-axis-merge-tools');if(!bar)return;
+ bar.hidden=!notesVisible;
+ if(!notesVisible)return;
+ const {axis,nums}=selectedAxisRange(),merged=axis==='row'?state.rowNoteMerges:state.colNoteMerges;
+ const canMerge=!!axis&&nums.length>=2&&nums.every((n,i)=>i===0||n===nums[i-1]+1)&&!merged.some(m=>m.start<=nums[nums.length-1]&&m.end>=nums[0]);
+ const canUnmerge=!!axis&&merged.some(m=>Array.from({length:m.end-m.start+1},(_,i)=>m.start+i).every(n=>nums.includes(n)));
+ $('pl-merge-axis').disabled=!canMerge;
+ $('pl-unmerge-axis').disabled=!canUnmerge;
+ $('pl-clear-axis-selection').disabled=!nums.length;
+ $('pl-axis-selection-status').textContent=axis&&nums.length?`${axis==='row'?'Rows':'Columns'} ${axisRangeText(axis,nums[0],nums[nums.length-1])} · ${nums.length} selected`:'Click a row or column label; Shift-click to select a range';
+}
+function pickAxisHeaders(axis,start,end,shift=false,toggle=false){
+ if(!notesVisible||!['row','column'].includes(axis))return;
+ const range=Array.from({length:end-start+1},(_,i)=>start+i),same=axisSelection.axis===axis;
+ if(shift&&same&&Number.isInteger(axisSelectionAnchor)){
+  const a=Math.min(axisSelectionAnchor,start),b=Math.max(axisSelectionAnchor,end);
+  axisSelection={axis,indices:Array.from({length:b-a+1},(_,i)=>a+i)};
+ }else if(toggle&&same){
+  const set=new Set(axisSelection.indices),allIn=range.every(n=>set.has(n));
+  for(const n of range)allIn?set.delete(n):set.add(n);
+  axisSelection={axis,indices:[...set].sort((a,b)=>a-b)};
+  axisSelectionAnchor=start;
+ }else{axisSelection={axis,indices:range};axisSelectionAnchor=start}
+ renderPlate();
+}
+function mergeSelectedHeaders(){
+ const {axis,nums}=selectedAxisRange();if(!axis||nums.length<2)return notify('Select two or more consecutive row or column labels.',true);
+ try{
+  const [rows,cols]=dimensions(),key=axis==='row'?'rowNoteMerges':'colNoteMerges',notes=state[axis==='row'?'rowNotes':'colNotes'];
+  if(!nums.every((n,i)=>i===0||n===nums[i-1]+1))throw Error('Select consecutive headers (use Shift-click from the first to last label).');
+  state[key]=mergeAxisRange(state[key],notes,axis,nums[0],nums[nums.length-1],axis==='row'?rows:cols);
+  renderPlate();updateNote();persist();
+  const input=$('pl-grid').querySelector(`[data-merged-axis="${axis}"][data-merged-start="${nums[0]}"]`);
+  input?.focus();input?.select();
+  notify(`Merged ${axis} headers ${axisRangeText(axis,nums[0],nums[nums.length-1])}. Type one shared note.`);
+ }catch(e){notify(e.message,true)}
+}
+function unmergeSelectedHeaders(){
+ const {axis,nums}=selectedAxisRange();if(!axis)return notify('Select a merged row or column header.',true);
+ try{
+  const [rows,cols]=dimensions(),key=axis==='row'?'rowNoteMerges':'colNoteMerges',noteKey=axis==='row'?'rowNotes':'colNotes';
+  const result=unmergeAxisRanges(state[key],state[noteKey],axis,nums,axis==='row'?rows:cols);
+  state[key]=result.merges;state[noteKey]=result.notes;
+  renderPlate();updateNote();persist();
+  notify(`Unmerged ${result.count} header group${result.count===1?'':'s'}. Previous individual notes are preserved; blank notes inherit the group note.`);
+ }catch(e){notify(e.message,true)}
+}
 function renderPlate(){
  const [rows,cols]=dimensions(),isMove=state.mode==='move';
  const selected=new Set(state.selection),hasSelected=selected.size>0;
@@ -346,7 +395,7 @@ function copyPlateTable(){const rows=plateTable();return copyRich(factorLegendHT
 function persist(){try{localStorage.setItem(STORAGE,JSON.stringify({draft:state,saved}))}catch(e){notify('Could not save plate layout: browser storage full or unavailable.',true)}if(typeof window.dispatchEvent==='function'&&typeof CustomEvent!=='undefined')window.dispatchEvent(new CustomEvent('labchem:data-changed',{detail:{section:'plates'}}))}
 function bootStored(){try{const data=JSON.parse(localStorage.getItem(STORAGE)||'null');if(data){state=normalize(data.draft);saved=Array.isArray(data.saved)?data.saved.map(normalize):[]}}catch(e){state=defaults();saved=[]}}
 function syncMeta(){state.name=$('pl-title').value;if($('pl-quick-name')&&$('pl-quick-name')!==document.activeElement)$('pl-quick-name').value=state.name;state.notes=$('pl-notes').value;state.mode=$('pl-mode').value;persist();updateNote()}
-function refreshAll(){ renderManualLevelLegend();$('pl-title').value=state.name;if($('pl-quick-name'))$('pl-quick-name').value=state.name;$('pl-format').value=state.format;$('pl-mode').value=state.mode;$('pl-fill-order').value=state.fillOrder;$('pl-notes').value=state.notes;renderFactors();renderCombinations();renderPlate();renderSaved();updateNote(); }
+function refreshAll(){ axisSelection={axis:null,indices:[]};axisSelectionAnchor=null;renderManualLevelLegend();$('pl-title').value=state.name;if($('pl-quick-name'))$('pl-quick-name').value=state.name;$('pl-format').value=state.format;$('pl-mode').value=state.mode;$('pl-fill-order').value=state.fillOrder;$('pl-notes').value=state.notes;renderFactors();renderCombinations();renderPlate();renderSaved();updateNote(); }
 function renderSaved(){
  const select=$('pl-saved'),quick=$('pl-quick-saved'),old=select.value||quick?.value||'';
  const options='<option value="">Choose saved layout</option>'+saved.map(x=>`<option value="${esc(x.id)}">${esc(x.name)} · ${esc(x.format)}-well · ${esc(x.savedAt?new Date(x.savedAt).toLocaleString():'')}</option>`).join('');
@@ -741,20 +790,38 @@ function save(){const name=String($('pl-quick-name')?.value??$('pl-title').value
 function bind(){installWellLabelDialog();installAxisNoteDialog();installManualLevelMenu();const grid=$('pl-grid');
  $('pl-toggle-notes').addEventListener('click',()=>{
   notesVisible=!notesVisible;
+  if(!notesVisible){axisSelection={axis:null,indices:[]};axisSelectionAnchor=null}
   renderPlate();
   notify(notesVisible?'Row and column notes are now editable in their headers.':'Row and column notes are hidden; existing notes are preserved.');
  });grid.addEventListener('pointerdown',e=>{if(e.pointerType==='touch')return;beginDrag(e)});document.addEventListener('pointermove',e=>{if(drag)moveDrag(e)});document.addEventListener('pointerup',e=>{if(!drag)return;if(drag.mode==='move'&&!document.elementFromPoint(e.clientX,e.clientY)?.closest('[data-well]')){drag=null;renderPlate();notify('Move canceled: release over a well to apply it.');return}finishDrag()});grid.addEventListener('click',e=>{const w=e.target.closest('[data-well]');if(!w)return;if(suppressClick){suppressClick=false;return}activeCell=w.dataset.well;renderPlate()});grid.addEventListener('dblclick',e=>{const w=e.target.closest('[data-well]');if(w&&$('pl-label-dialog').hidden)openWellLabelDialog(w.dataset.well)});
- grid.addEventListener('click',e=>{const axis=e.target.closest('[data-axis]');if(axis&&axis.dataset.axisKey){window.openPlateAxisNote(axis.dataset.axis,axis.dataset.axisKey)}});
+ grid.addEventListener('click',e=>{
+  const pick=e.target.closest('[data-axis-pick]');if(!pick)return;
+  pickAxisHeaders(pick.dataset.axisPick,Number(pick.dataset.axisStart),Number(pick.dataset.axisEnd),e.shiftKey,e.ctrlKey||e.metaKey);
+ });
+ $('pl-merge-axis').addEventListener('click',mergeSelectedHeaders);
+ $('pl-unmerge-axis').addEventListener('click',unmergeSelectedHeaders);
+ $('pl-clear-axis-selection').addEventListener('click',()=>{axisSelection={axis:null,indices:[]};axisSelectionAnchor=null;renderPlate()});
  grid.addEventListener('input',e=>{
   const element=e.target;
   if(element.matches('[data-row-note]')){const key=element.dataset.rowNote;if(element.value.trim())state.rowNotes[key]=element.value;else delete state.rowNotes[key]}
   else if(element.matches('[data-column-note]')){const key=element.dataset.columnNote;if(element.value.trim())state.colNotes[key]=element.value;else delete state.colNotes[key]}
-  else return;
+  else if(element.matches('[data-merged-axis]')){
+   const list=element.dataset.mergedAxis==='row'?state.rowNoteMerges:state.colNoteMerges,entry=list.find(m=>m.start===Number(element.dataset.mergedStart));
+   if(!entry)return;
+   entry.note=element.value;
+  }else return;
   persist();updateNote();
  });
  grid.addEventListener('change',e=>{
-  if(!e.target.matches('[data-row-note],[data-column-note]'))return;
-  const control=e.target;const key=control.matches('[data-row-note]')?control.dataset.rowNote:control.dataset.columnNote;
+  if(!e.target.matches('[data-row-note],[data-column-note],[data-merged-axis]'))return;
+  const control=e.target;
+  if(control.matches('[data-merged-axis]')){
+   const list=control.dataset.mergedAxis==='row'?state.rowNoteMerges:state.colNoteMerges;
+   const entry=list.find(m=>m.start===Number(control.dataset.mergedStart));
+   if(entry){entry.note=control.value.trim();control.value=entry.note}
+   renderPlate();persist();updateNote();return;
+  }
+  const key=control.matches('[data-row-note]')?control.dataset.rowNote:control.dataset.columnNote;
   const map=control.matches('[data-row-note]')?state.rowNotes:state.colNotes;
   if(map[key])map[key]=map[key].trim();
   control.value=map[key]||'';
@@ -768,7 +835,7 @@ function bind(){installWellLabelDialog();installAxisNoteDialog();installManualLe
   else if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();clearSelectedLabels()}
  });
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&drag){drag=null;renderPlate();notify('Move canceled. No labels changed.')}});
- $('pl-format').addEventListener('change',e=>{const selected=state.selection.length||Object.keys(state.assignments).length;if(selected&&!confirm('Changing plate format clears selection and current labels. Continue?')){e.target.value=state.format;return}state.format=e.target.value;state.selection=[];state.assignments={};state.manualLayoutChanges=false;state.rowNotes={};state.colNotes={};activeCell=null;selectionAnchor=null;renderCombinations();renderPlate();updateNote();persist()});
+ $('pl-format').addEventListener('change',e=>{const selected=state.selection.length||Object.keys(state.assignments).length;if(selected&&!confirm('Changing plate format clears selection and current labels. Continue?')){e.target.value=state.format;return}state.format=e.target.value;state.selection=[];state.assignments={};state.manualLayoutChanges=false;state.rowNotes={};state.colNotes={};state.rowNoteMerges=[];state.colNoteMerges=[];axisSelection={axis:null,indices:[]};axisSelectionAnchor=null;activeCell=null;selectionAnchor=null;renderCombinations();renderPlate();updateNote();persist()});
  $('pl-fill-order').addEventListener('change',e=>{state.fillOrder=e.target.value==='columns'?'columns':'rows';persist();notify('Fill preference saved. Click Generate to apply it; current labels are unchanged.')});$('pl-transpose').addEventListener('click',transposeCurrent);$('pl-mode').addEventListener('change',syncMeta);$('pl-title').addEventListener('input',syncMeta);$('pl-notes').addEventListener('input',syncMeta);
  $('pl-clear-selected').addEventListener('click',clearSelectedLabels);
  $('pl-all').addEventListener('click',()=>{state.selection=[];renderPlate();persist();notify('Entire plate available for layout.')});$('pl-clear').addEventListener('click',()=>{if(Object.keys(state.assignments).length&&!confirm('Clear all well labels from the current plate? Saved layouts remain available.'))return;state.assignments={};state.manualLayoutChanges=false;activeCell=null;renderPlate();updateNote();persist();notify('All well labels cleared. Selected well areas are unchanged.')});
