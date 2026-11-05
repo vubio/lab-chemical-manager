@@ -35,7 +35,7 @@ function hasContent(s){
  const d=s.chemicals,p=s.plates,q=p.draft;
  return !!(d.chemicals?.length||d.history?.length||d.templates?.length||p.saved?.length||q&&(
  Object.keys(q.assignments||{}).length||q.selection?.length||Object.keys(q.rowNotes||{}).length||
- Object.keys(q.colNotes||{}).length||String(q.notes||'').trim()||
+ Object.keys(q.colNotes||{}).length||q.rowNoteMerges?.length||q.colNoteMerges?.length||String(q.notes||'').trim()||
  (q.name&&q.name!=='New experiment')||q.generatedAt||
  Object.keys(q.counts||{}).length||q.fillOrder==='columns'||(q.factors||[]).some((f,i)=>String(f.name||'')!==['Dose','Cell density','',''][i]||String(f.values||'')!==['0 µM; 0.05 µM; 0.1 µM; 0.2 µM','','',''][i])
  ));
