@@ -352,13 +352,21 @@ function renderEditor(){const record=activeCell?state.assignments[activeCell]:nu
  $('pl-label-fields').innerHTML=Array.from({length:4},(_,i)=>`<label class="field"><span>${i===0?'Primary':i===1?'Secondary':i===2?'Third':'Fourth'} text</span><input id="pl-edit-${i}" ${active?'':'disabled'} value="${esc(effectiveLabels(record)[i]||'')}" placeholder="${esc(state.factors[i]?.name||'Optional label')}"/></label>`).join('');
 }
 function updateNote(){const note=makeNote();$('pl-note-preview').textContent=note}
+function axisDisplayNote(axis,index){
+ const merges=axis==='row'?state.rowNoteMerges:state.colNoteMerges;
+ const notes=axis==='row'?state.rowNotes:state.colNotes;
+ const m=axisMergeAt(merges,index);
+ return m?m.note:notes[axisKey(axis,index)]||'';
+}
 function axisTitle(label,note){return note?`${label} (${note})`:String(label)}
 function plateTable(){const [rows,cols]=dimensions();return [
- ['Row / column',...Array.from({length:cols},(_,i)=>axisTitle(i+1,state.colNotes[i+1]||''))],
- ...Array.from({length:rows},(_,r)=>{const row=String.fromCharCode(65+r);return [axisTitle(row,state.rowNotes[row]||''),...Array.from({length:cols},(_,c)=>effectiveLabels(state.assignments[cellName(r,c)]).filter(Boolean).join(' / ')||'')]})
+ ['Row / column',...Array.from({length:cols},(_,i)=>axisTitle(i+1,axisDisplayNote('column',i)))],
+ ...Array.from({length:rows},(_,r)=>{const row=String.fromCharCode(65+r);return [axisTitle(row,axisDisplayNote('row',r)),...Array.from({length:cols},(_,c)=>effectiveLabels(state.assignments[cellName(r,c)]).filter(Boolean).join(' / ')||'')]})
 ]}
 function makeNote(){let lines=['[PLATE LAYOUT]',`Title: ${state.name}`,`Plate format: ${state.format} wells`,`Fill preference: ${state.fillOrder==='columns'?'Columns first':'Rows first'}`,`Mapped: ${Object.keys(state.assignments).length} wells`,`Available area: ${state.selection.length?state.selection.slice().sort().join(', '):'Entire plate'}`,''];
  if(state.notes.trim())lines.push(`Notes: ${state.notes.trim()}`,'');
+ const mergedNotes=[...state.rowNoteMerges.map(m=>`Rows ${axisRangeText('row',m.start,m.end)}: ${m.note||'(blank)'}`),...state.colNoteMerges.map(m=>`Columns ${axisRangeText('column',m.start,m.end)}: ${m.note||'(blank)'}`)];
+ if(mergedNotes.length)lines.push('Merged header notes:',...mergedNotes,'');
  return lines.concat([factorLegendPlain('plate'),''],plateTable().map(row=>row.join('\t'))).join('\n');
 }
 function conditionTable(){return desired().map(c=>[c.parts.map(p=>`${p.name}: ${p.value}`).join(' · '),c.replicates])}
@@ -369,11 +377,23 @@ function labelsHTML(record){if(!record||!Array.isArray(record.labels))return '';
  if(record.kind==='special')return `<div style="font:700 12px/1.3 Arial,sans-serif;color:#495562">${esc(record.controlName||vals[0]||'Control')} <span style="font-size:9px;color:#64748b">(control)</span></div>`;
  return vals.map((value,i)=>!String(value||'').trim()?'':`<div style="display:block;line-height:1.25;margin-bottom:${i===0?'3':'2'}px;font-family:Arial,Helvetica,sans-serif;font-size:${i===0?13:i===1?11:10}px;font-weight:${i===0?'700':i===1?'600':'400'};font-style:${i>=2?'italic':'normal'};color:${FACTOR_COLORS[i]||'#344054'}">${esc(value)}</div>`).join('');
 }
-function plateHTML(){const [rows,cols]=dimensions(),cells=[];
- cells.push(`<tr><th style="${tdStyle}background:#eaf0f4;font-weight:700">Row / column</th>${Array.from({length:cols},(_,i)=>`<th style="${tdStyle}background:#eaf0f4">${axisHTML(i+1,state.colNotes[i+1]||'')}</th>`).join('')}</tr>`);
+function plateHTML(){
+ const [rows,cols]=dimensions(),cells=[];
+ let heads=`<th style="${tdStyle}background:#eaf0f4;font-weight:700">Row / column</th>`;
+ for(let c=0;c<cols;c++){
+  const m=axisMergeAt(state.colNoteMerges,c);
+  if(m&&m.start!==c)continue;
+  const span=m?m.end-m.start+1:1,label=axisRangeText('column',c,c+span-1);
+  heads+=`<th ${span>1?`colspan="${span}" `:''}style="${tdStyle}background:#eaf0f4">${axisHTML(label,m?m.note:state.colNotes[c+1]||'')}</th>`;
+ }
+ cells.push(`<tr>${heads}</tr>`);
  for(let r=0;r<rows;r++){
-  const row=String.fromCharCode(65+r);
-  const head=`<th style="${tdStyle}background:#eaf0f4">${axisHTML(row,state.rowNotes[row]||'')}</th>`;
+  const row=String.fromCharCode(65+r),merge=axisMergeAt(state.rowNoteMerges,r);
+  let head='';
+  if(!merge||merge.start===r){
+   const span=merge?merge.end-merge.start+1:1;
+   head=`<th ${span>1?`rowspan="${span}" `:''}style="${tdStyle}background:#eaf0f4">${axisHTML(axisRangeText('row',r,r+span-1),merge?merge.note:(state.rowNotes[row]||''))}</th>`;
+  }
   const data=Array.from({length:cols},(_,c)=>{const record=state.assignments[cellName(r,c)];return `<td style="${tdStyle}background:${record?'#f1f6f9':'#fff'};min-width:75px">${labelsHTML(record)}</td>`}).join('');
   cells.push(`<tr>${head}${data}</tr>`);
  }
