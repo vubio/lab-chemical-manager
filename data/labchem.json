@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updatedAt": "2026-11-05T20:05:05.084Z",
+  "updatedAt": "2026-11-05T20:05:30.169Z",
   "chemicals": {
     "version": 1,
     "chemicals": [
@@ -4049,11 +4049,7 @@
         "A11",
         "A12"
       ],
-      "rowNotes": {
-        "A": "1k",
-        "C": "5k",
-        "E": "10k"
-      },
+      "rowNotes": {},
       "colNotes": {},
       "manualLevelNames": [
         "Treatment",
