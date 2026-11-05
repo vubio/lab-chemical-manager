@@ -732,7 +732,6 @@ function installManualLevelMenu(){
     state.assignments=result.assignments;
     state.selection=result.selection;
     state.manualLayoutChanges=true;
-    state.factorDraftStale=false;
     activeCell=contextWell;selectionAnchor=contextWell;
     renderPlate();updateNote();persist();
     notify('Pasted '+result.pasted+' labeled well'+(result.pasted===1?'':'s')+' starting at '+contextWell+'. Original wells were not changed.');
