@@ -72,7 +72,7 @@ function factorValueColor(palette,level,value){
    Screen and rich clipboard renderings use the exact same palette. */
 const CONDITION_TINTS=[
  '#D8E9F5','#E6F1D7','#F6E5D8','#ECE0F5',
- '#D7EEE9','#F4EDCF','#F3DEE7','#DAE5F4',
+ '#D5F0E3','#F4EDCF','#F3DEE7','#DAE5F4',
  '#E2EED9','#F5E8D6','#E4DEF3','#D9F0E3',
  '#F3E0D8','#DFEBF5','#EEF0D4','#E8E2F2',
  '#D8ECEF','#F5E3E1','#E3EDD8','#E3E6F5',
