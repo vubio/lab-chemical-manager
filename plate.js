@@ -43,6 +43,29 @@ function assignManualLevels(assignments,wells,level,value){
  }
  return next;
 }
+
+/* Distinct factor colors; gentle, deterministic brightness differences for
+   different values within one factor. Stable between screen and OneNote. */
+function shadeHex(base,ratio){
+ const hex=base.replace('#',''),rgb=[0,2,4].map(i=>parseInt(hex.slice(i,i+2),16));
+ return '#'+rgb.map(c=>Math.round(ratio<0?c*(1+ratio):c+(255-c)*ratio)).map(c=>Math.max(0,Math.min(255,c)).toString(16).padStart(2,'0')).join('').toUpperCase();
+}
+function factorValuePalette(assignments){
+ const palette=FACTOR_COLORS.map(()=>new Map()),sets=palette.map(()=>new Set());
+ for(const rec of Object.values(assignments||{})){
+  if(!rec||rec.kind==='special')continue;
+  effectiveLabels(rec).forEach((val,i)=>{if(i<sets.length&&String(val??'').trim())sets[i].add(String(val).trim())});
+ }
+ for(let i=0;i<sets.length;i++){
+  const values=[...sets[i]].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true,sensitivity:'base'}));
+  values.forEach((value,j)=>palette[i].set(value,shadeHex(FACTOR_COLORS[i],values.length===1?0:-.12+(j/(values.length-1))*.26)));
+ }
+ return palette;
+}
+function factorValueColor(palette,level,value){
+ return palette?.[level]?.get(String(value??'').trim())||FACTOR_COLORS[level]||'#344054';
+}
+
 function legendEntries(source='plate'){
  // Factor identity comes from the live editor, not old well assignments.
  // Keep an unnamed fallback for manually entered third/fourth labels.
@@ -274,6 +297,7 @@ function renderPlate(){
  const selected=new Set(state.selection),hasSelected=selected.size>0;
  const preview=drag?.mode==='move'?drag.preview:null;
  const assignments=preview?.assignments||state.assignments;
+ const shadePalette=factorValuePalette(assignments);
  const targetSet=new Set(preview?.selection||[]);
  const sourceSet=new Set(drag?.mode==='move'?drag.sources||[]:[]);
  const changedSet=new Set(preview?.displaced||[]);
@@ -300,7 +324,7 @@ function renderPlate(){
    const pos=cellName(r,c),record=assignments[pos],disabled=!isMove&&hasSelected&&!selected.has(pos),selectedHere=selected.has(pos);
    const classes='pl-well'+(record?' pl-assigned':'')+(selectedHere?' pl-selected':'')+(disabled?' pl-unselected':'')+(activeCell===pos?' pl-focus':'')+(record?.kind==='special'?' pl-special':'')+(sourceSet.has(pos)?' pl-move-origin':'')+(targetSet.has(pos)?' pl-drop-target':'')+(changedSet.has(pos)?' pl-ripple':'')+(drag?.invalid===pos?' pl-drop-invalid':'');
    const labels=effectiveLabels(record),labelText=labels.filter(Boolean).map(x=>String(x)).join(' | ');
-   h+=`<button type="button" class="${classes}" style="grid-row:${r+(notesVisible?2:1)};grid-column:${c+(notesVisible?2:1)}" data-well="${pos}" role="gridcell" title="${esc(pos+(labelText?' — '+labelText:''))}" aria-label="${esc(pos+(labelText?' '+labelText:''))}" aria-selected="${selectedHere?'true':'false'}"><span class="pl-coord">${pos}</span><span class="pl-labels"><span class="pl-primary">${esc(labels[0]||'')}</span>${labels.length>1?`<span class="pl-secondary">${esc(labels[1])}</span>`:''}${labels[2]?`<span class="pl-tertiary">${esc(labels[2])}</span>`:''}${labels[3]?`<span class="pl-quaternary">${esc(labels[3])}</span>`:''}</span></button>`;
+   h+=`<button type="button" class="${classes}" style="grid-row:${r+(notesVisible?2:1)};grid-column:${c+(notesVisible?2:1)}" data-well="${pos}" role="gridcell" title="${esc(pos+(labelText?' — '+labelText:''))}" aria-label="${esc(pos+(labelText?' '+labelText:''))}" aria-selected="${selectedHere?'true':'false'}"><span class="pl-coord">${pos}</span><span class="pl-labels"><span class="pl-primary" style="color:${factorValueColor(shadePalette,0,labels[0])}">${esc(labels[0]||'')}</span>${labels.length>1?`<span class="pl-secondary" style="color:${factorValueColor(shadePalette,1,labels[1])}">${esc(labels[1]||'')}</span>`:''}${labels[2]?`<span class="pl-tertiary" style="color:${factorValueColor(shadePalette,2,labels[2])}">${esc(labels[2])}</span>`:''}${labels[3]?`<span class="pl-quaternary" style="color:${factorValueColor(shadePalette,3,labels[3])}">${esc(labels[3])}</span>`:''}</span></button>`;
   }
  }
  grid.innerHTML=h;renderFactorLegend();updateAxisSelectionControls();
@@ -371,14 +395,14 @@ function makeNote(){let lines=['[PLATE LAYOUT]',`Title: ${state.name}`,`Plate fo
 }
 function conditionTable(){return desired().map(c=>[c.parts.map(p=>`${p.name}: ${p.value}`).join(' · '),c.replicates])}
 const tdStyle='border:1px solid #8797a6;padding:7px 8px;text-align:left;vertical-align:top;';
-function axisHTML(label,note){return `<span style="display:block;font-size:12px;font-weight:700;color:#263d4d">${esc(label)}</span>${note?`<span style="display:block;font-size:10px;font-weight:400;color:#53687a;margin-top:3px">${esc(note)}</span>`:''}`}
-function labelsHTML(record){if(!record||!Array.isArray(record.labels))return '';
+function axisHTML(label,note){return `<strong style="font-size:12px;font-weight:700;color:#263d4d">${esc(label)}</strong>${note?`<br><span style="font-size:10px;line-height:1.3;font-weight:400;color:#53687a">${esc(note)}</span>`:''}`}
+function labelsHTML(record,palette=null){if(!record||!Array.isArray(record.labels))return '';
  const vals=effectiveLabels(record);
  if(record.kind==='special')return `<div style="font:700 12px/1.3 Arial,sans-serif;color:#495562">${esc(record.controlName||vals[0]||'Control')} <span style="font-size:9px;color:#64748b">(control)</span></div>`;
- return vals.map((value,i)=>!String(value||'').trim()?'':`<div style="display:block;line-height:1.25;margin-bottom:${i===0?'3':'2'}px;font-family:Arial,Helvetica,sans-serif;font-size:${i===0?13:i===1?11:10}px;font-weight:${i===0?'700':i===1?'600':'400'};font-style:${i>=2?'italic':'normal'};color:${FACTOR_COLORS[i]||'#344054'}">${esc(value)}</div>`).join('');
+ return vals.map((value,i)=>!String(value||'').trim()?'':`<div style="display:block;line-height:1.25;margin-bottom:${i===0?'3':'2'}px;font-family:Arial,Helvetica,sans-serif;font-size:${i===0?13:i===1?11:10}px;font-weight:${i===0?'700':i===1?'600':'400'};font-style:${i>=2?'italic':'normal'};color:${factorValueColor(palette,i,value)}">${esc(value)}</div>`).join('');
 }
 function plateHTML(){
- const [rows,cols]=dimensions(),cells=[];
+ const [rows,cols]=dimensions(),cells=[],palette=factorValuePalette(state.assignments);
  let heads=`<th style="${tdStyle}background:#eaf0f4;font-weight:700">Row / column</th>`;
  for(let c=0;c<cols;c++){
   const m=axisMergeAt(state.colNoteMerges,c);
@@ -394,7 +418,7 @@ function plateHTML(){
    const span=merge?merge.end-merge.start+1:1;
    head=`<th ${span>1?`rowspan="${span}" `:''}style="${tdStyle}background:#eaf0f4">${axisHTML(axisRangeText('row',r,r+span-1),merge?merge.note:(state.rowNotes[row]||''))}</th>`;
   }
-  const data=Array.from({length:cols},(_,c)=>{const record=state.assignments[cellName(r,c)];return `<td style="${tdStyle}background:${record?'#f1f6f9':'#fff'};min-width:75px">${labelsHTML(record)}</td>`}).join('');
+  const data=Array.from({length:cols},(_,c)=>{const record=state.assignments[cellName(r,c)];return `<td style="${tdStyle}background:${record?'#f1f6f9':'#fff'};min-width:75px">${labelsHTML(record,palette)}</td>`}).join('');
   cells.push(`<tr>${head}${data}</tr>`);
  }
  return `<table style="border-collapse:collapse;border:1px solid #8797a6;font-family:Arial,Helvetica,sans-serif;font-size:11pt;color:#20354a">${cells.join('')}</table>`;
@@ -908,6 +932,6 @@ window.PlateLayoutCloud={
   persist();refreshAll();
  }
 };
-window.PlateLayoutCore={SHAPES,normalizeAxisMerges,axisMergeAt,mergeAxisRange,unmergeAxisRanges,axisRangeText,effectiveLabels,assignManualLevels,manualLevelUsage,moveWellShape,selectionGeometry,clearSelectedAssignments,axisHeaderHTML,axisInlineHeaderHTML,plateAxisGridStart,place,moveBlock,transposeMap,combinations,splitValues,cellName,applySelection,selectionRect,contiguous,linearRange,plateHTML,plateTable,conditionHTML,conditionTable,labelsHTML,legendEntries,factorLegendHTML,factorLegendPlain,getSnapshot:()=>structuredClone(state)};
+window.PlateLayoutCore={SHAPES,shadeHex,factorValuePalette,factorValueColor,normalizeAxisMerges,axisMergeAt,mergeAxisRange,unmergeAxisRanges,axisRangeText,effectiveLabels,assignManualLevels,manualLevelUsage,moveWellShape,selectionGeometry,clearSelectedAssignments,axisHeaderHTML,axisInlineHeaderHTML,plateAxisGridStart,place,moveBlock,transposeMap,combinations,splitValues,cellName,applySelection,selectionRect,contiguous,linearRange,plateHTML,plateTable,conditionHTML,conditionTable,labelsHTML,legendEntries,factorLegendHTML,factorLegendPlain,getSnapshot:()=>structuredClone(state)};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
