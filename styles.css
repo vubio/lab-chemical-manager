@@ -489,3 +489,27 @@ body.pr-open{overflow:hidden}
   outline:2px solid #4d9e9a;
   outline-offset:0;
 }
+
+
+/* Mergeable row/column note bands, visible only when Show notes is active. */
+#page-plate .pl-axis-merge-tools[hidden]{display:none!important}
+#page-plate .pl-axis-merge-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:6px 0 9px;border-bottom:1px solid #e0e7ed;margin-bottom:6px}
+#page-plate #pl-axis-selection-status{flex:1 1 230px;font-size:11px}
+#page-plate .pl-axis-merge-tools .btn{font-size:11px;padding:6px 9px;border-radius:2px}
+#page-plate .pl-axis-merge-tools .btn:disabled{opacity:.48;cursor:not-allowed}
+#page-plate .pl-axis-inline{box-sizing:border-box;min-width:0;position:relative;overflow:hidden}
+#page-plate .pl-axis-inline .pl-axis-pick{
+ appearance:none;display:block;box-sizing:border-box;flex:0 0 auto;
+ width:100%;max-width:100%;min-height:23px;margin:0;padding:2px 4px;
+ border:1px solid transparent;border-radius:0;background:transparent;
+ color:#284e6d;font:700 12px/1.2 Arial,sans-serif;text-align:left;
+ cursor:pointer;user-select:none;
+}
+#page-plate .pl-axis-inline .pl-axis-pick:hover{background:#dcecf5;border-color:#89a9bb}
+#page-plate .pl-axis-inline .pl-axis-pick:focus-visible{outline:2px solid #287d9a;outline-offset:-2px}
+#page-plate .pl-axis-inline.pl-axis-selected{border:2px solid #157c70!important;background:#d9f1ec!important}
+#page-plate .pl-axis-inline.pl-axis-merged{background:#e6eff7;border-color:#7da5c3;align-items:stretch}
+#page-plate .pl-axis-inline.pl-axis-merged .pl-axis-pick{color:#114b70;font-weight:800}
+#page-plate .pl-axis-inline.pl-row-axis.pl-axis-merged{height:100%;min-height:0;align-self:stretch;justify-content:center}
+#page-plate .pl-axis-inline.pl-col-axis.pl-axis-merged{height:65px;min-height:65px;justify-content:center}
+#page-plate .pl-axis-inline input{flex:0 0 auto}
