@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updatedAt": "2026-11-05T20:04:40.715Z",
+  "updatedAt": "2026-11-05T20:05:05.084Z",
   "chemicals": {
     "version": 1,
     "chemicals": [
@@ -4039,7 +4039,16 @@
       "id": "plate-1793908978460-cqbq",
       "name": "HSC-T6/Huh. 26.11.05",
       "format": "96",
-      "selection": [],
+      "selection": [
+        "A5",
+        "A6",
+        "A7",
+        "A8",
+        "A9",
+        "A10",
+        "A11",
+        "A12"
+      ],
       "rowNotes": {
         "A": "1k",
         "C": "5k",
@@ -4268,94 +4277,6 @@
             "Retinol (µM)"
           ],
           "group": "[[\"factor1\",\"0/100\"],[\"factor3\",\"0\"]]"
-        },
-        "A5": {
-          "labels": [
-            "0/100",
-            "2.5"
-          ],
-          "factorNames": [
-            "HSC-T6/Huh7 Ratio",
-            "Retinol (µM)"
-          ],
-          "group": "[[\"factor1\",\"0/100\"],[\"factor3\",\"2.5\"]]"
-        },
-        "A6": {
-          "labels": [
-            "0/100",
-            "2.5"
-          ],
-          "factorNames": [
-            "HSC-T6/Huh7 Ratio",
-            "Retinol (µM)"
-          ],
-          "group": "[[\"factor1\",\"0/100\"],[\"factor3\",\"2.5\"]]"
-        },
-        "A7": {
-          "labels": [
-            "0/100",
-            "2.5"
-          ],
-          "factorNames": [
-            "HSC-T6/Huh7 Ratio",
-            "Retinol (µM)"
-          ],
-          "group": "[[\"factor1\",\"0/100\"],[\"factor3\",\"2.5\"]]"
-        },
-        "A8": {
-          "labels": [
-            "0/100",
-            "2.5"
-          ],
-          "factorNames": [
-            "HSC-T6/Huh7 Ratio",
-            "Retinol (µM)"
-          ],
-          "group": "[[\"factor1\",\"0/100\"],[\"factor3\",\"2.5\"]]"
-        },
-        "A9": {
-          "labels": [
-            "0/100",
-            "5"
-          ],
-          "factorNames": [
-            "HSC-T6/Huh7 Ratio",
-            "Retinol (µM)"
-          ],
-          "group": "[[\"factor1\",\"0/100\"],[\"factor3\",\"5\"]]"
-        },
-        "A10": {
-          "labels": [
-            "0/100",
-            "5"
-          ],
-          "factorNames": [
-            "HSC-T6/Huh7 Ratio",
-            "Retinol (µM)"
-          ],
-          "group": "[[\"factor1\",\"0/100\"],[\"factor3\",\"5\"]]"
-        },
-        "A11": {
-          "labels": [
-            "0/100",
-            "5"
-          ],
-          "factorNames": [
-            "HSC-T6/Huh7 Ratio",
-            "Retinol (µM)"
-          ],
-          "group": "[[\"factor1\",\"0/100\"],[\"factor3\",\"5\"]]"
-        },
-        "A12": {
-          "labels": [
-            "0/100",
-            "5"
-          ],
-          "factorNames": [
-            "HSC-T6/Huh7 Ratio",
-            "Retinol (µM)"
-          ],
-          "group": "[[\"factor1\",\"0/100\"],[\"factor3\",\"5\"]]"
         },
         "B1": {
           "labels": [
@@ -4756,7 +4677,7 @@
       },
       "notes": "",
       "generatedAt": "2026-11-05T20:04:34.451Z",
-      "manualLayoutChanges": false,
+      "manualLayoutChanges": true,
       "factorDraftStale": false,
       "savedAt": "2026-11-04T23:26:31.085Z"
     },
