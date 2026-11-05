@@ -66,6 +66,36 @@ function factorValueColor(palette,level,value){
  return palette?.[level]?.get(String(value??'').trim())||FACTOR_COLORS[level]||'#344054';
 }
 
+
+/* Near-white condition backgrounds depend exclusively on the well's shown
+   label values. Neither row/column notes nor position affect this key.
+   Screen and rich clipboard renderings use the exact same palette. */
+const CONDITION_TINTS=[
+ '#EAF4F8','#F2F6FA','#ECF5F5','#F4F5FA',
+ '#EDF4F8','#F2F7F5','#EEF6F9','#F5F6FA',
+ '#EAF5F5','#F1F5FA','#EDF7F6','#F5F7F9',
+ '#ECF3F9','#F3F7F6','#EEF4F8','#F5F5F9',
+ '#EFF7F8','#F4F7F5','#ECF4F7','#F3F6FA',
+ '#EDF6F5','#F2F5F9','#EAF5F8','#F4F6F8'
+];
+function conditionLabelKey(record){
+ if(!record||record.kind==='special')return null;
+ const labels=effectiveLabels(record).map(v=>String(v??'').trim());
+ while(labels.length&&!labels[labels.length-1])labels.pop();
+ return labels.some(Boolean)?JSON.stringify(labels):null;
+}
+function conditionBackgroundPalette(assignments){
+ const keys=[...new Set(Object.values(assignments||{}).map(conditionLabelKey).filter(Boolean))]
+   .sort((a,b)=>a.localeCompare(b,undefined,{numeric:true,sensitivity:'base'}));
+ return new Map(keys.map((key,i)=>[key,CONDITION_TINTS[i%CONDITION_TINTS.length]]));
+}
+function conditionBackground(record,palette){
+ if(!record)return '#FFFFFF';
+ if(record.kind==='special')return '#F0F0ED';
+ const key=conditionLabelKey(record);
+ return key?(palette?.get(key)||CONDITION_TINTS[0]):'#FFFFFF';
+}
+
 function legendEntries(source='plate'){
  // Factor identity comes from the live editor, not old well assignments.
  // Keep an unnamed fallback for manually entered third/fourth labels.
@@ -330,7 +360,7 @@ function renderPlate(){
  const selected=new Set(state.selection),hasSelected=selected.size>0;
  const preview=drag?.mode==='move'?drag.preview:null;
  const assignments=preview?.assignments||state.assignments;
- const shadePalette=factorValuePalette(assignments);
+ const shadePalette=factorValuePalette(assignments),backgroundPalette=conditionBackgroundPalette(assignments);
  const targetSet=new Set(preview?.selection||[]);
  const sourceSet=new Set(drag?.mode==='move'?drag.sources||[]:[]);
  const changedSet=new Set(preview?.displaced||[]);
@@ -357,7 +387,8 @@ function renderPlate(){
    const pos=cellName(r,c),record=assignments[pos],disabled=!isMove&&hasSelected&&!selected.has(pos),selectedHere=selected.has(pos);
    const classes='pl-well'+(record?' pl-assigned':'')+(selectedHere?' pl-selected':'')+(disabled?' pl-unselected':'')+(activeCell===pos?' pl-focus':'')+(record?.kind==='special'?' pl-special':'')+(sourceSet.has(pos)?' pl-move-origin':'')+(targetSet.has(pos)?' pl-drop-target':'')+(changedSet.has(pos)?' pl-ripple':'')+(drag?.invalid===pos?' pl-drop-invalid':'');
    const labels=effectiveLabels(record),labelText=labels.filter(Boolean).map(x=>String(x)).join(' | ');
-   h+=`<button type="button" class="${classes}" style="grid-row:${r+(notesVisible?2:1)};grid-column:${c+(notesVisible?2:1)}" data-well="${pos}" role="gridcell" title="${esc(pos+(labelText?' — '+labelText:''))}" aria-label="${esc(pos+(labelText?' '+labelText:''))}" aria-selected="${selectedHere?'true':'false'}"><span class="pl-coord">${pos}</span><span class="pl-labels"><span class="pl-primary" style="color:${record?.kind==='special'?'#495360':factorValueColor(shadePalette,0,labels[0])}">${esc(labels[0]||'')}</span>${labels.length>1?`<span class="pl-secondary" style="color:${record?.kind==='special'?'#495360':factorValueColor(shadePalette,1,labels[1])}">${esc(labels[1]||'')}</span>`:''}${labels[2]?`<span class="pl-tertiary" style="color:${record?.kind==='special'?'#495360':factorValueColor(shadePalette,2,labels[2])}">${esc(labels[2])}</span>`:''}${labels[3]?`<span class="pl-quaternary" style="color:${record?.kind==='special'?'#495360':factorValueColor(shadePalette,3,labels[3])}">${esc(labels[3])}</span>`:''}</span></button>`;
+   const conditionStyle=record&&record.kind!=='special'?`;--condition-bg:${conditionBackground(record,backgroundPalette)}`:'';
+   h+=`<button type="button" class="${classes}" style="grid-row:${r+(notesVisible?2:1)};grid-column:${c+(notesVisible?2:1)}${conditionStyle}" data-well="${pos}" role="gridcell" title="${esc(pos+(labelText?' — '+labelText:''))}" aria-label="${esc(pos+(labelText?' '+labelText:''))}" aria-selected="${selectedHere?'true':'false'}"><span class="pl-coord">${pos}</span><span class="pl-labels"><span class="pl-primary" style="color:${record?.kind==='special'?'#495360':factorValueColor(shadePalette,0,labels[0])}">${esc(labels[0]||'')}</span>${labels.length>1?`<span class="pl-secondary" style="color:${record?.kind==='special'?'#495360':factorValueColor(shadePalette,1,labels[1])}">${esc(labels[1]||'')}</span>`:''}${labels[2]?`<span class="pl-tertiary" style="color:${record?.kind==='special'?'#495360':factorValueColor(shadePalette,2,labels[2])}">${esc(labels[2])}</span>`:''}${labels[3]?`<span class="pl-quaternary" style="color:${record?.kind==='special'?'#495360':factorValueColor(shadePalette,3,labels[3])}">${esc(labels[3])}</span>`:''}</span></button>`;
   }
  }
  grid.innerHTML=h;renderFactorLegend();updateAxisSelectionControls();
@@ -435,7 +466,7 @@ function labelsHTML(record,palette=null){if(!record||!Array.isArray(record.label
  return vals.map((value,i)=>!String(value||'').trim()?'':`<div style="display:block;line-height:1.25;margin-bottom:${i===0?'3':'2'}px;font-family:Arial,Helvetica,sans-serif;font-size:${i===0?13:i===1?11:10}px;font-weight:${i===0?'700':i===1?'600':'400'};font-style:${i>=2?'italic':'normal'};color:${factorValueColor(palette,i,value)}">${esc(value)}</div>`).join('');
 }
 function plateHTML(){
- const [rows,cols]=dimensions(),cells=[],palette=factorValuePalette(state.assignments);
+ const [rows,cols]=dimensions(),cells=[],palette=factorValuePalette(state.assignments),backgroundPalette=conditionBackgroundPalette(state.assignments);
  let heads=`<th style="${tdStyle}background:#eaf0f4;font-weight:700">Row / column</th>`;
  for(let c=0;c<cols;c++){
   const m=axisMergeAt(state.colNoteMerges,c);
@@ -451,7 +482,7 @@ function plateHTML(){
    const span=merge?merge.end-merge.start+1:1;
    head=`<th ${span>1?`rowspan="${span}" `:''}style="${tdStyle}background:#eaf0f4">${axisHTML(axisRangeText('row',r,r+span-1),merge?merge.note:(state.rowNotes[row]||''))}</th>`;
   }
-  const data=Array.from({length:cols},(_,c)=>{const record=state.assignments[cellName(r,c)];return `<td style="${tdStyle}background:${record?'#f1f6f9':'#fff'};min-width:75px">${labelsHTML(record,palette)}</td>`}).join('');
+  const data=Array.from({length:cols},(_,c)=>{const record=state.assignments[cellName(r,c)];return `<td style="${tdStyle}background:${conditionBackground(record,backgroundPalette)};min-width:75px">${labelsHTML(record,palette)}</td>`}).join('');
   cells.push(`<tr>${head}${data}</tr>`);
  }
  return `<table style="border-collapse:collapse;border:1px solid #8797a6;font-family:Arial,Helvetica,sans-serif;font-size:11pt;color:#20354a">${cells.join('')}</table>`;
@@ -995,6 +1026,6 @@ window.PlateLayoutCloud={
   persist();refreshAll();
  }
 };
-window.PlateLayoutCore={SHAPES,axisHTML,makeWellCopy,pasteWellCopy,shadeHex,factorValuePalette,factorValueColor,normalizeAxisMerges,axisMergeAt,mergeAxisRange,unmergeAxisRanges,axisRangeText,effectiveLabels,assignManualLevels,manualLevelUsage,moveWellShape,selectionGeometry,clearSelectedAssignments,axisHeaderHTML,axisInlineHeaderHTML,plateAxisGridStart,place,moveBlock,transposeMap,combinations,splitValues,cellName,applySelection,selectionRect,contiguous,linearRange,plateHTML,plateTable,conditionHTML,conditionTable,labelsHTML,legendEntries,factorLegendHTML,factorLegendPlain,getSnapshot:()=>structuredClone(state)};
+window.PlateLayoutCore={SHAPES,conditionLabelKey,conditionBackgroundPalette,conditionBackground,axisHTML,makeWellCopy,pasteWellCopy,shadeHex,factorValuePalette,factorValueColor,normalizeAxisMerges,axisMergeAt,mergeAxisRange,unmergeAxisRanges,axisRangeText,effectiveLabels,assignManualLevels,manualLevelUsage,moveWellShape,selectionGeometry,clearSelectedAssignments,axisHeaderHTML,axisInlineHeaderHTML,plateAxisGridStart,place,moveBlock,transposeMap,combinations,splitValues,cellName,applySelection,selectionRect,contiguous,linearRange,plateHTML,plateTable,conditionHTML,conditionTable,labelsHTML,legendEntries,factorLegendHTML,factorLegendPlain,getSnapshot:()=>structuredClone(state)};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
