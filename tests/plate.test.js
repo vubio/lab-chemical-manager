@@ -298,4 +298,46 @@ assert(plateCode.includes("pasteWellCopy(state.assignments,wellClipboard,context
 const paletteCode=fs.readFileSync('plate.js','utf8');
 assert(paletteCode.includes("record?.kind==='special'?'#495360'"),'special controls must remain gray on the live plate');
 
+
+// Each identical set of effective labels gets the same faint background,
+// regardless of coordinates, merged notes or generated/manual record source.
+const bgCore=sandbox.window.PlateLayoutCore;
+const labeledPairs={
+ A1:{labels:['0/100','0'],kind:'normal',group:'generated'},
+ E1:{labels:['0/100','0'],kind:'normal',group:'manual',manualLevels:['0/100','0',null]},
+ A2:{labels:['0/100','2.5'],kind:'normal'},
+ E2:{labels:['0/100','2.5'],kind:'normal'},
+ B1:{labels:['5/95','0'],kind:'normal'},
+ F1:{labels:['5/95','0'],kind:'normal'},
+ C1:{labels:['25/75','2.5'],kind:'normal'},
+ D1:{labels:['50/50','5'],kind:'normal'},
+ H2:{labels:[''],kind:'normal'},
+ G1:{labels:['Media only'],kind:'special',controlName:'Media only'}
+};
+const bgPalette=bgCore.conditionBackgroundPalette(labeledPairs);
+assert.equal(bgCore.conditionLabelKey(labeledPairs.A1),bgCore.conditionLabelKey(labeledPairs.E1));
+assert.equal(bgCore.conditionBackground(labeledPairs.A1,bgPalette),bgCore.conditionBackground(labeledPairs.E1,bgPalette));
+assert.equal(bgCore.conditionBackground(labeledPairs.A2,bgPalette),bgCore.conditionBackground(labeledPairs.E2,bgPalette));
+assert.equal(bgCore.conditionBackground(labeledPairs.B1,bgPalette),bgCore.conditionBackground(labeledPairs.F1,bgPalette));
+assert.notEqual(bgCore.conditionBackground(labeledPairs.A1,bgPalette),bgCore.conditionBackground(labeledPairs.A2,bgPalette));
+assert.notEqual(bgCore.conditionBackground(labeledPairs.A1,bgPalette),bgCore.conditionBackground(labeledPairs.B1,bgPalette));
+assert.equal(bgPalette.size,5,'each distinct non-empty combination has one shade');
+assert.equal(bgCore.conditionBackground(labeledPairs.G1,bgPalette),'#F0F0ED','special controls stay gray');
+assert.equal(bgCore.conditionBackground(null,bgPalette),'#FFFFFF','empty wells remain white');
+assert.equal(bgCore.conditionBackground(labeledPairs.H2,bgPalette),'#FFFFFF','empty labels remain white');
+for(const color of bgPalette.values()){
+ assert(/^#[0-9A-F]{6}$/.test(color));
+ const rgb=[1,3,5].map(k=>parseInt(color.slice(k,k+2),16));
+ assert(Math.min(...rgb)>=230,'condition backgrounds remain near-white');
+}
+const sameWithAnotherNote={labels:['0/100','0'],rowNotes:{A:'24h'},colNotes:{1:'100 µM AA'},kind:'normal'};
+assert.equal(bgCore.conditionBackground(labeledPairs.A1,bgPalette),bgCore.conditionBackground(sameWithAnotherNote,bgPalette));
+const bgText=fs.readFileSync('plate.js','utf8'),bgCSS=fs.readFileSync('styles.css','utf8');
+assert(bgText.includes('--condition-bg:
++'{conditionBackground(record,backgroundPalette)}'),'live wells use tint');
+assert(bgText.includes('background:
++'{conditionBackground(record,backgroundPalette)};min-width:75px'),'OneNote table uses matching tint');
+assert(bgCSS.includes(':not(.pl-selected):not(.pl-drop-target)'),'selection and drag feedback remain visible');
+assert(bgCSS.includes(':not(.pl-special)'),'controls remain gray');
+
 console.log('Plate layout allocation and selection tests passed');
