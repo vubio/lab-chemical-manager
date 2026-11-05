@@ -67,9 +67,40 @@ function factorLegendPlain(source='plate'){
 }
 function renderFactorLegend(){const el=$('pl-factor-legend');if(el)el.innerHTML=factorLegendHTML('plate')}
 
-const defaults=()=>({id:null,name:'New experiment',format:'96',selection:[],rowNotes:{},colNotes:{},manualLevelNames:[...DEFAULT_LEVEL_NAMES],fillOrder:'rows',mode:'select',factors:[{id:'factor1',name:'Dose',values:'0 µM; 0.05 µM; 0.1 µM; 0.2 µM'},{id:'factor2',name:'Cell density',values:''},{id:'factor3',name:'',values:''},{id:'factor4',name:'',values:''}],counts:{},assignments:{},notes:'',generatedAt:null,manualLayoutChanges:false,factorDraftStale:false});
-let state=defaults(),saved=[],activeCell=null,drag=null,suppressClick=false,selectionAnchor=null,checkedCombinations=new Set(),factorUpdateTimer=null,lastWellPointer=null,labelDialogTargets=[],notesVisible=false;
-function normalize(s){const d=defaults();if(!s||typeof s!=='object')return d;return {...d,...s, format:SHAPES[String(s.format)]?String(s.format):'96',selection:Array.isArray(s.selection)?s.selection:[],rowNotes:s.rowNotes&&typeof s.rowNotes==='object'?s.rowNotes:{},colNotes:s.colNotes&&typeof s.colNotes==='object'?s.colNotes:{},manualLevelNames:Array.from({length:3},(_,i)=>manualLevelLabel(s.manualLevelNames,i)),fillOrder:s.fillOrder==='columns'?'columns':'rows', factors:Array.isArray(s.factors)&&s.factors.length?s.factors.slice(0,4).map((f,i)=>({id:String(f.id||'factor'+(i+1)),name:String(f.name||''),values:String(f.values||'')})):d.factors,counts:s.counts&&typeof s.counts==='object'?s.counts:{},assignments:s.assignments&&typeof s.assignments==='object'?s.assignments:{},manualLayoutChanges:!!s.manualLayoutChanges,factorDraftStale:!!s.factorDraftStale}}
+function normalizeAxisMerges(items,max){
+ if(!Array.isArray(items))return [];
+ const result=[],ordered=items.filter(Boolean).map(m=>({start:Number(m.start),end:Number(m.end),note:String(m.note??'')})).sort((a,b)=>a.start-b.start);
+ for(const m of ordered){
+  if(!Number.isInteger(m.start)||!Number.isInteger(m.end)||m.start<0||m.end>=max||m.end<=m.start)continue;
+  if(result.length&&result[result.length-1].end>=m.start)continue;
+  result.push(m);
+ }
+ return result;
+}
+function axisMergeAt(merges,index){return (merges||[]).find(m=>m.start<=index&&index<=m.end)||null}
+function axisKey(axis,index){return axis==='row'?String.fromCharCode(65+index):String(index+1)}
+function axisRangeText(axis,start,end){return axisKey(axis,start)+(start===end?'':'–'+axisKey(axis,end))}
+function mergeAxisRange(merges,notes,axis,start,end,max){
+ if(!['row','column'].includes(axis)||!Number.isInteger(start)||!Number.isInteger(end)||start<0||end>=max||end<=start)throw Error('Select two or more consecutive headers on the same axis.');
+ const current=normalizeAxisMerges(merges,max);
+ if(current.some(m=>m.start<=end&&m.end>=start))throw Error('Unmerge an existing header range before merging it again.');
+ const unique=[...new Set(Array.from({length:end-start+1},(_,i)=>String(notes?.[axisKey(axis,start+i)]||'').trim()).filter(Boolean))];
+ return [...current,{start,end,note:unique.length===1?unique[0]:''}].sort((a,b)=>a.start-b.start);
+}
+function unmergeAxisRanges(merges,notes,axis,indices,max){
+ const selected=new Set(indices),previous=normalizeAxisMerges(merges,max);
+ const matching=previous.filter(m=>Array.from({length:m.end-m.start+1},(_,i)=>m.start+i).every(i=>selected.has(i)));
+ if(!matching.length)throw Error('Select a merged header to unmerge.');
+ const remaining=previous.filter(m=>!matching.includes(m)),next={...(notes||{})};
+ for(const m of matching)for(let i=m.start;i<=m.end;i++){
+  const key=axisKey(axis,i);
+  if(!String(next[key]||'').trim()&&String(m.note||'').trim())next[key]=m.note;
+ }
+ return {merges:remaining,notes:next,count:matching.length};
+}
+const defaults=()=>({id:null,name:'New experiment',format:'96',selection:[],rowNotes:{},colNotes:{},rowNoteMerges:[],colNoteMerges:[],manualLevelNames:[...DEFAULT_LEVEL_NAMES],fillOrder:'rows',mode:'select',factors:[{id:'factor1',name:'Dose',values:'0 µM; 0.05 µM; 0.1 µM; 0.2 µM'},{id:'factor2',name:'Cell density',values:''},{id:'factor3',name:'',values:''},{id:'factor4',name:'',values:''}],counts:{},assignments:{},notes:'',generatedAt:null,manualLayoutChanges:false,factorDraftStale:false});
+let state=defaults(),saved=[],activeCell=null,drag=null,suppressClick=false,selectionAnchor=null,checkedCombinations=new Set(),factorUpdateTimer=null,lastWellPointer=null,labelDialogTargets=[],notesVisible=false,axisSelection={axis:null,indices:[]},axisSelectionAnchor=null;
+function normalize(s){const d=defaults();if(!s||typeof s!=='object')return d;return {...d,...s, format:SHAPES[String(s.format)]?String(s.format):'96',selection:Array.isArray(s.selection)?s.selection:[],rowNotes:s.rowNotes&&typeof s.rowNotes==='object'?s.rowNotes:{},colNotes:s.colNotes&&typeof s.colNotes==='object'?s.colNotes:{},rowNoteMerges:normalizeAxisMerges(s.rowNoteMerges,SHAPES[String(s.format)]?.[0]||8),colNoteMerges:normalizeAxisMerges(s.colNoteMerges,SHAPES[String(s.format)]?.[1]||12),manualLevelNames:Array.from({length:3},(_,i)=>manualLevelLabel(s.manualLevelNames,i)),fillOrder:s.fillOrder==='columns'?'columns':'rows', factors:Array.isArray(s.factors)&&s.factors.length?s.factors.slice(0,4).map((f,i)=>({id:String(f.id||'factor'+(i+1)),name:String(f.name||''),values:String(f.values||'')})):d.factors,counts:s.counts&&typeof s.counts==='object'?s.counts:{},assignments:s.assignments&&typeof s.assignments==='object'?s.assignments:{},manualLayoutChanges:!!s.manualLayoutChanges,factorDraftStale:!!s.factorDraftStale}}
 function dimensions(){return SHAPES[state.format]}
 function allCoords(){let [rows,cols]=dimensions(),arr=[];for(let r=0;r<rows;r++)for(let c=0;c<cols;c++)arr.push(cellName(r,c));return arr}
 function available(){const all=allCoords(),chosen=new Set(state.selection);return chosen.size?all.filter(x=>chosen.has(x)):all}
@@ -168,14 +199,25 @@ function axisHeaderHTML(axis,key,note=''){
  const kind=axis==='row'?'row':'column',label=String(key),value=String(note||'').trim();
  return `<div class="pl-header pl-axis-header pl-${kind==='row'?'row':'col'}-axis${value?' pl-axis-noted':''}"><button type="button" class="pl-axis-trigger" data-axis="${kind}" data-axis-key="${esc(label)}" title="${esc(value?`Edit ${kind} ${label} note: ${value}`:`Add note to ${kind} ${label}`)}" aria-label="${esc(value?`Edit note for ${kind} ${label}: ${value}`:`Add note for ${kind} ${label}`)}"><span class="pl-axis-id">${esc(label)}</span>${value?`<span class="pl-axis-note" title="${esc(value)}">${esc(value)}</span>`:''}</button></div>`;
 }
-function axisInlineHeaderHTML(axis,key,note=''){
- const kind=axis==='row'?'row':'column',value=String(note||'');
- return `<label class="pl-header pl-axis-header pl-${kind==='row'?'row':'col'}-axis pl-axis-inline"><span class="pl-axis-id">${esc(key)}</span><input type="text" data-${kind==='row'?'row':'column'}-note="${esc(key)}" aria-label="Note for ${kind} ${esc(key)}" placeholder="Note" maxlength="160" value="${esc(value)}" title="Optional ${kind} note"/></label>`;
+function axisInlineHeaderHTML(axis,key,note='',opts={}){
+ const kind=axis==='row'?'row':'column',index=Number.isInteger(opts.index)?opts.index:(kind==='row'?String(key).charCodeAt(0)-65:Number(key)-1),span=opts.span||1;
+ const label=opts.label||String(key),selected=!!opts.selected,merged=span>1,placement=opts.placement||'';
+ const attr=merged?`data-merged-axis="${kind}" data-merged-start="${index}"`:`data-${kind==='row'?'row':'column'}-note="${esc(key)}"`;
+ return `<label class="pl-header pl-axis-header pl-${kind==='row'?'row':'col'}-axis pl-axis-inline${selected?' pl-axis-selected':''}${merged?' pl-axis-merged':''}" style="${placement}">
+  <button type="button" class="pl-axis-pick" data-axis-pick="${kind}" data-axis-start="${index}" data-axis-end="${index+span-1}" aria-pressed="${selected?'true':'false'}" title="Select ${kind} ${esc(label)} · Shift-click to select a range">${esc(label)}</button>
+  <input type="text" ${attr} aria-label="Note for ${kind} ${esc(label)}" placeholder="Note" maxlength="160" value="${esc(note)}" title="Optional ${kind} note"/>
+ </label>`;
 }
-function plateAxisGridStart(showNotes,cols,colNotes={}){
+function plateAxisGridStart(showNotes,cols,colNotes={},colMerges=[],selection=null){
  if(!showNotes)return '';
- let content='<span class="pl-header pl-corner"></span>';
- for(let c=1;c<=cols;c++)content+=axisInlineHeaderHTML('column',c,colNotes[c]||'');
+ let content='<span class="pl-header pl-corner" style="grid-row:1;grid-column:1"></span>';
+ for(let c=0;c<cols;c++){
+  const m=axisMergeAt(colMerges,c);
+  if(m&&m.start!==c)continue;
+  const span=m?m.end-m.start+1:1,key=String(c+1),label=axisRangeText('column',c,c+span-1);
+  const note=m?m.note:(colNotes[key]||'');
+  content+=axisInlineHeaderHTML('column',key,note,{index:c,span,label,selected:selection?.axis==='column'&&selection.indices.includes(c),placement:`grid-row:1;grid-column:${c+2}/span ${span}`});
+ }
  return content;
 }
 function renderPlate(){
@@ -188,25 +230,31 @@ function renderPlate(){
  const changedSet=new Set(preview?.displaced||[]);
  const grid=$('pl-grid');grid.style.setProperty('--plate-cols',cols);
  grid.classList.toggle('pl-notes-expanded',notesVisible);
- const notesCount=Object.values(state.rowNotes).filter(x=>String(x).trim()).length+Object.values(state.colNotes).filter(x=>String(x).trim()).length;
+ const notesCount=Object.values(state.rowNotes).filter(x=>String(x).trim()).length+Object.values(state.colNotes).filter(x=>String(x).trim()).length+state.rowNoteMerges.filter(x=>String(x.note).trim()).length+state.colNoteMerges.filter(x=>String(x.note).trim()).length;
  const toggle=$('pl-toggle-notes');
  if(toggle){
   toggle.textContent=(notesVisible?'Hide notes':'Show notes')+(notesCount?' ('+notesCount+')':'');
   toggle.setAttribute('aria-expanded',String(notesVisible));
   toggle.setAttribute('aria-pressed',String(notesVisible));
  }
- let h=plateAxisGridStart(notesVisible,cols,state.colNotes);
+ let h=plateAxisGridStart(notesVisible,cols,state.colNotes,state.colNoteMerges,axisSelection);
  for(let r=0;r<rows;r++){
   const row=String.fromCharCode(65+r);
-  if(notesVisible)h+=axisInlineHeaderHTML('row',row,state.rowNotes[row]||'');
+  if(notesVisible){
+    const m=axisMergeAt(state.rowNoteMerges,r);
+    if(!m||m.start===r){
+     const span=m?m.end-m.start+1:1;
+     h+=axisInlineHeaderHTML('row',row,m?m.note:(state.rowNotes[row]||''),{index:r,span,label:axisRangeText('row',r,r+span-1),selected:axisSelection.axis==='row'&&axisSelection.indices.includes(r),placement:`grid-column:1;grid-row:${r+2}/span ${span}`});
+    }
+   }
   for(let c=0;c<cols;c++){
    const pos=cellName(r,c),record=assignments[pos],disabled=!isMove&&hasSelected&&!selected.has(pos),selectedHere=selected.has(pos);
    const classes='pl-well'+(record?' pl-assigned':'')+(selectedHere?' pl-selected':'')+(disabled?' pl-unselected':'')+(activeCell===pos?' pl-focus':'')+(record?.kind==='special'?' pl-special':'')+(sourceSet.has(pos)?' pl-move-origin':'')+(targetSet.has(pos)?' pl-drop-target':'')+(changedSet.has(pos)?' pl-ripple':'')+(drag?.invalid===pos?' pl-drop-invalid':'');
    const labels=effectiveLabels(record),labelText=labels.filter(Boolean).map(x=>String(x)).join(' | ');
-   h+=`<button type="button" class="${classes}" data-well="${pos}" role="gridcell" title="${esc(pos+(labelText?' — '+labelText:''))}" aria-label="${esc(pos+(labelText?' '+labelText:''))}" aria-selected="${selectedHere?'true':'false'}"><span class="pl-coord">${pos}</span><span class="pl-labels"><span class="pl-primary">${esc(labels[0]||'')}</span>${labels.length>1?`<span class="pl-secondary">${esc(labels[1])}</span>`:''}${labels[2]?`<span class="pl-tertiary">${esc(labels[2])}</span>`:''}${labels[3]?`<span class="pl-quaternary">${esc(labels[3])}</span>`:''}</span></button>`;
+   h+=`<button type="button" class="${classes}" style="grid-row:${r+(notesVisible?2:1)};grid-column:${c+(notesVisible?2:1)}" data-well="${pos}" role="gridcell" title="${esc(pos+(labelText?' — '+labelText:''))}" aria-label="${esc(pos+(labelText?' '+labelText:''))}" aria-selected="${selectedHere?'true':'false'}"><span class="pl-coord">${pos}</span><span class="pl-labels"><span class="pl-primary">${esc(labels[0]||'')}</span>${labels.length>1?`<span class="pl-secondary">${esc(labels[1])}</span>`:''}${labels[2]?`<span class="pl-tertiary">${esc(labels[2])}</span>`:''}${labels[3]?`<span class="pl-quaternary">${esc(labels[3])}</span>`:''}</span></button>`;
   }
  }
- grid.innerHTML=h;renderFactorLegend();
+ grid.innerHTML=h;renderFactorLegend();updateAxisSelectionControls();
  const chosen=[...selected].sort((a,b)=>wellIndex(a,cols)-wellIndex(b,cols));
  const selectionType=selectionGeometry(chosen,cols);
  const countLabeled=chosen.filter(w=>state.assignments[w]).length;
@@ -773,6 +821,6 @@ window.PlateLayoutCloud={
   persist();refreshAll();
  }
 };
-window.PlateLayoutCore={SHAPES,effectiveLabels,assignManualLevels,manualLevelUsage,moveWellShape,selectionGeometry,clearSelectedAssignments,axisHeaderHTML,axisInlineHeaderHTML,plateAxisGridStart,place,moveBlock,transposeMap,combinations,splitValues,cellName,applySelection,selectionRect,contiguous,linearRange,plateHTML,plateTable,conditionHTML,conditionTable,labelsHTML,legendEntries,factorLegendHTML,factorLegendPlain,getSnapshot:()=>structuredClone(state)};
+window.PlateLayoutCore={SHAPES,normalizeAxisMerges,axisMergeAt,mergeAxisRange,unmergeAxisRanges,axisRangeText,effectiveLabels,assignManualLevels,manualLevelUsage,moveWellShape,selectionGeometry,clearSelectedAssignments,axisHeaderHTML,axisInlineHeaderHTML,plateAxisGridStart,place,moveBlock,transposeMap,combinations,splitValues,cellName,applySelection,selectionRect,contiguous,linearRange,plateHTML,plateTable,conditionHTML,conditionTable,labelsHTML,legendEntries,factorLegendHTML,factorLegendPlain,getSnapshot:()=>structuredClone(state)};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
