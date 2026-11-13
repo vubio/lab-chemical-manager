@@ -159,4 +159,57 @@ assert.equal(manualCore({...manualCombo,factorDraftStale:true},matrix).data.leng
 const missingManualGrid={...matrix,plate:{...matrix.plate,A1:null}};
 assert(manualCore(manualCombo,missingManualGrid).missing.includes('A1'));
 
+
+// Regression: a 96-well HSC-to-Huh7 ratio × Retinol × AA plate uses
+// manual overrides for levels 1 and 3 but retains the *visible* generated
+// Retinol concentration at level 2. Manual matching must export ALL THREE.
+const threeLevelAssignments={};
+const ratios=['0/100','1/9','1/3','1/1'];
+for(let r=0;r<8;r++)for(let col=0;col<(r===0||r===4?4:12);col++){
+ const ratio=ratios[r%4];
+ const retinol=(r===0||r===4||col<4)?'0':col<8?'2.5':'5';
+ const aa=r<4?'Ctrl':'AA 100 µM';
+ threeLevelAssignments[well(r,col)]={
+  kind:'normal',group:'manual',
+  labels:[ratio,retinol,aa],
+  manualLevels:[ratio,null,aa]
+ };
+}
+const threeFactorPlate={
+ format:'96',
+ name:'HSC-T6 / Huh7 ratio x Retinol x AA',
+ manualLevelNames:['HSC-to-Huh7 ratio','Retinol (µM)','AA'],
+ factors:[{name:'HSC-to-Huh7 ratio',values:'0/100;1/9;1/3;1/1'},
+          {name:'Retinol (µM)',values:'0;2.5;5'},
+          {name:'AA',values:'Ctrl;AA 100 µM'}],
+ assignments:threeLevelAssignments
+};
+const three=c.matchManualReadings(threeFactorPlate,matrix);
+assert.equal(three.data.length,80);
+assert.equal(three.unassigned.length,16);
+assert.equal(three.missing.length,0);
+assert.equal(three.incomplete.length,0,'generated Retinol values are visible and must not be marked missing');
+assert.deepEqual(Array.from(three.usedLevels),[0,1,2]);
+assert.deepEqual(Array.from(three.factors),['HSC-to-Huh7 ratio','Retinol (µM)','AA']);
+assert.deepEqual(Array.from(three.data[0].labels),['0/100','0','Ctrl']);
+const b1=three.data.find(x=>x.well==='B1'),b5=three.data.find(x=>x.well==='B5');
+assert.deepEqual(Array.from(b1.labels),['1/9','0','Ctrl']);
+assert.deepEqual(Array.from(b5.labels),['1/9','2.5','Ctrl']);
+assert.equal(b1.replicate,'R1');
+assert.equal(b5.replicate,'R1','each Retinol concentration starts its own replicate count');
+assert.equal(three.data.find(x=>x.well==='B8').replicate,'R4');
+assert.equal(three.data.find(x=>x.well==='F5').labels[2],'AA 100 µM');
+const threeLong=c.outputTable(three,'long');
+assert.deepEqual(Array.from(threeLong.headers),['HSC-to-Huh7 ratio','Retinol (µM)','AA','Replicate','Read value']);
+assert.equal(threeLong.rows.length,80);
+assert.deepEqual(Array.from(threeLong.rows[0]),['0/100','0','Ctrl','R1',101001]);
+assert.equal(threeLong.rows.find(x=>x[0]==='1/9'&&x[1]==='2.5'&&x[2]==='Ctrl')[3],'R1');
+assert(c.makeCSV(threeLong).startsWith('HSC-to-Huh7 ratio,Retinol (µM),AA,Replicate,Read value'));
+assert.equal(c.outputTable(three,'wide').rows.length,4);
+assert.throws(()=>c.outputTable(three,'prism'),/requires exactly two factors/i);
+const threeExcel=Buffer.from(makeXlsx([{name:'Long data',table:threeLong},{name:'Full plate',table:c.outputTable(three,'matrix')}]));
+assert.equal(threeExcel.subarray(0,4).toString('hex'),'504b0304');
+assert(threeExcel.includes(Buffer.from('xl/workbook.xml')));
+assert(threeExcel.includes(Buffer.from('Retinol')));
+
 console.log('Plate reader parsing, matching, CSV and XLSX tests passed');
