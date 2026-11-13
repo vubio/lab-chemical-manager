@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updatedAt": "2026-11-13T16:12:56.607Z",
+  "updatedAt": "2026-11-13T16:13:15.582Z",
   "chemicals": {
     "version": 1,
     "chemicals": [
@@ -4040,42 +4040,7 @@
       "name": "HSC-T6/Huh. 26.11.05",
       "format": "96",
       "selection": [
-        "F1",
-        "F2",
-        "F3",
-        "F4",
-        "F5",
-        "F6",
-        "F7",
-        "F8",
-        "F9",
-        "F10",
-        "F11",
-        "F12",
-        "G1",
-        "G2",
-        "G3",
-        "G4",
-        "G5",
-        "G6",
-        "G7",
-        "G8",
-        "G9",
-        "G10",
-        "G11",
-        "G12",
-        "H1",
-        "H2",
-        "H3",
-        "H4",
-        "H5",
-        "H6",
-        "H7",
-        "H8",
-        "H9",
-        "H10",
-        "H11",
-        "H12"
+        "A1"
       ],
       "rowNotes": {},
       "colNotes": {},
@@ -4960,7 +4925,13 @@
             "HSC-T6/Huh7 Ratio",
             "Retinol (µM)"
           ],
-          "group": "[[\"factor1\",\"0/100\"],[\"factor3\",\"0\"]]"
+          "group": "manual",
+          "manualLevels": [
+            null,
+            null,
+            "AA 100 µM"
+          ],
+          "kind": "normal"
         },
         "E2": {
           "labels": [
@@ -4971,7 +4942,13 @@
             "HSC-T6/Huh7 Ratio",
             "Retinol (µM)"
           ],
-          "group": "[[\"factor1\",\"0/100\"],[\"factor3\",\"0\"]]"
+          "group": "manual",
+          "manualLevels": [
+            null,
+            null,
+            "AA 100 µM"
+          ],
+          "kind": "normal"
         },
         "E3": {
           "labels": [
@@ -4982,7 +4959,13 @@
             "HSC-T6/Huh7 Ratio",
             "Retinol (µM)"
           ],
-          "group": "[[\"factor1\",\"0/100\"],[\"factor3\",\"0\"]]"
+          "group": "manual",
+          "manualLevels": [
+            null,
+            null,
+            "AA 100 µM"
+          ],
+          "kind": "normal"
         },
         "E4": {
           "labels": [
@@ -4993,7 +4976,13 @@
             "HSC-T6/Huh7 Ratio",
             "Retinol (µM)"
           ],
-          "group": "[[\"factor1\",\"0/100\"],[\"factor3\",\"0\"]]"
+          "group": "manual",
+          "manualLevels": [
+            null,
+            null,
+            "AA 100 µM"
+          ],
+          "kind": "normal"
         },
         "F1": {
           "labels": [
@@ -5008,7 +4997,7 @@
           "manualLevels": [
             "1/9",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5025,7 +5014,7 @@
           "manualLevels": [
             "1/9",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5042,7 +5031,7 @@
           "manualLevels": [
             "1/9",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5059,7 +5048,7 @@
           "manualLevels": [
             "1/9",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5076,7 +5065,7 @@
           "manualLevels": [
             "1/9",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5093,7 +5082,7 @@
           "manualLevels": [
             "1/9",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5110,7 +5099,7 @@
           "manualLevels": [
             "1/9",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5127,7 +5116,7 @@
           "manualLevels": [
             "1/9",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5144,7 +5133,7 @@
           "manualLevels": [
             "1/9",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5161,7 +5150,7 @@
           "manualLevels": [
             "1/9",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5178,7 +5167,7 @@
           "manualLevels": [
             "1/9",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5195,7 +5184,7 @@
           "manualLevels": [
             "1/9",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5212,7 +5201,7 @@
           "manualLevels": [
             "1/3",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5229,7 +5218,7 @@
           "manualLevels": [
             "1/3",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5246,7 +5235,7 @@
           "manualLevels": [
             "1/3",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5263,7 +5252,7 @@
           "manualLevels": [
             "1/3",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5280,7 +5269,7 @@
           "manualLevels": [
             "1/3",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5297,7 +5286,7 @@
           "manualLevels": [
             "1/3",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5314,7 +5303,7 @@
           "manualLevels": [
             "1/3",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5331,7 +5320,7 @@
           "manualLevels": [
             "1/3",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5348,7 +5337,7 @@
           "manualLevels": [
             "1/3",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5365,7 +5354,7 @@
           "manualLevels": [
             "1/3",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5382,7 +5371,7 @@
           "manualLevels": [
             "1/3",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5399,7 +5388,7 @@
           "manualLevels": [
             "1/3",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5416,7 +5405,7 @@
           "manualLevels": [
             "1/1",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5433,7 +5422,7 @@
           "manualLevels": [
             "1/1",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5450,7 +5439,7 @@
           "manualLevels": [
             "1/1",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5467,7 +5456,7 @@
           "manualLevels": [
             "1/1",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5484,7 +5473,7 @@
           "manualLevels": [
             "1/1",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5501,7 +5490,7 @@
           "manualLevels": [
             "1/1",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5518,7 +5507,7 @@
           "manualLevels": [
             "1/1",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5535,7 +5524,7 @@
           "manualLevels": [
             "1/1",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5552,7 +5541,7 @@
           "manualLevels": [
             "1/1",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5569,7 +5558,7 @@
           "manualLevels": [
             "1/1",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5586,7 +5575,7 @@
           "manualLevels": [
             "1/1",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         },
@@ -5603,7 +5592,7 @@
           "manualLevels": [
             "1/1",
             null,
-            null
+            "AA 100 µM"
           ],
           "kind": "normal"
         }
