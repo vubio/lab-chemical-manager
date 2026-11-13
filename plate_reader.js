@@ -92,7 +92,13 @@ function matchManualReadings(state,input){
    record?.kind!=='special'&&Array.isArray(record?.manualLevels)&&
    record.manualLevels.some(v=>String(v??'').trim()));
  if(!active.length)throw Error('No manual Level 1–3 labels found. Right-click wells and assign at least one manual level first.');
- const used=Array.from({length:3},(_,i)=>i).filter(i=>active.some(([,record])=>String(record.manualLevels[i]??'').trim()));
+ // Preserve underlying generated labels where a manual override was not set.
+ // The visible label levels, rather than manualLevels alone, define columns.
+ const visibleByWell=new Map(active.map(([pos,record])=>[
+  pos,matchedRecordLabels(record,3).map(x=>String(x??'').trim())
+ ]));
+ const used=Array.from({length:3},(_,i)=>i).filter(i=>
+  active.some(([pos])=>Boolean(visibleByWell.get(pos)?.[i])));
  const factors=used.map(i=>String(state.manualLevelNames?.[i]||'').trim()||'Level '+(i+1));
  const [rows,cols]=shape,data=[],controls=[],missing=[],unassigned=[],incomplete=[],groups={},specialGroups={};
  const manualPositions=new Set(active.map(([pos])=>pos));
@@ -100,7 +106,7 @@ function matchManualReadings(state,input){
   const pos=well(r,col),record=assignments[pos],reading=input.plate[pos];
   const isSpecial=record?.kind==='special';
   if(!isSpecial&&!manualPositions.has(pos)){if(reading!==null)unassigned.push(pos);continue}
-  const labels=isSpecial?[]:used.map(i=>String(record.manualLevels?.[i]??'').trim());
+  const labels=isSpecial?[]:used.map(i=>visibleByWell.get(pos)?.[i]||'');
   if(!isSpecial&&labels.some(v=>!v))incomplete.push(pos);
   if(reading===null){missing.push(pos);continue}
   if(isSpecial){
@@ -211,7 +217,7 @@ function match(){
   matched=matchingMode==='manual'?matchManualReadings(state,parsed):matchReadings(state,parsed);
   $('pr-summary').textContent=(matchingMode==='manual'?'Manual levels · ':'')+`${matched.data.length} experimental readings · ${matched.controls.length} special controls · ${matched.missing.length} labeled wells missing readings · ${matched.unassigned.length} readings outside ${matchingMode==='manual'?'manual labels':'assigned wells'}.`;
   $('pr-warning').textContent=(matched.missing.length?'Missing labeled wells: '+matched.missing.slice(0,22).join(', ')+'. ':'')+
- (matched.incomplete?.length?'Incomplete manual level assignments at '+matched.incomplete.slice(0,16).join(', ')+'. Missing levels appear as blank factors; review before statistics. ':'')+
+ (matched.incomplete?.length?'Incomplete displayed factor labels at '+matched.incomplete.slice(0,16).join(', ')+'. Missing levels appear as blank factors; review before statistics. ':'')+
  (matched.unassigned.length?matched.unassigned.length+(matchingMode==='manual'?' readings outside manually labeled wells':' readings from unlabeled wells')+' excluded from analysis (retained in the plate-matrix export).':'');
   render();
  }catch(e){matched=null;view=null;$('pr-export').hidden=true;$('pr-preview').innerHTML='';$('pr-summary').textContent='';$('pr-warning').textContent='';$('pr-error').textContent=e.message;}
@@ -238,7 +244,7 @@ async function copy(){
 function init(){
  const actions=document.querySelector('#page-plate .plate-grid-actions');if(!actions||!window.PlateLayoutCore)return;
  const btn=document.createElement('button');btn.type='button';btn.className='btn';btn.id='pr-open';btn.textContent='Match reader values';actions.appendChild(btn);
- const manualBtn=document.createElement('button');manualBtn.type='button';manualBtn.className='btn';manualBtn.id='pr-manual-open';manualBtn.textContent='Match manual labels';manualBtn.title='Match reader data using only the manually assigned Level 1–3 values';actions.appendChild(manualBtn);
+ const manualBtn=document.createElement('button');manualBtn.type='button';manualBtn.className='btn';manualBtn.id='pr-manual-open';manualBtn.textContent='Match manual labels';manualBtn.title='Match manually labeled wells, including visible generated values at unmodified levels';actions.appendChild(manualBtn);
  const overlay=document.createElement('div');overlay.id='pr-dialog';overlay.className='pr-overlay';overlay.hidden=true;
  overlay.innerHTML=`<section class="pr-modal" role="dialog" aria-modal="true" aria-labelledby="pr-title"><div class="pr-modal-head"><div><h2 id="pr-title">Match plate-reader values</h2><p id="pr-intro">Paste the complete plate grid. Measurements are matched to labeled wells by their positions.</p></div><button class="btn" type="button" id="pr-close">Close ×</button></div>
  <div class="pr-inputs"><label class="field"><span>Source order</span><select id="pr-order"><option value="rows">Rows A–H (8 × 12 for a 96-well plate)</option><option value="columns">Columns 1–12 (12 × 8 for a 96-well plate)</option></select></label><label class="field"><span>Special controls</span><select id="pr-control-placement"><option value="separate">Separate table (recommended)</option><option value="bottom">Append below (long format)</option><option value="top">Append above (long format)</option><option value="omit">Exclude controls from output</option></select></label><label class="field"><span>Output format</span><select id="pr-format">${Object.entries(formats).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></label></div>
@@ -254,7 +260,7 @@ function init(){
   matched=null;view=null;overlay.hidden=false;document.body.classList.add('pr-open');
   $('pr-title').textContent=mode==='manual'?'Match manual level labels':'Match plate-reader values';
   $('pr-intro').textContent=mode==='manual'
-   ?'Uses only manually assigned Level 1–3 values, with the editable legend names as factor columns. Other generated labels are ignored; special controls stay separate.'
+   ?'Matches manually labeled wells and exports every visible factor level, including underlying generated values where no manual override exists. The editable legend supplies column names; special controls stay separate.'
    :'Paste the complete plate grid. Measurements are matched to labeled wells by their positions.';
   $('pr-preview').innerHTML='';$('pr-export').hidden=true;$('pr-summary').textContent='';$('pr-warning').textContent='';$('pr-error').textContent='';$('pr-paste').focus();
  }
